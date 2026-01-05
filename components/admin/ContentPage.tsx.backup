@@ -21,7 +21,6 @@ export default function ContentPage({ translations }: ContentPageProps) {
   const [notifications, setNotifications] = useState<NotificationData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [videoModalUrl, setVideoModalUrl] = useState<string | null>(null)
 
   // Modal states
   const [showModal, setShowModal] = useState(false)
@@ -188,14 +187,9 @@ export default function ContentPage({ translations }: ContentPageProps) {
   const openEditModal = (item: NewsData | BannerData | NotificationData) => {
     setEditingItem(item)
     setImageFile(null)
-    setVideoFile(null)
     const itemWithImage = item as NewsData | BannerData
     const imgUrl = 'image_url' in item ? itemWithImage.image_url : null
     setImagePreview(imgUrl ? (imgUrl.startsWith('http') ? imgUrl : `${API_URL}${imgUrl}`) : null)
-    // Video preview for banners
-    const itemWithVideo = item as BannerData
-    const vidUrl = 'video_url' in item ? itemWithVideo.video_url : null
-    setVideoPreview(vidUrl ? (vidUrl.startsWith('http') ? vidUrl : `${API_URL}${vidUrl}`) : null)
     setFormData({ ...item })
     setShowModal(true)
   }
@@ -308,19 +302,6 @@ export default function ContentPage({ translations }: ContentPageProps) {
       month: 'short',
       day: 'numeric'
     })
-  }
-
-  const getMediaUrl = (url: string) => {
-    // Proxy orqali yuklash (CORS muammosini hal qilish uchun)
-    if (url.startsWith('http')) {
-      // To'liq URL bo'lsa, /uploads/ qismini ajratib olamiz
-      const uploadsIndex = url.indexOf('/uploads/')
-      if (uploadsIndex !== -1) {
-        return `/api${url.substring(uploadsIndex)}`
-      }
-      return url
-    }
-    return `/api${url}`
   }
 
   if (loading) {
@@ -469,55 +450,10 @@ export default function ContentPage({ translations }: ContentPageProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {banners.map((banner) => (
             <div key={banner.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
-              <div className="h-40 bg-gradient-to-r from-[#33ccff]/20 to-[#33ccff]/10 flex items-center justify-center relative">
-                {banner.video_url ? (
-                  <>
-                    {/* Video thumbnail with play button */}
-                    <div className="w-full h-full relative group">
-                      {banner.image_url ? (
-                        <img
-                          src={getMediaUrl(banner.image_url)}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <video
-                          src={getMediaUrl(banner.video_url)}
-                          className="w-full h-full object-cover"
-                          muted
-                          playsInline
-                        />
-                      )}
-                      {/* Play button overlay */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                          const url = getMediaUrl(banner.video_url!)
-                          console.log('Video URL:', url)
-                          setVideoModalUrl(url)
-                        }}
-                        className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors"
-                      >
-                        <div className="w-14 h-14 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                          <svg className="w-6 h-6 text-[#33ccff] ml-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                          </svg>
-                        </div>
-                      </button>
-                    </div>
-                    {/* Video badge */}
-                    <div className="absolute top-2 right-2 px-2 py-1 bg-black/50 text-white text-xs rounded-lg flex items-center gap-1">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                      </svg>
-                      Video
-                    </div>
-                  </>
-                ) : banner.image_url ? (
+              <div className="h-40 bg-gradient-to-r from-[#33ccff]/20 to-[#33ccff]/10 flex items-center justify-center">
+                {banner.image_url ? (
                   <img
-                    src={getMediaUrl(banner.image_url)}
+                    src={banner.image_url.startsWith('http') ? banner.image_url : `${API_URL}${banner.image_url}`}
                     alt=""
                     className="w-full h-full object-cover"
                   />
@@ -658,36 +594,6 @@ export default function ContentPage({ translations }: ContentPageProps) {
               )}
             </tbody>
           </table>
-        </div>
-      )}
-
-      {/* Video Player Modal */}
-      {videoModalUrl && (
-        <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80"
-          onClick={() => setVideoModalUrl(null)}
-        >
-          <div
-            className="relative w-full max-w-4xl mx-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setVideoModalUrl(null)}
-              className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors z-10"
-            >
-              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <video
-              key={videoModalUrl}
-              src={videoModalUrl}
-              className="w-full max-h-[80vh] rounded-xl shadow-2xl bg-black"
-              controls
-              autoPlay
-              playsInline
-            />
-          </div>
         </div>
       )}
 
@@ -965,22 +871,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                   </label>
                   <div className="flex items-center gap-4">
                     {imagePreview && (
-                      <div className="relative">
-                        <img src={imagePreview} alt="Preview" className="w-20 h-20 rounded-lg object-cover" />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setImagePreview(null)
-                            setImageFile(null)
-                            setFormData({ ...formData, image_url: null })
-                          }}
-                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-colors"
-                        >
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      </div>
+                      <img src={imagePreview} alt="Preview" className="w-20 h-20 rounded-lg object-cover" />
                     )}
                     <input
                       type="file"
@@ -999,29 +890,11 @@ export default function ContentPage({ translations }: ContentPageProps) {
                     Video/GIF (ixtiyoriy)
                   </label>
                   <div className="flex items-center gap-4">
-                    {(videoPreview || formData.video_url) && (
-                      <div className="relative">
-                        <video
-                          src={videoPreview || (formData.video_url?.startsWith('http') ? formData.video_url : `${API_URL}${formData.video_url}`)}
-                          className="w-20 h-20 rounded-lg object-cover"
-                          autoPlay
-                          loop
-                          muted
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setVideoPreview(null)
-                            setVideoFile(null)
-                            setFormData({ ...formData, video_url: null })
-                          }}
-                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-colors"
-                        >
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      </div>
+                    {videoPreview && (
+                      <video src={videoPreview} className="w-20 h-20 rounded-lg object-cover" autoPlay loop muted />
+                    )}
+                    {formData.video_url && !videoPreview && (
+                      <video src={formData.video_url.startsWith('http') ? formData.video_url : `${API_URL}${formData.video_url}`} className="w-20 h-20 rounded-lg object-cover" autoPlay loop muted />
                     )}
                     <input
                       type="file"

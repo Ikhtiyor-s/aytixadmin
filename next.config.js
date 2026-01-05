@@ -4,9 +4,14 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/uploads/:path*',
+        destination: 'http://localhost:8000/uploads/:path*',
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
-
-
-
