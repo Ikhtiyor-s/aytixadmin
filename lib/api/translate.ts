@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+import api from '@/services/api'
 
 export interface TranslateRequest {
   text: string
@@ -13,48 +13,24 @@ export interface TranslateResponse {
 }
 
 export const translateApi = {
-  async translate(data: TranslateRequest, token: string): Promise<TranslateResponse> {
-    const response = await fetch(`${API_BASE_URL}/translate/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Tarjima qilishda xatolik')
-    }
-
-    return response.json()
+  async translate(data: TranslateRequest, _token?: string): Promise<TranslateResponse> {
+    // Token is now handled by axios interceptor automatically
+    const response = await api.post('/translate/', data)
+    return response.data
   },
 
   async translateBatch(
     texts: Record<string, string>,
     source_lang: string,
     target_langs: string[],
-    token: string
+    _token?: string
   ): Promise<TranslateResponse> {
-    const response = await fetch(`${API_BASE_URL}/translate/batch`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        texts,
-        source_lang,
-        target_langs
-      })
+    // Token is now handled by axios interceptor automatically
+    const response = await api.post('/translate/batch', {
+      texts,
+      source_lang,
+      target_langs
     })
-
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Tarjima qilishda xatolik')
-    }
-
-    return response.json()
+    return response.data
   }
 }

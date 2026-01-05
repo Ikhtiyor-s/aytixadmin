@@ -193,6 +193,154 @@ export interface Translations {
   iconAndColor: string
   leadsDesc: string
   leadsByIntegrations: string
+  // Categories page
+  addCategory: string
+  subcategories: string
+  noSubcategories: string
+  order: string
+  inactive: string
+  deleteConfirmCategory: string
+  deleteConfirmSubcategory: string
+  pleaseEnterName: string
+  translationSuccess: string
+  translationError: string
+  pleaseLoginFirst: string
+  tryAgain: string
+  uploading: string
+  uploadIcon: string
+  removeIcon: string
+  supportedFormats: string
+  translating: string
+  // Content page
+  addNew: string
+  noNews: string
+  noBanners: string
+  noNotificationsContent: string
+  titleUz: string
+  titleRu: string
+  titleEn: string
+  contentUz: string
+  contentRu: string
+  contentEn: string
+  descUz: string
+  descRu: string
+  descEn: string
+  messageUz: string
+  messageRu: string
+  messageEn: string
+  linkUrl: string
+  projectIdLabel: string
+  projectIdDesc: string
+  videoGif: string
+  videoFormats: string
+  scheduledTime: string
+  saving: string
+  deleteConfirm: string
+  noDescription: string
+  // Users page
+  manageUsers: string
+  refresh: string
+  totalUsersLabel: string
+  activeUsersLabel: string
+  regularUsersLabel: string
+  sellersLabel: string
+  allRoles: string
+  userRole: string
+  sellerRole: string
+  usersFound: string
+  userInfo: string
+  phoneLabel: string
+  idLabel: string
+  registeredDate: string
+  deleteUserTitle: string
+  deleteUserWarning: string
+  cannotUndo: string
+  fullName: string
+  usernameLabel: string
+  phoneNumber: string
+  enterFullName: string
+  enterUsername: string
+  enterPhone: string
+  editUserTitle: string
+  viewBtn: string
+  editBtn: string
+  blockUnblock: string
+  noUsersFound: string
+  cannotBlockSelf: string
+  statusChangeError: string
+  userLoadError: string
+  userDeleteError: string
+  userEditError: string
+  // Partners page
+  managePartners: string
+  noPartners: string
+  deletePartnerConfirm: string
+  editPartnerTitle: string
+  partnerName: string
+  partnerLogo: string
+  uploadLogo: string
+  partnerWebsite: string
+  partnerType: string
+  partnerTypeHint: string
+  partnerDescUz: string
+  partnerOrder: string
+  partnerStatus: string
+  waitingStatus: string
+  // Common
+  image: string
+  toAll: string
+  toUsers: string
+  toSellers: string
+  toAdmins: string
+  fileNotSelected: string
+  // Projects page
+  noProjectsFoundEmpty: string
+  startByCreatingProject: string
+  errorLoadingProjects: string
+  noImage: string
+  moreImages: string
+  favorites: string
+  projectImage: string
+  changeImage: string
+  deleteImage: string
+  existingImage: string
+  dropImageHere: string
+  imageFormats: string
+  projectVideos: string
+  addVideo: string
+  videoFormatsShort: string
+  existing: string
+  additionalImages: string
+  addImage: string
+  enterProjectNameLang: string
+  separateWithComma: string
+  projectDescLang: string
+  featuresList: string
+  featurePlaceholder: string
+  select: string
+  integrationsSection: string
+  marketplaceSettings: string
+  topBest: string
+  newLabel: string
+  savingProject: string
+  sessionExpired: string
+  pleaseReLogin: string
+  deleteProjectConfirm: string
+  noPermission: string
+  adminRequired: string
+  statusChangeError2: string
+  uzLang: string
+  ruLang: string
+  enLang: string
+  phoneNumber2: string
+  call: string
+  paymentSystem: string
+  testMode: string
+  smsProvider: string
+  senderName: string
+  senderEmail: string
+  webhookOptional: string
+  secretKeyOptional: string
 }
 
 export const translations: Record<Language, Translations> = {
@@ -389,6 +537,154 @@ export const translations: Record<Language, Translations> = {
     iconAndColor: 'Belgi va rang',
     leadsDesc: 'Mijozlar va integratsiyalardan buyurtmalar',
     leadsByIntegrations: "Integratsiyalar bo'yicha lidlar",
+    // Categories page
+    addCategory: "Kategoriya qo'shish",
+    subcategories: 'Subkategoriyalar',
+    noSubcategories: "Subkategoriyalar yo'q",
+    order: 'Tartib',
+    inactive: 'Nofaol',
+    deleteConfirmCategory: "Bu kategoriyani o'chirmoqchimisiz? Barcha subkategoriyalar ham o'chiriladi!",
+    deleteConfirmSubcategory: "Bu subkategoriyani o'chirmoqchimisiz?",
+    pleaseEnterName: 'Iltimos, avval biror tilda nom kiriting',
+    translationSuccess: 'Tarjima muvaffaqiyatli amalga oshirildi!',
+    translationError: 'Tarjima qilishda xatolik',
+    pleaseLoginFirst: 'Iltimos, avval tizimga kiring',
+    tryAgain: "Qayta urinib ko'ring",
+    uploading: 'Yuklanmoqda...',
+    uploadIcon: 'Ikonka yuklash',
+    removeIcon: "Ikonkani o'chirish",
+    supportedFormats: "PNG, JPG, SVG formatlar qo'llab-quvvatlanadi",
+    translating: 'Tarjima qilinmoqda...',
+    // Content page
+    addNew: "Yangi qo'shish",
+    noNews: 'Yangiliklar topilmadi',
+    noBanners: 'Bannerlar topilmadi',
+    noNotificationsContent: 'Xabarnomalar topilmadi',
+    titleUz: 'Sarlavha (UZ)',
+    titleRu: 'Sarlavha (RU)',
+    titleEn: 'Sarlavha (EN)',
+    contentUz: 'Matn (UZ)',
+    contentRu: 'Matn (RU)',
+    contentEn: 'Matn (EN)',
+    descUz: 'Tavsif (UZ)',
+    descRu: 'Tavsif (RU)',
+    descEn: 'Tavsif (EN)',
+    messageUz: 'Xabar (UZ)',
+    messageRu: 'Xabar (RU)',
+    messageEn: 'Xabar (EN)',
+    linkUrl: 'Havola URL',
+    projectIdLabel: 'Loyiha ID (ixtiyoriy)',
+    projectIdDesc: "Loyiha ID kiritilganda banner bosilganda o'sha loyihaga o'tiladi",
+    videoGif: 'Video/GIF (ixtiyoriy)',
+    videoFormats: 'MP4, WebM yoki GIF formatida (max 50MB)',
+    scheduledTime: 'Rejali vaqt',
+    saving: 'Saqlanmoqda...',
+    deleteConfirm: "Rostdan ham o'chirmoqchimisiz?",
+    noDescription: "Tavsif yo'q",
+    // Users page
+    manageUsers: "Ro'yxatdan o'tgan foydalanuvchilarni boshqaring",
+    refresh: 'Yangilash',
+    totalUsersLabel: 'Jami foydalanuvchilar',
+    activeUsersLabel: 'Faol foydalanuvchilar',
+    regularUsersLabel: 'Oddiy foydalanuvchilar',
+    sellersLabel: 'Sotuvchilar',
+    allRoles: 'Barchasi',
+    userRole: 'Foydalanuvchi',
+    sellerRole: 'Sotuvchi',
+    usersFound: 'ta foydalanuvchi',
+    userInfo: "Foydalanuvchi ma'lumotlari",
+    phoneLabel: 'Telefon',
+    idLabel: 'ID',
+    registeredDate: "Ro'yxatdan o'tgan sana",
+    deleteUserTitle: "Foydalanuvchini o'chirish",
+    deleteUserWarning: "foydalanuvchisini o'chirmoqchimisiz?",
+    cannotUndo: "Bu amalni ortga qaytarib bo'lmaydi.",
+    fullName: "To'liq ism",
+    usernameLabel: 'Foydalanuvchi nomi',
+    phoneNumber: 'Telefon raqam',
+    enterFullName: "To'liq ismni kiriting",
+    enterUsername: 'Foydalanuvchi nomini kiriting',
+    enterPhone: 'Telefon raqamini kiriting',
+    editUserTitle: 'Foydalanuvchini tahrirlash',
+    viewBtn: "Ko'rish",
+    editBtn: 'Tahrirlash',
+    blockUnblock: 'Bloklash/Faollashtirish',
+    noUsersFound: 'Foydalanuvchilar topilmadi',
+    cannotBlockSelf: "O'z akkauntingizni bloklay olmaysiz",
+    statusChangeError: "Holatni o'zgartirishda xatolik yuz berdi",
+    userLoadError: 'Foydalanuvchilarni yuklashda xatolik',
+    userDeleteError: "Foydalanuvchini o'chirishda xatolik yuz berdi",
+    userEditError: 'Foydalanuvchini tahrirlashda xatolik yuz berdi',
+    // Partners page
+    managePartners: 'Hamkorlar va mijozlarni boshqaring',
+    noPartners: 'Hamkorlar topilmadi',
+    deletePartnerConfirm: "Hamkorni o'chirmoqchimisiz?",
+    editPartnerTitle: 'Hamkorni tahrirlash',
+    partnerName: 'Nomi',
+    partnerLogo: 'Logo',
+    uploadLogo: 'Rasm yuklash',
+    partnerWebsite: 'Veb-sayt',
+    partnerType: 'Turi',
+    partnerTypeHint: 'Texnologiya hamkori, Mijoz...',
+    partnerDescUz: 'Tavsif (UZ)',
+    partnerOrder: 'Tartib',
+    partnerStatus: 'Holat',
+    waitingStatus: 'Kutilmoqda',
+    // Common
+    image: 'Rasm',
+    toAll: 'Hammaga',
+    toUsers: 'Foydalanuvchilar',
+    toSellers: 'Sotuvchilar',
+    toAdmins: 'Adminlar',
+    fileNotSelected: 'Fayl tanlanmagan',
+    // Projects page
+    noProjectsFoundEmpty: 'Loyihalar topilmadi',
+    startByCreatingProject: "Birinchi loyihangizni yaratishdan boshlang",
+    errorLoadingProjects: "Loyihalarni yuklashda xatolik",
+    noImage: "Rasm yo'q",
+    moreImages: 'ta rasm',
+    favorites: 'Sevimlilar',
+    projectImage: 'Loyiha rasmi',
+    changeImage: "O'zgartirish",
+    deleteImage: "O'chirish",
+    existingImage: 'Mavjud rasm',
+    dropImageHere: 'Rasmni bu yerga tashlang yoki bosing',
+    imageFormats: 'PNG, JPG, WEBP (max 5MB)',
+    projectVideos: 'Loyiha videolari (cheksiz)',
+    addVideo: "Video qo'shish",
+    videoFormatsShort: 'MP4, WebM',
+    existing: 'Mavjud',
+    additionalImages: "Qo'shimcha rasmlar (cheksiz)",
+    addImage: "Rasm qo'shish",
+    enterProjectNameLang: 'Loyiha nomini kiriting',
+    separateWithComma: 'Vergul bilan ajrating',
+    projectDescLang: 'Loyiha haqida qisqacha',
+    featuresList: 'Imkoniyatlar',
+    featurePlaceholder: "Masalan: 24/7 qo'llab quvvatlash",
+    select: 'Tanlang',
+    integrationsSection: 'Integratsiyalar',
+    marketplaceSettings: 'Marketplace sozlamalari',
+    topBest: 'Eng yaxshi',
+    newLabel: 'Yangi',
+    savingProject: 'Saqlanmoqda...',
+    sessionExpired: 'Sessiya muddati tugagan. Iltimos, qayta login qiling.',
+    pleaseReLogin: 'Iltimos, avval tizimga kiring',
+    deleteProjectConfirm: "Loyihani o'chirishni tasdiqlaysizmi?",
+    noPermission: "Ruxsat yo'q. Admin huquqlari talab qilinadi.",
+    adminRequired: 'Admin huquqlari talab qilinadi',
+    statusChangeError2: "Status o'zgartirishda xatolik",
+    uzLang: "O'zbekcha",
+    ruLang: 'Ruscha',
+    enLang: 'Inglizcha',
+    phoneNumber2: 'Telefon raqami',
+    call: "Qo'ng'iroq",
+    paymentSystem: "To'lov tizimi",
+    testMode: 'Test rejimi',
+    smsProvider: 'SMS provayder',
+    senderName: "Jo'natuvchi nomi",
+    senderEmail: "Jo'natuvchi Email",
+    webhookOptional: 'Webhook URL (ixtiyoriy)',
+    secretKeyOptional: 'Secret Key (ixtiyoriy)',
   },
   ru: {
     dashboard: 'Панель',
@@ -583,6 +879,154 @@ export const translations: Record<Language, Translations> = {
     iconAndColor: 'Иконка и цвет',
     leadsDesc: 'Заказы от клиентов и интеграций',
     leadsByIntegrations: 'Лиды по интеграциям',
+    // Categories page
+    addCategory: 'Добавить категорию',
+    subcategories: 'Подкатегории',
+    noSubcategories: 'Нет подкатегорий',
+    order: 'Порядок',
+    inactive: 'Неактивен',
+    deleteConfirmCategory: 'Вы уверены, что хотите удалить категорию? Все подкатегории также будут удалены!',
+    deleteConfirmSubcategory: 'Вы уверены, что хотите удалить подкатегорию?',
+    pleaseEnterName: 'Пожалуйста, сначала введите название на любом языке',
+    translationSuccess: 'Перевод успешно выполнен!',
+    translationError: 'Ошибка при переводе',
+    pleaseLoginFirst: 'Пожалуйста, сначала войдите в систему',
+    tryAgain: 'Попробовать снова',
+    uploading: 'Загрузка...',
+    uploadIcon: 'Загрузить иконку',
+    removeIcon: 'Удалить иконку',
+    supportedFormats: 'Поддерживаются форматы PNG, JPG, SVG',
+    translating: 'Перевод...',
+    // Content page
+    addNew: 'Добавить',
+    noNews: 'Новости не найдены',
+    noBanners: 'Баннеры не найдены',
+    noNotificationsContent: 'Уведомления не найдены',
+    titleUz: 'Заголовок (UZ)',
+    titleRu: 'Заголовок (RU)',
+    titleEn: 'Заголовок (EN)',
+    contentUz: 'Текст (UZ)',
+    contentRu: 'Текст (RU)',
+    contentEn: 'Текст (EN)',
+    descUz: 'Описание (UZ)',
+    descRu: 'Описание (RU)',
+    descEn: 'Описание (EN)',
+    messageUz: 'Сообщение (UZ)',
+    messageRu: 'Сообщение (RU)',
+    messageEn: 'Сообщение (EN)',
+    linkUrl: 'URL ссылки',
+    projectIdLabel: 'ID проекта (необязательно)',
+    projectIdDesc: 'При указании ID проекта, при клике на баннер будет переход к проекту',
+    videoGif: 'Видео/GIF (необязательно)',
+    videoFormats: 'Формат MP4, WebM или GIF (макс 50MB)',
+    scheduledTime: 'Запланированное время',
+    saving: 'Сохранение...',
+    deleteConfirm: 'Вы уверены, что хотите удалить?',
+    noDescription: 'Нет описания',
+    // Users page
+    manageUsers: 'Управление зарегистрированными пользователями',
+    refresh: 'Обновить',
+    totalUsersLabel: 'Всего пользователей',
+    activeUsersLabel: 'Активные пользователи',
+    regularUsersLabel: 'Обычные пользователи',
+    sellersLabel: 'Продавцы',
+    allRoles: 'Все',
+    userRole: 'Пользователь',
+    sellerRole: 'Продавец',
+    usersFound: 'пользователей',
+    userInfo: 'Информация о пользователе',
+    phoneLabel: 'Телефон',
+    idLabel: 'ID',
+    registeredDate: 'Дата регистрации',
+    deleteUserTitle: 'Удалить пользователя',
+    deleteUserWarning: 'удалить?',
+    cannotUndo: 'Это действие нельзя отменить.',
+    fullName: 'Полное имя',
+    usernameLabel: 'Имя пользователя',
+    phoneNumber: 'Номер телефона',
+    enterFullName: 'Введите полное имя',
+    enterUsername: 'Введите имя пользователя',
+    enterPhone: 'Введите номер телефона',
+    editUserTitle: 'Редактировать пользователя',
+    viewBtn: 'Просмотр',
+    editBtn: 'Редактировать',
+    blockUnblock: 'Блокировать/Разблокировать',
+    noUsersFound: 'Пользователи не найдены',
+    cannotBlockSelf: 'Вы не можете заблокировать свой аккаунт',
+    statusChangeError: 'Ошибка при изменении статуса',
+    userLoadError: 'Ошибка при загрузке пользователей',
+    userDeleteError: 'Ошибка при удалении пользователя',
+    userEditError: 'Ошибка при редактировании пользователя',
+    // Partners page
+    managePartners: 'Управление партнёрами и клиентами',
+    noPartners: 'Партнёры не найдены',
+    deletePartnerConfirm: 'Удалить партнёра?',
+    editPartnerTitle: 'Редактировать партнёра',
+    partnerName: 'Название',
+    partnerLogo: 'Логотип',
+    uploadLogo: 'Загрузить изображение',
+    partnerWebsite: 'Веб-сайт',
+    partnerType: 'Тип',
+    partnerTypeHint: 'Технологический партнёр, Клиент...',
+    partnerDescUz: 'Описание (UZ)',
+    partnerOrder: 'Порядок',
+    partnerStatus: 'Статус',
+    waitingStatus: 'Ожидает',
+    // Common
+    image: 'Изображение',
+    toAll: 'Всем',
+    toUsers: 'Пользователям',
+    toSellers: 'Продавцам',
+    toAdmins: 'Админам',
+    fileNotSelected: 'Файл не выбран',
+    // Projects page
+    noProjectsFoundEmpty: 'Проекты не найдены',
+    startByCreatingProject: 'Начните с создания первого проекта',
+    errorLoadingProjects: 'Ошибка загрузки проектов',
+    noImage: 'Нет изображения',
+    moreImages: 'изображений',
+    favorites: 'Избранное',
+    projectImage: 'Изображение проекта',
+    changeImage: 'Изменить',
+    deleteImage: 'Удалить',
+    existingImage: 'Существующее изображение',
+    dropImageHere: 'Перетащите изображение сюда или нажмите',
+    imageFormats: 'PNG, JPG, WEBP (макс 5MB)',
+    projectVideos: 'Видео проекта (без ограничений)',
+    addVideo: 'Добавить видео',
+    videoFormatsShort: 'MP4, WebM',
+    existing: 'Существующий',
+    additionalImages: 'Дополнительные изображения (без ограничений)',
+    addImage: 'Добавить изображение',
+    enterProjectNameLang: 'Введите название проекта',
+    separateWithComma: 'Разделяйте запятой',
+    projectDescLang: 'Краткое описание проекта',
+    featuresList: 'Возможности',
+    featurePlaceholder: 'Например: поддержка 24/7',
+    select: 'Выберите',
+    integrationsSection: 'Интеграции',
+    marketplaceSettings: 'Настройки маркетплейса',
+    topBest: 'Лучший',
+    newLabel: 'Новый',
+    savingProject: 'Сохранение...',
+    sessionExpired: 'Сессия истекла. Пожалуйста, войдите снова.',
+    pleaseReLogin: 'Пожалуйста, сначала войдите в систему',
+    deleteProjectConfirm: 'Подтвердите удаление проекта?',
+    noPermission: 'Нет разрешения. Требуются права администратора.',
+    adminRequired: 'Требуются права администратора',
+    statusChangeError2: 'Ошибка изменения статуса',
+    uzLang: 'Узбекский',
+    ruLang: 'Русский',
+    enLang: 'Английский',
+    phoneNumber2: 'Номер телефона',
+    call: 'Звонок',
+    paymentSystem: 'Платёжная система',
+    testMode: 'Тестовый режим',
+    smsProvider: 'SMS провайдер',
+    senderName: 'Имя отправителя',
+    senderEmail: 'Email отправителя',
+    webhookOptional: 'Webhook URL (необязательно)',
+    secretKeyOptional: 'Secret Key (необязательно)',
   },
   en: {
     dashboard: 'Dashboard',
@@ -777,6 +1221,154 @@ export const translations: Record<Language, Translations> = {
     iconAndColor: 'Icon and Color',
     leadsDesc: 'Orders from clients and integrations',
     leadsByIntegrations: 'Leads by Integrations',
+    // Categories page
+    addCategory: 'Add Category',
+    subcategories: 'Subcategories',
+    noSubcategories: 'No subcategories',
+    order: 'Order',
+    inactive: 'Inactive',
+    deleteConfirmCategory: 'Are you sure you want to delete this category? All subcategories will also be deleted!',
+    deleteConfirmSubcategory: 'Are you sure you want to delete this subcategory?',
+    pleaseEnterName: 'Please enter a name in any language first',
+    translationSuccess: 'Translation completed successfully!',
+    translationError: 'Translation error',
+    pleaseLoginFirst: 'Please login first',
+    tryAgain: 'Try again',
+    uploading: 'Uploading...',
+    uploadIcon: 'Upload icon',
+    removeIcon: 'Remove icon',
+    supportedFormats: 'PNG, JPG, SVG formats supported',
+    translating: 'Translating...',
+    // Content page
+    addNew: 'Add New',
+    noNews: 'No news found',
+    noBanners: 'No banners found',
+    noNotificationsContent: 'No notifications found',
+    titleUz: 'Title (UZ)',
+    titleRu: 'Title (RU)',
+    titleEn: 'Title (EN)',
+    contentUz: 'Content (UZ)',
+    contentRu: 'Content (RU)',
+    contentEn: 'Content (EN)',
+    descUz: 'Description (UZ)',
+    descRu: 'Description (RU)',
+    descEn: 'Description (EN)',
+    messageUz: 'Message (UZ)',
+    messageRu: 'Message (RU)',
+    messageEn: 'Message (EN)',
+    linkUrl: 'Link URL',
+    projectIdLabel: 'Project ID (optional)',
+    projectIdDesc: 'When project ID is set, clicking the banner will navigate to that project',
+    videoGif: 'Video/GIF (optional)',
+    videoFormats: 'MP4, WebM or GIF format (max 50MB)',
+    scheduledTime: 'Scheduled Time',
+    saving: 'Saving...',
+    deleteConfirm: 'Are you sure you want to delete?',
+    noDescription: 'No description',
+    // Users page
+    manageUsers: 'Manage registered users',
+    refresh: 'Refresh',
+    totalUsersLabel: 'Total users',
+    activeUsersLabel: 'Active users',
+    regularUsersLabel: 'Regular users',
+    sellersLabel: 'Sellers',
+    allRoles: 'All',
+    userRole: 'User',
+    sellerRole: 'Seller',
+    usersFound: 'users',
+    userInfo: 'User Information',
+    phoneLabel: 'Phone',
+    idLabel: 'ID',
+    registeredDate: 'Registration Date',
+    deleteUserTitle: 'Delete User',
+    deleteUserWarning: 'delete?',
+    cannotUndo: 'This action cannot be undone.',
+    fullName: 'Full Name',
+    usernameLabel: 'Username',
+    phoneNumber: 'Phone Number',
+    enterFullName: 'Enter full name',
+    enterUsername: 'Enter username',
+    enterPhone: 'Enter phone number',
+    editUserTitle: 'Edit User',
+    viewBtn: 'View',
+    editBtn: 'Edit',
+    blockUnblock: 'Block/Unblock',
+    noUsersFound: 'No users found',
+    cannotBlockSelf: 'You cannot block your own account',
+    statusChangeError: 'Error changing status',
+    userLoadError: 'Error loading users',
+    userDeleteError: 'Error deleting user',
+    userEditError: 'Error editing user',
+    // Partners page
+    managePartners: 'Manage partners and clients',
+    noPartners: 'No partners found',
+    deletePartnerConfirm: 'Delete partner?',
+    editPartnerTitle: 'Edit Partner',
+    partnerName: 'Name',
+    partnerLogo: 'Logo',
+    uploadLogo: 'Upload image',
+    partnerWebsite: 'Website',
+    partnerType: 'Type',
+    partnerTypeHint: 'Technology partner, Client...',
+    partnerDescUz: 'Description (UZ)',
+    partnerOrder: 'Order',
+    partnerStatus: 'Status',
+    waitingStatus: 'Waiting',
+    // Common
+    image: 'Image',
+    toAll: 'Everyone',
+    toUsers: 'Users',
+    toSellers: 'Sellers',
+    toAdmins: 'Admins',
+    fileNotSelected: 'File not selected',
+    // Projects page
+    noProjectsFoundEmpty: 'No projects found',
+    startByCreatingProject: 'Start by creating your first project',
+    errorLoadingProjects: 'Error loading projects',
+    noImage: 'No image',
+    moreImages: 'images',
+    favorites: 'Favorites',
+    projectImage: 'Project image',
+    changeImage: 'Change',
+    deleteImage: 'Delete',
+    existingImage: 'Existing image',
+    dropImageHere: 'Drop image here or click',
+    imageFormats: 'PNG, JPG, WEBP (max 5MB)',
+    projectVideos: 'Project videos (unlimited)',
+    addVideo: 'Add video',
+    videoFormatsShort: 'MP4, WebM',
+    existing: 'Existing',
+    additionalImages: 'Additional images (unlimited)',
+    addImage: 'Add image',
+    enterProjectNameLang: 'Enter project name',
+    separateWithComma: 'Separate with comma',
+    projectDescLang: 'Brief project description',
+    featuresList: 'Features',
+    featurePlaceholder: 'Example: 24/7 support',
+    select: 'Select',
+    integrationsSection: 'Integrations',
+    marketplaceSettings: 'Marketplace settings',
+    topBest: 'Best',
+    newLabel: 'New',
+    savingProject: 'Saving...',
+    sessionExpired: 'Session expired. Please log in again.',
+    pleaseReLogin: 'Please log in first',
+    deleteProjectConfirm: 'Confirm project deletion?',
+    noPermission: 'No permission. Admin rights required.',
+    adminRequired: 'Admin rights required',
+    statusChangeError2: 'Error changing status',
+    uzLang: 'Uzbek',
+    ruLang: 'Russian',
+    enLang: 'English',
+    phoneNumber2: 'Phone number',
+    call: 'Call',
+    paymentSystem: 'Payment system',
+    testMode: 'Test mode',
+    smsProvider: 'SMS provider',
+    senderName: 'Sender name',
+    senderEmail: 'Sender email',
+    webhookOptional: 'Webhook URL (optional)',
+    secretKeyOptional: 'Secret Key (optional)',
   },
 }
 

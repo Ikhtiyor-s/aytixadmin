@@ -90,7 +90,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
     }
 
     if (!sourceLang) {
-      alert('Iltimos, avval biror tilda nom kiriting')
+      alert(t.pleaseEnterName)
       return
     }
 
@@ -138,10 +138,10 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
       }
 
       setCategoryFormData(newFormData)
-      alert('Tarjima muvaffaqiyatli amalga oshirildi!')
+      alert(t.translationSuccess)
     } catch (err) {
       console.error('Translation error:', err)
-      alert(err instanceof Error ? err.message : 'Tarjima qilishda xatolik')
+      alert(err instanceof Error ? err.message : t.translationError)
     } finally {
       setIsTranslating(false)
     }
@@ -160,7 +160,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
     }
 
     if (!sourceLang) {
-      alert('Iltimos, avval biror tilda nom kiriting')
+      alert(t.pleaseEnterName)
       return
     }
 
@@ -189,10 +189,10 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
       }
 
       setSubcategoryFormData(newFormData)
-      alert('Tarjima muvaffaqiyatli amalga oshirildi!')
+      alert(t.translationSuccess)
     } catch (err) {
       console.error('Translation error:', err)
-      alert(err instanceof Error ? err.message : 'Tarjima qilishda xatolik')
+      alert(err instanceof Error ? err.message : t.translationError)
     } finally {
       setIsTranslating(false)
     }
@@ -326,7 +326,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
     try {
       const token = getToken()
       if (!token) {
-        alert('Please login first')
+        alert(t.pleaseLoginFirst)
         return
       }
 
@@ -355,14 +355,14 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
   }
 
   const handleDeleteCategory = async (id: number) => {
-    if (!confirm('Bu kategoriyani o\'chirmoqchimisiz? Barcha subcategoriyalar ham o\'chiriladi!')) {
+    if (!confirm(t.deleteConfirmCategory)) {
       return
     }
 
     try {
       const token = getToken()
       if (!token) {
-        alert('Please login first')
+        alert(t.pleaseLoginFirst)
         return
       }
 
@@ -378,7 +378,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
     try {
       const token = getToken()
       if (!token || !selectedCategoryId) {
-        alert('Please login first')
+        alert(t.pleaseLoginFirst)
         return
       }
 
@@ -397,14 +397,14 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
   }
 
   const handleDeleteSubcategory = async (id: number, categoryId: number) => {
-    if (!confirm('Bu subcategoriyani o\'chirmoqchimisiz?')) {
+    if (!confirm(t.deleteConfirmSubcategory)) {
       return
     }
 
     try {
       const token = getToken()
       if (!token) {
-        alert('Please login first')
+        alert(t.pleaseLoginFirst)
         return
       }
 
@@ -436,7 +436,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
       <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-600">
         <p>{error}</p>
         <button onClick={fetchCategories} className="mt-2 text-sm underline">
-          Qayta urinib ko'ring
+          {t.tryAgain}
         </button>
       </div>
     )
@@ -448,7 +448,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">{t.categories}</h2>
-          <p className="text-sm text-gray-500 mt-1">Jami: {categories.length}</p>
+          <p className="text-sm text-gray-500 mt-1">{t.total}: {categories.length}</p>
         </div>
         <button
           onClick={openAddCategoryModal}
@@ -457,7 +457,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          Kategoriya qo'shish
+          {t.addCategory}
         </button>
       </div>
 
@@ -487,7 +487,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                     {category.icon && (category.icon.startsWith('http') || category.icon.startsWith('/uploads')) ? (
                       <img
                         src={category.icon.startsWith('http') ? category.icon : `${API_URL}${category.icon}`}
-                        alt={category.name_uz}
+                        alt={category[`name_${lang}` as keyof typeof category] as string || category.name_uz}
                         className="w-full h-full object-cover rounded-xl"
                       />
                     ) : (
@@ -495,9 +495,13 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                     )}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">{category.name_uz}</h3>
-                    {category.description_uz && (
-                      <p className="text-sm text-gray-500">{category.description_uz}</p>
+                    <h3 className="font-semibold text-gray-900">
+                      {category[`name_${lang}` as keyof typeof category] as string || category.name_uz}
+                    </h3>
+                    {(category[`description_${lang}` as keyof typeof category] || category.description_uz) && (
+                      <p className="text-sm text-gray-500">
+                        {category[`description_${lang}` as keyof typeof category] as string || category.description_uz}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -507,13 +511,13 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   category.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
                 }`}>
-                  {category.is_active ? 'Faol' : 'Nofaol'}
+                  {category.is_active ? t.active : t.inactive}
                 </span>
 
                 <button
                   onClick={() => openAddSubcategoryModal(category.id!)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                  title="Subcategoriya qo'shish"
+                  title={t.newSubcategory}
                 >
                   <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -523,7 +527,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                 <button
                   onClick={() => openEditCategoryModal(category)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                  title="Tahrirlash"
+                  title={t.edit}
                 >
                   <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -533,7 +537,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                 <button
                   onClick={() => handleDeleteCategory(category.id!)}
                   className="p-2 hover:bg-red-50 rounded-lg transition-colors"
-                  title="O'chirish"
+                  title={t.delete}
                 >
                   <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -545,14 +549,16 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
             {/* Subcategories */}
             {expandedCategories.has(category.id!) && (
               <div className="border-t border-gray-200 p-4 bg-gray-50">
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Subcategoriyalar</h4>
+                <h4 className="text-sm font-medium text-gray-700 mb-3">{t.subcategories}</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                   {subcategories[category.id!]?.map((subcat) => (
                     <div
                       key={subcat.id}
                       className="flex items-center justify-between bg-white rounded-lg p-3 border border-gray-200"
                     >
-                      <span className="text-sm text-gray-700">{subcat.name_uz}</span>
+                      <span className="text-sm text-gray-700">
+                        {subcat[`name_${lang}` as keyof typeof subcat] as string || subcat.name_uz}
+                      </span>
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => openEditSubcategoryModal(subcat)}
@@ -575,7 +581,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                   ))}
                 </div>
                 {(!subcategories[category.id!] || subcategories[category.id!].length === 0) && (
-                  <p className="text-sm text-gray-500">Subcategoriyalar yo'q</p>
+                  <p className="text-sm text-gray-500">{t.noSubcategories}</p>
                 )}
               </div>
             )}
@@ -593,7 +599,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
             <div className="sticky top-0 bg-white border-b border-gray-200 p-6 z-10">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-gray-800">
-                  {editingCategory ? 'Kategoriyani tahrirlash' : 'Yangi kategoriya'}
+                  {editingCategory ? t.editCategory : t.newCategory}
                 </h3>
                 <div className="flex items-center gap-2">
                   <button
@@ -609,14 +615,14 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span className="hidden sm:inline">Tarjima...</span>
+                        <span className="hidden sm:inline">{t.translating}</span>
                       </>
                     ) : (
                       <>
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                         </svg>
-                        <span className="hidden sm:inline">AI Tarjima</span>
+                        <span className="hidden sm:inline">{t.aiTranslate}</span>
                       </>
                     )}
                   </button>
@@ -654,7 +660,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
               {activeTab === 'uz' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Ikonka
+                    {t.icon}
                   </label>
                   <div className="flex items-center gap-4">
                     {/* Icon Preview */}
@@ -675,7 +681,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                           <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                           </svg>
-                          <span className="text-sm font-medium text-gray-700">Ikonka yuklash</span>
+                          <span className="text-sm font-medium text-gray-700">{t.uploadIcon}</span>
                         </div>
                         <input
                           type="file"
@@ -684,7 +690,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                           className="hidden"
                         />
                       </label>
-                      <p className="text-xs text-gray-500 mt-1">PNG, JPG, SVG formatlar qo'llab-quvvatlanadi</p>
+                      <p className="text-xs text-gray-500 mt-1">{t.supportedFormats}</p>
                     </div>
 
                     {/* Remove Icon Button */}
@@ -710,28 +716,28 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
               {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nomi ({activeTab.toUpperCase()})
+                  {t.name} ({activeTab.toUpperCase()})
                 </label>
                 <input
                   type="text"
                   value={categoryFormData[`name_${activeTab}` as keyof typeof categoryFormData] as string}
                   onChange={(e) => setCategoryFormData({ ...categoryFormData, [`name_${activeTab}`]: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  placeholder={`Kategoriya nomi (${activeTab})`}
+                  placeholder={`${t.category} (${activeTab})`}
                 />
               </div>
 
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tavsif ({activeTab.toUpperCase()})
+                  {t.description} ({activeTab.toUpperCase()})
                 </label>
                 <textarea
                   value={categoryFormData[`description_${activeTab}` as keyof typeof categoryFormData] as string}
                   onChange={(e) => setCategoryFormData({ ...categoryFormData, [`description_${activeTab}`]: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
                   rows={3}
-                  placeholder={`Tavsif (${activeTab})`}
+                  placeholder={`${t.description} (${activeTab})`}
                 />
               </div>
 
@@ -740,7 +746,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Tartib
+                      {t.order}
                     </label>
                     <input
                       type="number"
@@ -759,7 +765,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                       className="w-5 h-5 text-primary-500 rounded focus:ring-2 focus:ring-primary-500"
                     />
                     <label htmlFor="is_active" className="text-sm font-medium text-gray-700">
-                      Faol
+                      {t.active}
                     </label>
                   </div>
                 </>
@@ -771,13 +777,13 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                 onClick={() => setShowCategoryModal(false)}
                 className="px-6 py-3 border border-gray-300 rounded-xl font-medium text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                Bekor qilish
+                {t.cancel}
               </button>
               <button
                 onClick={handleSaveCategory}
                 className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-xl font-medium hover:shadow-lg transition-all"
               >
-                Saqlash
+                {t.save}
               </button>
             </div>
           </div>
@@ -794,7 +800,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
             <div className="border-b border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-gray-800">
-                  {editingSubcategory ? 'Subcategoriyani tahrirlash' : 'Yangi subcategoriya'}
+                  {editingSubcategory ? t.editSubcategory : t.newSubcategory}
                 </h3>
                 <div className="flex items-center gap-2">
                   <button
@@ -810,14 +816,14 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span className="hidden sm:inline">Tarjima...</span>
+                        <span className="hidden sm:inline">{t.translating}</span>
                       </>
                     ) : (
                       <>
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                         </svg>
-                        <span className="hidden sm:inline">AI Tarjima</span>
+                        <span className="hidden sm:inline">{t.aiTranslate}</span>
                       </>
                     )}
                   </button>
@@ -853,14 +859,14 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
             <div className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nomi ({activeTab.toUpperCase()})
+                  {t.name} ({activeTab.toUpperCase()})
                 </label>
                 <input
                   type="text"
                   value={subcategoryFormData[`name_${activeTab}` as keyof typeof subcategoryFormData] as string}
                   onChange={(e) => setSubcategoryFormData({ ...subcategoryFormData, [`name_${activeTab}`]: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  placeholder={`Subcategoriya nomi (${activeTab})`}
+                  placeholder={`${t.subcategory} (${activeTab})`}
                 />
               </div>
 
@@ -868,7 +874,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Tartib
+                      {t.order}
                     </label>
                     <input
                       type="number"
@@ -887,7 +893,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                       className="w-5 h-5 text-primary-500 rounded focus:ring-2 focus:ring-primary-500"
                     />
                     <label htmlFor="subcat_active" className="text-sm font-medium text-gray-700">
-                      Faol
+                      {t.active}
                     </label>
                   </div>
                 </>
@@ -899,13 +905,13 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                 onClick={() => setShowSubcategoryModal(false)}
                 className="px-6 py-3 border border-gray-300 rounded-xl font-medium text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                Bekor qilish
+                {t.cancel}
               </button>
               <button
                 onClick={handleSaveSubcategory}
                 className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-xl font-medium hover:shadow-lg transition-all"
               >
-                Saqlash
+                {t.save}
               </button>
             </div>
           </div>

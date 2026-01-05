@@ -309,7 +309,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
         <div>
           <h1 className="text-xl font-bold text-gray-900 dark:text-white">{t.users}</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Ro'yxatdan o'tgan foydalanuvchilarni boshqaring
+            {t.manageUsers}
           </p>
         </div>
         <button
@@ -319,7 +319,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          Yangilash
+          {t.refresh}
         </button>
       </div>
 
@@ -332,7 +332,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalUsers}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Jami foydalanuvchilar</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{t.totalUsersLabel}</p>
             </div>
           </div>
         </div>
@@ -345,7 +345,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{activeUsers}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Faol foydalanuvchilar</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{t.activeUsersLabel}</p>
             </div>
           </div>
         </div>
@@ -358,7 +358,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{regularUsers}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Oddiy foydalanuvchilar</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{t.regularUsersLabel}</p>
             </div>
           </div>
         </div>
@@ -371,7 +371,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{sellerUsers}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Sotuvchilar</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{t.sellersLabel}</p>
             </div>
           </div>
         </div>
@@ -381,31 +381,31 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
       <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
         <div className="flex flex-wrap gap-3">
           <div className="flex items-center gap-2">
-            <label className="text-sm text-gray-600 dark:text-gray-400">Rol:</label>
+            <label className="text-sm text-gray-600 dark:text-gray-400">{t.role}:</label>
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
               className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 border-0 rounded-lg text-sm dark:text-white focus:ring-2 focus:ring-[#00a6a6]"
             >
-              <option value="all">Barchasi</option>
-              <option value="user">Foydalanuvchi</option>
-              <option value="seller">Sotuvchi</option>
+              <option value="all">{t.allRoles}</option>
+              <option value="user">{t.userRole}</option>
+              <option value="seller">{t.sellerRole}</option>
             </select>
           </div>
           <div className="flex items-center gap-2">
-            <label className="text-sm text-gray-600 dark:text-gray-400">Holat:</label>
+            <label className="text-sm text-gray-600 dark:text-gray-400">{t.status}:</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 border-0 rounded-lg text-sm dark:text-white focus:ring-2 focus:ring-[#00a6a6]"
             >
-              <option value="all">Barchasi</option>
-              <option value="active">Faol</option>
-              <option value="inactive">Nofaol</option>
+              <option value="all">{t.allRoles}</option>
+              <option value="active">{t.active}</option>
+              <option value="inactive">{t.inactive}</option>
             </select>
           </div>
           <div className="ml-auto text-sm text-gray-500 dark:text-gray-400">
-            {filteredUsers.length} ta foydalanuvchi
+            {filteredUsers.length} {t.usersFound}
           </div>
         </div>
       </div>
@@ -424,22 +424,22 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
             <thead className="bg-gray-50 dark:bg-gray-700/50">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Foydalanuvchi
+                  {t.users}
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Telefon
+                  {t.phoneLabel}
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Rol
+                  {t.role}
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Holat
+                  {t.status}
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Ro'yxatdan o'tgan
+                  {t.registeredDate}
                 </th>
                 <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Amallar
+                  {t.actions}
                 </th>
               </tr>
             </thead>
@@ -447,7 +447,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
               {filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                    Foydalanuvchilar topilmadi
+                    {t.noUsersFound}
                   </td>
                 </tr>
               ) : (

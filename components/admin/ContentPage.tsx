@@ -11,10 +11,10 @@ import { translateApi } from '@/lib/api/translate'
 type TabType = 'news' | 'banners' | 'notifications'
 
 interface ContentPageProps {
-  translations: Translations
+  t: Translations
 }
 
-export default function ContentPage({ translations }: ContentPageProps) {
+export default function ContentPage({ t }: ContentPageProps) {
   const [activeTab, setActiveTab] = useState<TabType>('news')
   const [news, setNews] = useState<NewsData[]>([])
   const [banners, setBanners] = useState<BannerData[]>([])
@@ -54,7 +54,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
     }
 
     if (!sourceLang) {
-      alert('Iltimos, avval biror tilda sarlavha kiriting')
+      alert(t.pleaseEnterName)
       return
     }
 
@@ -107,10 +107,10 @@ export default function ContentPage({ translations }: ContentPageProps) {
       }
 
       setFormData(newFormData)
-      alert('Tarjima muvaffaqiyatli amalga oshirildi!')
+      alert(t.translationSuccess)
     } catch (err) {
       console.error('Translation error:', err)
-      alert(err instanceof Error ? err.message : 'Tarjima qilishda xatolik yuz berdi')
+      alert(err instanceof Error ? err.message : t.translationError)
     } finally {
       setIsTranslating(false)
     }
@@ -134,7 +134,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
       setBanners(bannersData)
       setNotifications(notificationsData)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ma\'lumotlarni yuklashda xatolik')
+      setError(err instanceof Error ? err.message : t.userLoadError)
     } finally {
       setLoading(false)
     }
@@ -247,14 +247,14 @@ export default function ContentPage({ translations }: ContentPageProps) {
       setShowModal(false)
       fetchAllData()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Saqlashda xatolik')
+      setError(err instanceof Error ? err.message : t.translationError)
     } finally {
       setSaving(false)
     }
   }
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Rostdan ham o\'chirmoqchimisiz?')) return
+    if (!confirm(t.deleteConfirm)) return
 
     try {
       const token = getToken()
@@ -267,7 +267,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
       }
       fetchAllData()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'O\'chirishda xatolik')
+      setError(err instanceof Error ? err.message : t.userDeleteError)
     }
   }
 
@@ -281,10 +281,10 @@ export default function ContentPage({ translations }: ContentPageProps) {
 
   const getTargetLabel = (target: TargetAudience) => {
     const labels: Record<TargetAudience, string> = {
-      all: 'Hammaga',
-      users: 'Foydalanuvchilar',
-      sellers: 'Sotuvchilar',
-      admins: 'Adminlar'
+      all: t.toAll,
+      users: t.toUsers,
+      sellers: t.toSellers,
+      admins: t.toAdmins
     }
     return labels[target] || target
   }
@@ -292,11 +292,11 @@ export default function ContentPage({ translations }: ContentPageProps) {
   const getStatusBadge = (status: ContentStatus) => {
     return status === 'active' ? (
       <span className="px-2 py-1 text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full">
-        Faol
+        {t.active}
       </span>
     ) : (
       <span className="px-2 py-1 text-xs bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 rounded-full">
-        Nofaol
+        {t.inactive}
       </span>
     )
   }
@@ -335,7 +335,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Kontent</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t.content}</h1>
         <button
           onClick={openAddModal}
           className="flex items-center gap-2 px-4 py-2 bg-[#33ccff] hover:bg-[#00bfff] text-white rounded-lg transition-colors"
@@ -343,7 +343,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          Yangi qo'shish
+          {t.addNew}
         </button>
       </div>
 
@@ -364,7 +364,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
-          Yangiliklar ({news.length})
+          {t.news} ({news.length})
         </button>
         <button
           onClick={() => setActiveTab('banners')}
@@ -374,7 +374,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
-          Bannerlar ({banners.length})
+          {t.banners} ({banners.length})
         </button>
         <button
           onClick={() => setActiveTab('notifications')}
@@ -384,7 +384,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
-          Xabarnomalar ({notifications.length})
+          {t.notifications} ({notifications.length})
         </button>
       </div>
 
@@ -394,12 +394,12 @@ export default function ContentPage({ translations }: ContentPageProps) {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Sarlavha</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Tillar</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Kimga</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Ko'rishlar</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Amallar</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.title}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.languages}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.audience}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.status}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.views}</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.actions}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -456,7 +456,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
               {news.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
-                    Yangiliklar topilmadi
+                    {t.noNews}
                   </td>
                 </tr>
               )}
@@ -535,7 +535,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                   {getStatusBadge(banner.status || 'active')}
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">
-                  {banner.description_uz || 'Tavsif yo\'q'}
+                  {banner.description_uz || t.noDescription}
                 </p>
                 {(banner as any).project_id && (
                   <div className="flex items-center gap-1 mb-2">
@@ -576,7 +576,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
           ))}
           {banners.length === 0 && (
             <div className="col-span-full text-center py-12 text-gray-500 dark:text-gray-400">
-              Bannerlar topilmadi
+              {t.noBanners}
             </div>
           )}
         </div>
@@ -587,12 +587,12 @@ export default function ContentPage({ translations }: ContentPageProps) {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Xabar</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Tillar</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Kimga</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Sana</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Amallar</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.notification}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.languages}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.audience}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.date}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.status}</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.actions}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -652,7 +652,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
               {notifications.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
-                    Xabarnomalar topilmadi
+                    {t.noNotificationsContent}
                   </td>
                 </tr>
               )}
@@ -703,7 +703,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
           >
             <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {editingItem ? 'Tahrirlash' : 'Yangi qo\'shish'}
+                {editingItem ? t.edit : t.addNew}
               </h2>
               <button
                 type="button"
@@ -718,14 +718,14 @@ export default function ContentPage({ translations }: ContentPageProps) {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <span>Tarjima...</span>
+                    <span>{t.translating}</span>
                   </>
                 ) : (
                   <>
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
-                    <span>AI Tarjima</span>
+                    <span>{t.aiTranslate}</span>
                   </>
                 )}
               </button>
@@ -735,7 +735,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Sarlavha (UZ) *
+                    {t.titleUz} *
                   </label>
                   <input
                     type="text"
@@ -746,7 +746,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Sarlavha (RU)
+                    {t.titleRu}
                   </label>
                   <input
                     type="text"
@@ -757,7 +757,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Sarlavha (EN)
+                    {t.titleEn}
                   </label>
                   <input
                     type="text"
@@ -773,7 +773,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Matn (UZ) *
+                      {t.contentUz} *
                     </label>
                     <textarea
                       value={formData.content_uz || ''}
@@ -784,7 +784,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Matn (RU)
+                      {t.contentRu}
                     </label>
                     <textarea
                       value={formData.content_ru || ''}
@@ -795,7 +795,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Matn (EN)
+                      {t.contentEn}
                     </label>
                     <textarea
                       value={formData.content_en || ''}
@@ -812,7 +812,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Tavsif (UZ)
+                        {t.descUz}
                       </label>
                       <textarea
                         value={formData.description_uz || ''}
@@ -823,7 +823,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Tavsif (RU)
+                        {t.descRu}
                       </label>
                       <textarea
                         value={formData.description_ru || ''}
@@ -834,7 +834,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Tavsif (EN)
+                        {t.descEn}
                       </label>
                       <textarea
                         value={formData.description_en || ''}
@@ -847,19 +847,19 @@ export default function ContentPage({ translations }: ContentPageProps) {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Havola URL
+                        {t.linkUrl}
                       </label>
                       <input
                         type="url"
                         value={formData.link_url || ''}
                         onChange={(e) => setFormData({ ...formData, link_url: e.target.value })}
-                        placeholder="https://example.com yoki avtomatik"
+                        placeholder="https://example.com"
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#33ccff] focus:border-transparent"
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Tartib
+                        {t.order}
                       </label>
                       <input
                         type="number"
@@ -873,7 +873,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                   {/* Loyiha ID */}
                   <div className="bg-[#33ccff]/5 border border-[#33ccff]/20 rounded-lg p-4">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Loyiha ID (ixtiyoriy)
+                      {t.projectIdLabel}
                     </label>
                     <div className="flex gap-3">
                       <input
@@ -900,7 +900,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                       )}
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Loyiha ID kiritilganda banner bosilganda o'sha loyihaga o'tiladi
+                      {t.projectIdDesc}
                     </p>
                   </div>
                 </>
@@ -911,7 +911,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Xabar (UZ)
+                        {t.messageUz}
                       </label>
                       <textarea
                         value={formData.message_uz || ''}
@@ -922,7 +922,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Xabar (RU)
+                        {t.messageRu}
                       </label>
                       <textarea
                         value={formData.message_ru || ''}
@@ -933,7 +933,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Xabar (EN)
+                        {t.messageEn}
                       </label>
                       <textarea
                         value={formData.message_en || ''}
@@ -945,7 +945,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Rejali vaqt
+                      {t.scheduledTime}
                     </label>
                     <input
                       type="datetime-local"
@@ -961,7 +961,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
               {(activeTab === 'news' || activeTab === 'banners') && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Rasm
+                    {t.image}
                   </label>
                   <div className="flex items-center gap-4">
                     {imagePreview && (
@@ -996,7 +996,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
               {activeTab === 'banners' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Video/GIF (ixtiyoriy)
+                    {t.videoGif}
                   </label>
                   <div className="flex items-center gap-4">
                     {(videoPreview || formData.video_url) && (
@@ -1030,7 +1030,7 @@ export default function ContentPage({ translations }: ContentPageProps) {
                       className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-100 file:text-purple-600 hover:file:bg-purple-200 dark:file:bg-purple-900/30 dark:file:text-purple-400"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">MP4, WebM yoki GIF formatida (max 50MB)</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t.videoFormats}</p>
                 </div>
               )}
 
@@ -1038,17 +1038,17 @@ export default function ContentPage({ translations }: ContentPageProps) {
               {(activeTab === 'news' || activeTab === 'notifications') && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Kimga
+                    {t.audience}
                   </label>
                   <select
                     value={formData.target || 'all'}
                     onChange={(e) => setFormData({ ...formData, target: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#33ccff] focus:border-transparent"
                   >
-                    <option value="all">Hammaga</option>
-                    <option value="users">Foydalanuvchilar</option>
-                    <option value="sellers">Sotuvchilar</option>
-                    <option value="admins">Adminlar</option>
+                    <option value="all">{t.toAll}</option>
+                    <option value="users">{t.toUsers}</option>
+                    <option value="sellers">{t.toSellers}</option>
+                    <option value="admins">{t.toAdmins}</option>
                   </select>
                 </div>
               )}
@@ -1056,15 +1056,15 @@ export default function ContentPage({ translations }: ContentPageProps) {
               {/* Status */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Status
+                  {t.status}
                 </label>
                 <select
                   value={formData.status || 'active'}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#33ccff] focus:border-transparent"
                 >
-                  <option value="active">Faol</option>
-                  <option value="inactive">Nofaol</option>
+                  <option value="active">{t.active}</option>
+                  <option value="inactive">{t.inactive}</option>
                 </select>
               </div>
             </div>
@@ -1073,14 +1073,14 @@ export default function ContentPage({ translations }: ContentPageProps) {
                 onClick={() => setShowModal(false)}
                 className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
               >
-                Bekor qilish
+                {t.cancel}
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
                 className="px-4 py-2 bg-[#33ccff] hover:bg-[#00bfff] text-white rounded-lg transition-colors disabled:opacity-50"
               >
-                {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+                {saving ? t.saving : t.save}
               </button>
             </div>
           </div>

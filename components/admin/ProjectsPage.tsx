@@ -80,6 +80,12 @@ function ProjectImageCarousel({ images }: { images: string[] }) {
   )
 }
 
+interface FeatureItem {
+  uz: string
+  ru: string
+  en: string
+}
+
 interface Project {
   id: number
   name: string
@@ -97,13 +103,48 @@ interface Project {
   favorites: number
   status: 'active' | 'inactive'
   color: string
-  features: string[]
+  features: (string | FeatureItem)[]  // Can be old format (string[]) or new format ({uz,ru,en}[])
   integrations: string[]
   createdAt: string
   image_url?: string
   video_url?: string
   videos?: string[]
   images?: string[]
+}
+
+// Helper function to convert features from any format to new format
+const normalizeFeatures = (features: (string | FeatureItem)[]): FeatureItem[] => {
+  if (!features || !Array.isArray(features)) return []
+  return features.map(f => {
+    if (typeof f === 'string') {
+      // Old format - string only, assume it's Uzbek
+      return { uz: f, ru: '', en: '' }
+    }
+    // New format - already has uz, ru, en
+    return { uz: f.uz || '', ru: f.ru || '', en: f.en || '' }
+  })
+}
+
+// Helper function to get localized project name based on selected language
+const getLocalizedName = (project: Project, lang: string): string => {
+  if (lang === 'ru') return project.name_ru || project.name_uz || project.name
+  if (lang === 'en') return project.name_en || project.name_uz || project.name
+  return project.name_uz || project.name
+}
+
+// Helper function to get localized project description based on selected language
+const getLocalizedDescription = (project: Project, lang: string): string => {
+  if (lang === 'ru') return project.description_ru || project.description_uz || project.description
+  if (lang === 'en') return project.description_en || project.description_uz || project.description
+  return project.description_uz || project.description
+}
+
+// Helper function to get localized feature based on selected language
+const getLocalizedFeature = (feature: string | FeatureItem, lang: string): string => {
+  if (typeof feature === 'string') return feature
+  if (lang === 'ru') return feature.ru || feature.uz || ''
+  if (lang === 'en') return feature.en || feature.uz || ''
+  return feature.uz || ''
 }
 
 interface ProjectsPageProps {
@@ -171,7 +212,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
     technologies: '',
     color: 'from-[#00a6a6] to-[#00a6a6]/80',
     status: 'active' as 'active' | 'inactive',
-    features: [] as string[],
+    features: [] as { uz: string; ru: string; en: string }[],
     integrations: [] as { name: string; enabled: boolean }[],
     integrationConfigs: {} as IntegrationConfig,
     isTop: false,
@@ -185,7 +226,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
     existingImages: [] as string[],
   })
   const [activeTab, setActiveTab] = useState<'uz' | 'ru' | 'en'>('uz')
-  const [newFeature, setNewFeature] = useState('')
+  const [newFeature, setNewFeature] = useState({ uz: '', ru: '', en: '' })
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [videoPreviews, setVideoPreviews] = useState<string[]>([])
   const [additionalImagePreviews, setAdditionalImagePreviews] = useState<string[]>([])
@@ -301,7 +342,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
     }
 
     if (!sourceLang) {
-      alert('Iltimos, avval biror tilda ma\'lumot kiriting')
+      alert(t.pleaseEnterName)
       return
     }
 
@@ -350,10 +391,24 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
         }
       }
 
-      alert('Tarjima muvaffaqiyatli amalga oshirildi!')
+      // Technologies tarjimasi
+      if (formData.technologies.trim()) {
+        const techResult = await translateApi.translate({
+          text: formData.technologies,
+          source_lang: sourceLang,
+          target_langs: targetLangs
+        }, token)
+
+        if (techResult.success) {
+          const translatedTech = techResult.translations[targetLangs[0]] || formData.technologies
+          setFormData(prev => ({ ...prev, technologies: translatedTech }))
+        }
+      }
+
+      alert(t.translationSuccess)
     } catch (err) {
       console.error('Translation error:', err)
-      alert(err instanceof Error ? err.message : 'Tarjima qilishda xatolik yuz berdi')
+      alert(err instanceof Error ? err.message : t.translationError)
     } finally {
       setIsTranslating(false)
     }
@@ -485,14 +540,112 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
   }
 
   const addFeature = () => {
-    if (newFeature.trim()) {
-      setFormData({ ...formData, features: [...formData.features, newFeature.trim()] })
-      setNewFeature('')
+    if (newFeature.uz.trim() || newFeature.ru.trim() || newFeature.en.trim()) {
+      setFormData({ ...formData, features: [...formData.features, { ...newFeature }] })
+      setNewFeature({ uz: '', ru: '', en: '' })
     }
   }
 
   const removeFeature = (index: number) => {
     setFormData({ ...formData, features: formData.features.filter((_, i) => i !== index) })
+  }
+
+  const updateFeature = (index: number, lang: 'uz' | 'ru' | 'en', value: string) => {
+    const updatedFeatures = [...formData.features]
+    updatedFeatures[index] = { ...updatedFeatures[index], [lang]: value }
+    setFormData({ ...formData, features: updatedFeatures })
+  }
+
+  // AI tarjima - faqat bitta feature uchun
+  const handleFeatureTranslate = async (index: number) => {
+    const feature = formData.features[index]
+
+    let sourceLang: 'uz' | 'ru' | 'en' | null = null
+    let sourceText = ''
+
+    if (feature.uz.trim()) {
+      sourceLang = 'uz'
+      sourceText = feature.uz
+    } else if (feature.ru.trim()) {
+      sourceLang = 'ru'
+      sourceText = feature.ru
+    } else if (feature.en.trim()) {
+      sourceLang = 'en'
+      sourceText = feature.en
+    }
+
+    if (!sourceLang) {
+      alert(t.pleaseEnterName)
+      return
+    }
+
+    const targetLangs = ['uz', 'ru', 'en'].filter(l => l !== sourceLang) as ('uz' | 'ru' | 'en')[]
+
+    try {
+      const result = await translateApi.translate({
+        text: sourceText,
+        source_lang: sourceLang,
+        target_langs: targetLangs
+      })
+
+      if (result.success) {
+        const updatedFeatures = [...formData.features]
+        targetLangs.forEach(lang => {
+          if (result.translations[lang]) {
+            updatedFeatures[index] = { ...updatedFeatures[index], [lang]: result.translations[lang] }
+          }
+        })
+        setFormData({ ...formData, features: updatedFeatures })
+      }
+    } catch (err) {
+      console.error('Feature translation error:', err)
+      alert(err instanceof Error ? err.message : t.translationError)
+    }
+  }
+
+  // AI tarjima - yangi feature uchun
+  const handleNewFeatureTranslate = async () => {
+    let sourceLang: 'uz' | 'ru' | 'en' | null = null
+    let sourceText = ''
+
+    if (newFeature.uz.trim()) {
+      sourceLang = 'uz'
+      sourceText = newFeature.uz
+    } else if (newFeature.ru.trim()) {
+      sourceLang = 'ru'
+      sourceText = newFeature.ru
+    } else if (newFeature.en.trim()) {
+      sourceLang = 'en'
+      sourceText = newFeature.en
+    }
+
+    if (!sourceLang) {
+      alert(t.pleaseEnterName)
+      return
+    }
+
+    const targetLangs = ['uz', 'ru', 'en'].filter(l => l !== sourceLang) as ('uz' | 'ru' | 'en')[]
+
+    try {
+      const result = await translateApi.translate({
+        text: sourceText,
+        source_lang: sourceLang,
+        target_langs: targetLangs
+      })
+
+      if (result.success) {
+        const updatedFeature = { ...newFeature }
+        targetLangs.forEach(lang => {
+          if (result.translations[lang]) {
+            updatedFeature[lang] = result.translations[lang]
+          }
+        })
+        setNewFeature(updatedFeature)
+      }
+    } catch (err) {
+      console.error('Feature translation error:', err)
+      alert(err instanceof Error ? err.message : t.translationError)
+    }
   }
 
   const openEditModal = (project: Project) => {
@@ -522,7 +675,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       technologies: project.technologies.join(', '),
       color: project.color,
       status: project.status,
-      features: project.features,
+      features: normalizeFeatures(project.features),
       integrations: availableIntegrations.map(i => ({
         name: i.name,
         enabled: project.integrations.includes(i.name)
@@ -586,7 +739,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       setSaving(true)
       const token = getToken()
       if (!token) {
-        alert('Please login first')
+        alert(t.pleaseReLogin)
         return
       }
 
@@ -649,7 +802,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
 
       // Check if it's an authentication error
       if (errorMessage.includes('Could not validate credentials') || errorMessage.includes('401')) {
-        alert('Sessiya muddati tugagan. Iltimos, qayta login qiling.')
+        alert(t.sessionExpired)
         // Clear cookies and redirect to login
         Cookies.remove('access_token')
         Cookies.remove('refresh_token')
@@ -663,11 +816,11 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
   }
 
   const deleteProject = async (id: number) => {
-    if (confirm("Loyihani o'chirishni tasdiqlaysizmi?")) {
+    if (confirm(t.deleteProjectConfirm)) {
       try {
         const token = getToken()
         if (!token) {
-          alert('Iltimos, avval tizimga kiring')
+          alert(t.pleaseReLogin)
           return
         }
 
@@ -677,16 +830,16 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
         setProjects(prev => prev.filter(p => p.id !== id))
       } catch (err) {
         console.error('Failed to delete project:', err)
-        const errorMessage = err instanceof Error ? err.message : "Loyihani o'chirishda xatolik"
+        const errorMessage = err instanceof Error ? err.message : t.errorLoadingProjects
 
         // Check for authentication/permission errors
         if (errorMessage.includes('Could not validate credentials') || errorMessage.includes('401')) {
-          alert('Sessiya muddati tugagan. Iltimos, qayta login qiling.')
+          alert(t.sessionExpired)
           Cookies.remove('access_token')
           Cookies.remove('refresh_token')
           window.location.reload()
         } else if (errorMessage.includes('Not enough permissions') || errorMessage.includes('403')) {
-          alert("Ruxsat yo'q. Admin huquqlari talab qilinadi.")
+          alert(t.noPermission)
         } else {
           alert(errorMessage)
         }
@@ -698,7 +851,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
     try {
       const token = getToken()
       if (!token) {
-        alert('Iltimos, avval tizimga kiring')
+        alert(t.pleaseReLogin)
         return
       }
 
@@ -714,15 +867,15 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       ))
     } catch (err) {
       console.error('Failed to toggle status:', err)
-      const errorMessage = err instanceof Error ? err.message : "Status o'zgartirishda xatolik"
+      const errorMessage = err instanceof Error ? err.message : t.statusChangeError2
 
       if (errorMessage.includes('Could not validate credentials') || errorMessage.includes('401')) {
-        alert('Sessiya muddati tugagan. Iltimos, qayta login qiling.')
+        alert(t.sessionExpired)
         Cookies.remove('access_token')
         Cookies.remove('refresh_token')
         window.location.reload()
       } else if (errorMessage.includes('Not enough permissions') || errorMessage.includes('403')) {
-        alert("Ruxsat yo'q. Admin huquqlari talab qilinadi.")
+        alert(t.noPermission)
       } else {
         alert(errorMessage)
       }
@@ -792,13 +945,13 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       {/* Error State */}
       {error && !loading && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 text-center">
-          <p className="text-red-600 dark:text-red-400 font-medium mb-2">Error loading projects</p>
+          <p className="text-red-600 dark:text-red-400 font-medium mb-2">{t.errorLoadingProjects}</p>
           <p className="text-red-500 dark:text-red-300 text-sm mb-4">{error}</p>
           <button
             onClick={fetchProjects}
             className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm"
           >
-            Try Again
+            {t.tryAgain}
           </button>
         </div>
       )}
@@ -806,8 +959,8 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       {/* Empty State */}
       {!loading && !error && filteredProjects.length === 0 && (
         <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-12 text-center">
-          <p className="text-gray-600 dark:text-gray-400 text-lg mb-2">No projects found</p>
-          <p className="text-gray-500 dark:text-gray-500 text-sm mb-4">Start by creating your first project</p>
+          <p className="text-gray-600 dark:text-gray-400 text-lg mb-2">{t.noProjectsFoundEmpty}</p>
+          <p className="text-gray-500 dark:text-gray-500 text-sm mb-4">{t.startByCreatingProject}</p>
           <button
             onClick={openAddModal}
             className="inline-flex items-center gap-2 px-4 py-2 bg-[#00a6a6] hover:bg-[#00a6a6]/90 text-white rounded-xl font-medium transition-all"
@@ -837,7 +990,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                   <svg className="w-12 h-12 text-gray-300 dark:text-gray-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Rasm yo'q</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t.noImage}</p>
                 </div>
               </div>
             )}
@@ -855,8 +1008,8 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                 </span>
               </div>
 
-              <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white mb-1">{project.name}</h3>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">{project.description}</p>
+              <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white mb-1">{getLocalizedName(project, lang)}</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">{getLocalizedDescription(project, lang)}</p>
 
               <div className="flex items-center gap-1.5 mb-2 flex-wrap">
                 <span className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded">
@@ -940,7 +1093,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                   />
                   {allImages.length > 1 && (
                     <div className="absolute bottom-2 right-2 px-2 py-1 bg-black/50 text-white text-xs rounded-lg">
-                      +{allImages.length - 1} rasm
+                      +{allImages.length - 1} {t.moreImages}
                     </div>
                   )}
                   <div className="absolute top-2 left-2 flex gap-2">
@@ -949,7 +1102,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                         ? 'bg-green-500 text-white'
                         : 'bg-gray-500 text-white'
                     }`}>
-                      {viewProject.status === 'active' ? 'Faol' : 'Nofaol'}
+                      {viewProject.status === 'active' ? t.active : t.inactive}
                     </span>
                   </div>
                 </div>
@@ -963,7 +1116,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                     <span className="text-sm font-mono font-bold text-[#00a6a6]">ID: {viewProject.id}</span>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white truncate">{viewProject.name}</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white truncate">{getLocalizedName(viewProject, lang)}</h2>
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{viewProject.category} / {viewProject.subcategory}</p>
                   </div>
                 </div>
@@ -979,22 +1132,22 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
               {/* Multi-language names */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">O'zbekcha</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t.uzLang}</p>
                   <p className="text-sm font-medium text-gray-900 dark:text-white">{viewProject.name_uz || viewProject.name}</p>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Ruscha</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t.ruLang}</p>
                   <p className="text-sm font-medium text-gray-900 dark:text-white">{viewProject.name_ru || '-'}</p>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Inglizcha</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t.enLang}</p>
                   <p className="text-sm font-medium text-gray-900 dark:text-white">{viewProject.name_en || '-'}</p>
                 </div>
               </div>
 
               <div>
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t.description}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">{viewProject.description}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">{getLocalizedDescription(viewProject, lang)}</p>
               </div>
 
               <div>
@@ -1013,10 +1166,10 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                   <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t.features}</h3>
                   <ul className="space-y-2">
                     {viewProject.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <span className="text-green-500">{Icons.check}</span>
-                        <span className="text-sm">{feature}</span>
-                      </li>
+                        <li key={idx} className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                          <span className="text-green-500">{Icons.check}</span>
+                          <span className="text-sm">{getLocalizedFeature(feature, lang)}</span>
+                        </li>
                     ))}
                   </ul>
                 </div>
@@ -1041,7 +1194,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">{viewProject.views.toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Sevimlilar</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">{t.favorites}</p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">{viewProject.favorites}</p>
                 </div>
               </div>
@@ -1053,14 +1206,14 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                   className="flex-1 px-4 py-2.5 bg-[#00a6a6] hover:bg-[#00a6a6]/90 text-white rounded-xl font-medium transition-all flex items-center justify-center gap-2"
                 >
                   {Icons.edit}
-                  <span>Tahrirlash</span>
+                  <span>{t.edit}</span>
                 </button>
                 <button
                   onClick={() => { closeViewModal(); deleteProject(viewProject.id); }}
                   className="px-4 py-2.5 bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-700 dark:text-red-400 rounded-xl font-medium transition-all flex items-center justify-center gap-2"
                 >
                   {Icons.trash}
-                  <span>O'chirish</span>
+                  <span>{t.delete}</span>
                 </button>
               </div>
             </div>
@@ -1106,7 +1259,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
               {/* Rasm yuklash */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Loyiha rasmi
+                  {t.projectImage}
                 </label>
                 <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-6 text-center hover:border-[#00a6a6] transition-colors">
                   <input
@@ -1121,18 +1274,18 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                       <img src={imagePreview} alt="Preview" className="w-32 h-32 object-cover mx-auto rounded-lg" />
                       <div className="flex items-center justify-center gap-2 mt-2">
                         <label htmlFor="image-upload" className="cursor-pointer px-3 py-1 bg-[#00a6a6] text-white text-xs rounded-lg hover:bg-[#008f8f]">
-                          O'zgartirish
+                          {t.changeImage}
                         </label>
                         <button
                           type="button"
                           onClick={removeExistingMainImage}
                           className="px-3 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600"
                         >
-                          O'chirish
+                          {t.deleteImage}
                         </button>
                       </div>
                       {formData.existingImage && !formData.image && (
-                        <p className="text-xs text-green-600 dark:text-green-400 mt-1">Mavjud rasm</p>
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-1">{t.existingImage}</p>
                       )}
                     </div>
                   ) : (
@@ -1141,8 +1294,8 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                         <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto">
                           {Icons.image}
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Rasmni bu yerga tashlang yoki bosing</p>
-                        <p className="text-xs text-gray-500">PNG, JPG, WEBP (max 5MB)</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{t.dropImageHere}</p>
+                        <p className="text-xs text-gray-500">{t.imageFormats}</p>
                       </div>
                     </label>
                   )}
@@ -1153,7 +1306,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
               {/* Video yuklash */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Loyiha videolari (cheksiz)
+                  {t.projectVideos}
                 </label>
                 <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 text-center hover:border-[#00a6a6] transition-colors cursor-pointer">
                   <input
@@ -1171,8 +1324,8 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Video qo'shish</p>
-                      <p className="text-xs text-gray-500">MP4, WebM</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{t.addVideo}</p>
+                      <p className="text-xs text-gray-500">{t.videoFormatsShort}</p>
                     </div>
                   </label>
                 </div>
@@ -1200,7 +1353,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                           </button>
                           {isExisting && (
                             <span className="absolute bottom-3 left-3 px-2 py-1 bg-green-500 text-white text-xs font-medium rounded-lg shadow">
-                              Mavjud
+                              {t.existing}
                             </span>
                           )}
                         </div>
@@ -1213,7 +1366,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
               {/* Qo'shimcha rasmlar */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Qo'shimcha rasmlar (cheksiz)
+                  {t.additionalImages}
                 </label>
                 <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 hover:border-[#00a6a6] transition-colors">
                   <input
@@ -1229,7 +1382,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
-                      <span className="text-sm">Rasm qo'shish</span>
+                      <span className="text-sm">{t.addImage}</span>
                     </div>
                   </label>
                 </div>
@@ -1251,7 +1404,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                           </button>
                           {isExisting && (
                             <span className="absolute bottom-0.5 left-0.5 px-1 py-0.5 bg-green-500 text-white text-[8px] rounded">
-                              Mavjud
+                              {t.existing}
                             </span>
                           )}
                         </div>
@@ -1317,7 +1470,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                   placeholder="React, Node.js, MongoDB..."
                   className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6]"
                 />
-                <p className="text-xs text-gray-500 mt-1">Vergul bilan ajrating</p>
+                <p className="text-xs text-gray-500 mt-1">{t.separateWithComma}</p>
               </div>
 
               {/* Izoh - Multi-language */}
@@ -1334,40 +1487,109 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                 />
               </div>
 
-              {/* Imkoniyatlar */}
+              {/* Imkoniyatlar - 3 tilli */}
               <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-green-600 dark:text-green-400">{Icons.check}</span>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Imkoniyatlar</h3>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-600 dark:text-green-400">{Icons.check}</span>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">{t.featuresList}</h3>
+                  </div>
                 </div>
-                <div className="space-y-2">
+
+                {/* Yangi feature qo'shish - 3 ustun */}
+                <div className="space-y-3">
+                  {/* Sarlavhalar */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400 text-center">UZ</span>
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400 text-center">RU</span>
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400 text-center">EN</span>
+                  </div>
+
+                  {/* Yangi feature inputlari */}
                   <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={newFeature}
-                      onChange={(e) => setNewFeature(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
-                      placeholder="Masalan: 24/7 qo'llab quvvatlash"
-                      className="flex-1 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-green-500"
-                    />
+                    <div className="flex-1 grid grid-cols-3 gap-2">
+                      <input
+                        type="text"
+                        value={newFeature.uz}
+                        onChange={(e) => setNewFeature({ ...newFeature, uz: e.target.value })}
+                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+                        placeholder="O'zbekcha"
+                        className="px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                      <input
+                        type="text"
+                        value={newFeature.ru}
+                        onChange={(e) => setNewFeature({ ...newFeature, ru: e.target.value })}
+                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+                        placeholder="Русский"
+                        className="px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                      <input
+                        type="text"
+                        value={newFeature.en}
+                        onChange={(e) => setNewFeature({ ...newFeature, en: e.target.value })}
+                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+                        placeholder="English"
+                        className="px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleNewFeatureTranslate}
+                      title={t.aiTranslate}
+                      className="px-3 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm font-medium transition-colors"
+                    >
+                      {Icons.sparkles}
+                    </button>
                     <button
                       type="button"
                       onClick={addFeature}
-                      className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors"
+                      className="px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors"
                     >
                       {Icons.plus}
                     </button>
                   </div>
+
+                  {/* Mavjud features ro'yxati */}
                   {formData.features.length > 0 && (
-                    <div className="space-y-1.5 mt-3">
+                    <div className="space-y-2 mt-3">
                       {formData.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center gap-2 bg-white dark:bg-gray-800 px-3 py-2 rounded-lg">
-                          <span className="text-green-500">{Icons.check}</span>
-                          <span className="flex-1 text-sm text-gray-700 dark:text-gray-300">{feature}</span>
+                        <div key={idx} className="flex gap-2 bg-white dark:bg-gray-800 p-2 rounded-lg">
+                          <div className="flex-1 grid grid-cols-3 gap-2">
+                            <input
+                              type="text"
+                              value={feature.uz}
+                              onChange={(e) => updateFeature(idx, 'uz', e.target.value)}
+                              placeholder="O'zbekcha"
+                              className="px-2 py-1.5 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-sm outline-none focus:ring-1 focus:ring-green-500"
+                            />
+                            <input
+                              type="text"
+                              value={feature.ru}
+                              onChange={(e) => updateFeature(idx, 'ru', e.target.value)}
+                              placeholder="Русский"
+                              className="px-2 py-1.5 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-sm outline-none focus:ring-1 focus:ring-green-500"
+                            />
+                            <input
+                              type="text"
+                              value={feature.en}
+                              onChange={(e) => updateFeature(idx, 'en', e.target.value)}
+                              placeholder="English"
+                              className="px-2 py-1.5 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-sm outline-none focus:ring-1 focus:ring-green-500"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleFeatureTranslate(idx)}
+                            title={t.aiTranslate}
+                            className="p-1.5 text-purple-500 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded"
+                          >
+                            {Icons.sparkles}
+                          </button>
                           <button
                             type="button"
                             onClick={() => removeFeature(idx)}
-                            className="text-red-500 hover:text-red-600 p-1"
+                            className="p-1.5 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded"
                           >
                             {Icons.trash}
                           </button>
@@ -1389,7 +1611,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                     onChange={(e) => setFormData({ ...formData, category: e.target.value, subcategory: '' })}
                     className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6]"
                   >
-                    <option value="">Tanlang</option>
+                    <option value="">{t.select}</option>
                     {categories.map(cat => (
                       <option key={cat.id} value={cat.name_uz}>
                         {lang === 'uz' ? cat.name_uz : lang === 'ru' ? (cat.name_ru || cat.name_uz) : (cat.name_en || cat.name_uz)}
@@ -1400,14 +1622,14 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Subkategoriya *
+                    {t.subcategory} *
                   </label>
                   <select
                     value={formData.subcategory}
                     onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
                     className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6]"
                   >
-                    <option value="">Tanlang</option>
+                    <option value="">{t.select}</option>
                     {formData.category && (() => {
                       const selectedCat = categories.find(c => c.name_uz === formData.category)
                       if (selectedCat && subcategoriesMap[selectedCat.id!]) {
@@ -1427,7 +1649,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-blue-600 dark:text-blue-400">{Icons.globe}</span>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Integratsiyalar</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">{t.integrationsSection}</h3>
                 </div>
                 <div className="space-y-3">
                   {formData.integrations.map((integration, idx) => {
@@ -1469,7 +1691,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                           </div>
                           {integration.enabled && (
                             <span className="px-2 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs rounded-full">
-                              Faol
+                              {t.active}
                             </span>
                           )}
                         </label>
@@ -1513,7 +1735,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Webhook URL (ixtiyoriy)</label>
+                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{t.webhookOptional}</label>
                                   <input
                                     type="text"
                                     value={formData.integrationConfigs.telegram?.webhook_url || ''}
@@ -1567,7 +1789,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Secret Key (ixtiyoriy)</label>
+                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{t.secretKeyOptional}</label>
                                   <input
                                     type="password"
                                     value={formData.integrationConfigs.api?.secret_key || ''}
@@ -1589,7 +1811,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                             {integrationId === 'phone' && (
                               <>
                                 <div>
-                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Telefon raqami *</label>
+                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{t.phoneNumber2} *</label>
                                   <input
                                     type="tel"
                                     value={formData.integrationConfigs.phone?.phone_number || ''}
@@ -1633,7 +1855,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                                       })}
                                       className="w-4 h-4 rounded border-gray-300 text-green-500 focus:ring-green-500"
                                     />
-                                    <span className="text-sm text-gray-700 dark:text-gray-300">Qo'ng'iroq</span>
+                                    <span className="text-sm text-gray-700 dark:text-gray-300">{t.call}</span>
                                   </label>
                                 </div>
                               </>
@@ -1643,7 +1865,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                             {integrationId === 'payment' && (
                               <>
                                 <div>
-                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">To'lov tizimi *</label>
+                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{t.paymentSystem} *</label>
                                   <select
                                     value={formData.integrationConfigs.payment?.provider || 'payme'}
                                     onChange={(e) => setFormData({
@@ -1706,7 +1928,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                                     })}
                                     className="w-4 h-4 rounded border-gray-300 text-yellow-500 focus:ring-yellow-500"
                                   />
-                                  <span className="text-sm text-gray-700 dark:text-gray-300">Test rejimi</span>
+                                  <span className="text-sm text-gray-700 dark:text-gray-300">{t.testMode}</span>
                                 </label>
                               </>
                             )}
@@ -1715,7 +1937,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                             {integrationId === 'sms' && (
                               <>
                                 <div>
-                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">SMS provayder *</label>
+                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{t.smsProvider} *</label>
                                   <select
                                     value={formData.integrationConfigs.sms?.provider || 'eskiz'}
                                     onChange={(e) => setFormData({
@@ -1749,7 +1971,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Jo'natuvchi nomi *</label>
+                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{t.senderName} *</label>
                                   <input
                                     type="text"
                                     value={formData.integrationConfigs.sms?.sender_name || ''}
@@ -1837,7 +2059,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Jo'natuvchi Email *</label>
+                                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{t.senderEmail} *</label>
                                   <input
                                     type="email"
                                     value={formData.integrationConfigs.email?.from_email || ''}
@@ -1866,7 +2088,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
               <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-amber-600 dark:text-amber-400">{Icons.settings}</span>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Marketplace sozlamalari</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">{t.marketplaceSettings}</h3>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -1879,7 +2101,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="px-1.5 py-0.5 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded text-xs font-medium">TOP</span>
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Eng yaxshi</span>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t.topBest}</span>
                       </div>
                     </div>
                   </label>
@@ -1893,7 +2115,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="px-1.5 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded text-xs font-medium">NEW</span>
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Yangi</span>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t.newLabel}</span>
                       </div>
                     </div>
                   </label>
@@ -1928,7 +2150,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                   disabled={saving}
                   className="w-full sm:flex-1 px-4 py-2.5 bg-[#00a6a6] hover:bg-[#00a6a6]/90 text-white rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {saving ? 'Saqlanmoqda...' : t.save}
+                  {saving ? t.savingProject : t.save}
                 </button>
               </div>
             </div>

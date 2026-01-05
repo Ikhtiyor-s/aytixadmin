@@ -207,7 +207,7 @@ export default function AdminPanel() {
 
             <button className="p-2 sm:p-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl relative text-gray-500 hidden sm:block">
               {Icons.bell}
-              <span className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">
+              <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] flex items-center justify-center">
                 0
               </span>
             </button>
@@ -218,9 +218,8 @@ export default function AdminPanel() {
                 onClick={() => setShowLangDropdown(!showLangDropdown)}
                 className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl text-gray-600 dark:text-gray-300"
               >
-                <span className="text-lg">{currentLang?.flag}</span>
-                <span className="text-sm font-medium hidden sm:block">{currentLang?.label}</span>
-                <svg className="w-4 h-4 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span className="text-sm font-bold text-[#00a6a6]">{currentLang?.label}</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
@@ -240,7 +239,7 @@ export default function AdminPanel() {
                           lang === l.id ? 'bg-[#00a6a6]/10 dark:bg-[#00a6a6]/20 text-[#00a6a6]' : 'text-gray-700 dark:text-gray-300'
                         }`}
                       >
-                        <span className="text-lg">{l.flag}</span>
+                        <span className="text-sm font-bold w-6">{l.label}</span>
                         <span className="text-sm font-medium">{l.fullName}</span>
                         {lang === l.id && <span className="ml-auto text-[#00a6a6]">{Icons.check}</span>}
                       </button>
@@ -275,7 +274,7 @@ export default function AdminPanel() {
 
             {/* Content Page */}
             {currentPage === 'content' && (
-              <ContentPage translations={t} />
+              <ContentPage t={t} />
             )}
 
             {/* Users Page */}
