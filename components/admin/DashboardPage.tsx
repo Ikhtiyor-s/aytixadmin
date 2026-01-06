@@ -132,32 +132,9 @@ export default function DashboardPage({ t }: DashboardPageProps) {
     { key: 'ai', label: 'AI & ML' }
   ]
 
-  // Prepare line chart data points
+  // Prepare bar chart data
   const chartData = analytics.monthly_data.slice(-8)
   const maxViews = Math.max(...chartData.map(d => d.views || 1), 1)
-  const chartHeight = 200
-  const chartWidth = 100
-
-  // Generate SVG path for smooth line
-  const generatePath = () => {
-    if (chartData.length < 2) return ''
-    const points = chartData.map((d, i) => {
-      const x = (i / (chartData.length - 1)) * chartWidth
-      const y = chartHeight - ((d.views || 0) / maxViews) * chartHeight * 0.8 - 20
-      return { x, y }
-    })
-
-    // Create smooth curve using bezier
-    let path = `M ${points[0].x} ${points[0].y}`
-    for (let i = 1; i < points.length; i++) {
-      const prev = points[i - 1]
-      const curr = points[i]
-      const cpx1 = prev.x + (curr.x - prev.x) / 3
-      const cpx2 = curr.x - (curr.x - prev.x) / 3
-      path += ` C ${cpx1} ${prev.y}, ${cpx2} ${curr.y}, ${curr.x} ${curr.y}`
-    }
-    return path
-  }
 
   // Category icons
   const categoryIcons: Record<string, { icon: string; color: string; bg: string }> = {
@@ -417,91 +394,109 @@ export default function DashboardPage({ t }: DashboardPageProps) {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Traffic Chart - Line Chart */}
+        {/* Traffic Chart - Bar Chart */}
         <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 border border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">Trafik dinamikasi</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Sana oralig'i ko'rsatkichlar</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Oylik ko'rishlar statistikasi</p>
             </div>
-            <div className="flex items-center gap-2 text-xs">
+            <div className="flex items-center gap-3 text-xs">
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-[#00a6a6] rounded-full"></span>
-                Joriy davr
+                <span className="w-3 h-3 bg-gradient-to-t from-[#00a6a6] to-[#00d4d4] rounded"></span>
+                Ko'rishlar
               </span>
             </div>
           </div>
 
-          {/* Line Chart */}
+          {/* Bar Chart */}
           <div className="relative h-52 sm:h-64">
             {/* Y-axis labels */}
-            <div className="absolute left-0 top-0 bottom-8 w-10 flex flex-col justify-between text-[10px] text-gray-400">
+            <div className="absolute left-0 top-0 bottom-8 w-12 flex flex-col justify-between text-[10px] text-gray-400 dark:text-gray-500">
               <span>{formatNumber(maxViews)}</span>
-              <span>{formatNumber(maxViews * 0.75)}</span>
-              <span>{formatNumber(maxViews * 0.5)}</span>
-              <span>{formatNumber(maxViews * 0.25)}</span>
+              <span>{formatNumber(Math.round(maxViews * 0.75))}</span>
+              <span>{formatNumber(Math.round(maxViews * 0.5))}</span>
+              <span>{formatNumber(Math.round(maxViews * 0.25))}</span>
               <span>0</span>
             </div>
 
             {/* Chart Area */}
-            <div className="ml-12 h-full relative">
+            <div className="ml-14 h-full relative pb-8">
               {/* Grid lines */}
-              <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+              <div className="absolute inset-0 flex flex-col justify-between pointer-events-none" style={{ bottom: '32px' }}>
                 {[0, 1, 2, 3, 4].map((i) => (
-                  <div key={i} className="border-b border-gray-100 dark:border-gray-700"></div>
+                  <div key={i} className="border-b border-dashed border-gray-100 dark:border-gray-700"></div>
                 ))}
               </div>
 
-              {/* SVG Line Chart */}
-              <svg className="w-full h-full" viewBox={`0 0 ${chartWidth} ${chartHeight}`} preserveAspectRatio="none">
-                {/* Gradient fill */}
-                <defs>
-                  <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#00a6a6" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#00a6a6" stopOpacity="0.05" />
-                  </linearGradient>
-                </defs>
-
-                {/* Area fill */}
-                <path
-                  d={`${generatePath()} L ${chartWidth} ${chartHeight - 20} L 0 ${chartHeight - 20} Z`}
-                  fill="url(#lineGradient)"
-                />
-
-                {/* Line */}
-                <path
-                  d={generatePath()}
-                  fill="none"
-                  stroke="#00a6a6"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-
-                {/* Data points */}
+              {/* Bars Container */}
+              <div className="relative h-full flex items-end justify-between gap-1 sm:gap-2 px-1" style={{ paddingBottom: '32px' }}>
                 {chartData.map((d, i) => {
-                  const x = (i / (chartData.length - 1)) * chartWidth
-                  const y = chartHeight - ((d.views || 0) / maxViews) * chartHeight * 0.8 - 20
+                  const heightPercent = maxViews > 0 ? ((d.views || 0) / maxViews) * 100 : 0
+                  const isHighest = d.views === maxViews
                   return (
-                    <circle
-                      key={i}
-                      cx={x}
-                      cy={y}
-                      r="4"
-                      fill="#00a6a6"
-                      stroke="white"
-                      strokeWidth="2"
-                    />
+                    <div key={i} className="flex-1 flex flex-col items-center group">
+                      {/* Value label on hover */}
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity mb-1 text-[10px] font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap">
+                        {formatNumber(d.views || 0)}
+                      </div>
+                      {/* Bar */}
+                      <div
+                        className="w-full relative rounded-t-md transition-all duration-500 ease-out cursor-pointer hover:opacity-80"
+                        style={{
+                          height: `${Math.max(heightPercent, 2)}%`,
+                          background: isHighest
+                            ? 'linear-gradient(to top, #00a6a6, #00d4d4)'
+                            : 'linear-gradient(to top, #00a6a6, #4dd9d9)',
+                          boxShadow: isHighest ? '0 -4px 12px rgba(0, 166, 166, 0.3)' : 'none'
+                        }}
+                      >
+                        {/* Shine effect */}
+                        <div className="absolute inset-0 rounded-t-md overflow-hidden">
+                          <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/20 to-transparent"></div>
+                        </div>
+                        {/* Value badge for highest */}
+                        {isHighest && d.views && d.views > 0 && (
+                          <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#00a6a6] text-white text-[9px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap">
+                            {formatNumber(d.views)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   )
                 })}
-              </svg>
+              </div>
 
               {/* X-axis labels */}
-              <div className="absolute bottom-0 left-0 right-0 flex justify-between text-[10px] text-gray-400 pt-2">
+              <div className="absolute bottom-0 left-0 right-0 flex justify-between text-[10px] text-gray-500 dark:text-gray-400 px-1">
                 {chartData.map((d, i) => (
-                  <span key={i}>{d.month}</span>
+                  <div key={i} className="flex-1 text-center">
+                    <span className="font-medium">{d.month}</span>
+                  </div>
                 ))}
               </div>
+            </div>
+          </div>
+
+          {/* Summary stats under chart */}
+          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 grid grid-cols-3 gap-4">
+            <div className="text-center">
+              <p className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+                {formatNumber(chartData.reduce((sum, d) => sum + (d.views || 0), 0))}
+              </p>
+              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">Jami ko'rishlar</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg sm:text-xl font-bold text-[#00a6a6]">
+                {formatNumber(Math.round(chartData.reduce((sum, d) => sum + (d.views || 0), 0) / chartData.length))}
+              </p>
+              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">O'rtacha/oy</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg sm:text-xl font-bold text-emerald-500">
+                {formatNumber(maxViews)}
+              </p>
+              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">Eng yuqori</p>
             </div>
           </div>
         </div>
