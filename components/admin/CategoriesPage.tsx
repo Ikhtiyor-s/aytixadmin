@@ -7,28 +7,143 @@ import { categoriesApi, CategoryData, SubcategoryData } from '@/lib/api/categori
 import { uploadsApi } from '@/lib/api/uploads'
 import { translateApi } from '@/lib/api/translate'
 
-// Category Emoji Icons
-const CategoryEmojis = [
-  '💼', // Biznes
-  '🛒', // Savdo
-  '💰', // Moliya
-  '🎓', // Ta'lim
-  '🏗️', // Qurilish
-  '🤖', // AI/Avtomatlashtirish
-  '📱', // Mobil
-  '🎨', // Dizayn
-  '🚚', // Logistika
-  '🏭', // Sanoat
-  '🚀', // Startap
-  '💬', // Chat/Support
-  '📊', // Analitika
-  '🔒', // Xavfsizlik
-  '☁️', // Cloud
+// Category SVG Icons with modern design
+const CategoryIcons: Record<string, { icon: React.ReactNode; color: string; bgColor: string }> = {
+  'Biznes va Avtomatlashtirish': {
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3H21m-3.75 3H21" />
+      </svg>
+    ),
+    color: '#0a2d5c',
+    bgColor: 'from-[#0a2d5c] to-[#1e4d8c]'
+  },
+  'Savdo va Marketing': {
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+      </svg>
+    ),
+    color: '#00a6a6',
+    bgColor: 'from-[#00a6a6] to-[#00d4d4]'
+  },
+  'Moliyaviy Texnologiyalar': {
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+    color: '#f59e0b',
+    bgColor: 'from-[#f59e0b] to-[#fbbf24]'
+  },
+  "Ta'lim va O'rganish": {
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+      </svg>
+    ),
+    color: '#6366f1',
+    bgColor: 'from-[#6366f1] to-[#818cf8]'
+  },
+  "Qurilish va Ko'chmas Mulk": {
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5.5l-1.5-.5M6.75 7.364V3h-3v18m3-13.636l10.5-3.819" />
+      </svg>
+    ),
+    color: '#ef4444',
+    bgColor: 'from-[#ef4444] to-[#f87171]'
+  },
+  'AI va Avtomatik Yordamchilar': {
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+      </svg>
+    ),
+    color: '#8b5cf6',
+    bgColor: 'from-[#8b5cf6] to-[#a78bfa]'
+  },
+  'Mobil va Veb Ilovalar': {
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+      </svg>
+    ),
+    color: '#ec4899',
+    bgColor: 'from-[#ec4899] to-[#f472b6]'
+  },
+  'Media va Dizayn': {
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />
+      </svg>
+    ),
+    color: '#14b8a6',
+    bgColor: 'from-[#14b8a6] to-[#2dd4bf]'
+  },
+  'Logistika va Yetkazib Berish': {
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+      </svg>
+    ),
+    color: '#f97316',
+    bgColor: 'from-[#f97316] to-[#fb923c]'
+  },
+  'Sanoat va Ishlab Chiqarish': {
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+      </svg>
+    ),
+    color: '#64748b',
+    bgColor: 'from-[#64748b] to-[#94a3b8]'
+  },
+  'Startaplar va Maxsus Buyurtmalar': {
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+      </svg>
+    ),
+    color: '#10b981',
+    bgColor: 'from-[#10b981] to-[#34d399]'
+  }
+}
+
+// Default icon colors for fallback
+const DefaultIconColors = [
+  { color: '#0a2d5c', bgColor: 'from-[#0a2d5c] to-[#1e4d8c]' },
+  { color: '#00a6a6', bgColor: 'from-[#00a6a6] to-[#00d4d4]' },
+  { color: '#f59e0b', bgColor: 'from-[#f59e0b] to-[#fbbf24]' },
+  { color: '#6366f1', bgColor: 'from-[#6366f1] to-[#818cf8]' },
+  { color: '#ef4444', bgColor: 'from-[#ef4444] to-[#f87171]' },
+  { color: '#8b5cf6', bgColor: 'from-[#8b5cf6] to-[#a78bfa]' },
+  { color: '#ec4899', bgColor: 'from-[#ec4899] to-[#f472b6]' },
+  { color: '#14b8a6', bgColor: 'from-[#14b8a6] to-[#2dd4bf]' },
+  { color: '#f97316', bgColor: 'from-[#f97316] to-[#fb923c]' },
+  { color: '#64748b', bgColor: 'from-[#64748b] to-[#94a3b8]' },
+  { color: '#10b981', bgColor: 'from-[#10b981] to-[#34d399]' },
 ]
 
-// Get emoji based on category order/index
-const getCategoryEmoji = (index: number): string => {
-  return CategoryEmojis[index % CategoryEmojis.length]
+// Default icon SVG for categories not in the list
+const DefaultIcon = (
+  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+  </svg>
+)
+
+// Get icon for category
+const getCategoryIcon = (categoryName: string, index: number) => {
+  const iconData = CategoryIcons[categoryName]
+  if (iconData) {
+    return iconData
+  }
+  // Return default with rotating colors
+  const colorData = DefaultIconColors[index % DefaultIconColors.length]
+  return {
+    icon: DefaultIcon,
+    ...colorData
+  }
 }
 
 interface CategoriesPageProps {
@@ -483,17 +598,22 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
                 </button>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0a2d5c]/10 to-[#0a2d5c]/5 border border-[#0a2d5c]/20 flex items-center justify-center">
-                    {category.icon && (category.icon.startsWith('http') || category.icon.startsWith('/uploads')) ? (
-                      <img
-                        src={category.icon.startsWith('http') ? category.icon : `${API_URL}${category.icon}`}
-                        alt={category[`name_${lang}` as keyof typeof category] as string || category.name_uz}
-                        className="w-full h-full object-cover rounded-xl"
-                      />
-                    ) : (
-                      <span className="text-xl">{getCategoryEmoji(index)}</span>
-                    )}
-                  </div>
+                  {(() => {
+                    const iconData = getCategoryIcon(category.name_uz, index)
+                    return (
+                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${iconData.bgColor} flex items-center justify-center text-white shadow-lg`}>
+                        {category.icon && (category.icon.startsWith('http') || category.icon.startsWith('/uploads')) ? (
+                          <img
+                            src={category.icon.startsWith('http') ? category.icon : `${API_URL}${category.icon}`}
+                            alt={category[`name_${lang}` as keyof typeof category] as string || category.name_uz}
+                            className="w-full h-full object-cover rounded-xl"
+                          />
+                        ) : (
+                          iconData.icon
+                        )}
+                      </div>
+                    )
+                  })()}
                   <div>
                     <h3 className="font-semibold text-gray-900">
                       {category[`name_${lang}` as keyof typeof category] as string || category.name_uz}
