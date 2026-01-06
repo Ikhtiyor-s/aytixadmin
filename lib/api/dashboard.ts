@@ -80,6 +80,7 @@ export interface AnalyticsData {
   categories: Array<{
     name: string
     value: number
+    views?: number
     color: string
   }>
   message_stats: {

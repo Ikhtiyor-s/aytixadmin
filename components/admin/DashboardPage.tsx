@@ -512,7 +512,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
           <div className="space-y-3">
             {analytics.categories.map((cat, idx) => {
               const iconData = categoryIcons[cat.name] || categoryIcons['Boshqalar']
-              const views = cat.value || 0
+              const views = (cat as { views?: number }).views || 0
               return (
                 <div key={idx} className="flex items-center gap-3">
                   <div className={`w-9 h-9 ${iconData.bg} dark:bg-opacity-20 rounded-lg flex items-center justify-center text-lg`}>
