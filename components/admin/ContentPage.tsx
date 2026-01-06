@@ -42,14 +42,29 @@ export default function ContentPage({ t }: ContentPageProps) {
 
   // AI tarjima funksiyasi
   const handleAITranslate = async () => {
-    // Qaysi tilda ma'lumot bor tekshirish
+    // Content field ni aniqlash (tab ga qarab)
+    let contentField = ''
+    if (activeTab === 'news') contentField = 'content'
+    else if (activeTab === 'banners') contentField = 'description'
+    else contentField = 'message'
+
+    // Qaysi tilda ma'lumot bor tekshirish (title YOKI description/content)
     let sourceLang: 'uz' | 'ru' | 'en' | null = null
 
+    // Avval title tekshirish
     if (formData.title_uz?.trim()) {
       sourceLang = 'uz'
     } else if (formData.title_ru?.trim()) {
       sourceLang = 'ru'
     } else if (formData.title_en?.trim()) {
+      sourceLang = 'en'
+    }
+    // Agar title bo'lmasa, description/content tekshirish
+    else if (formData[`${contentField}_uz`]?.trim()) {
+      sourceLang = 'uz'
+    } else if (formData[`${contentField}_ru`]?.trim()) {
+      sourceLang = 'ru'
+    } else if (formData[`${contentField}_en`]?.trim()) {
       sourceLang = 'en'
     }
 
@@ -83,12 +98,7 @@ export default function ContentPage({ t }: ContentPageProps) {
         }
       }
 
-      // Content/Description/Message tarjimasi (tab ga qarab)
-      let contentField = ''
-      if (activeTab === 'news') contentField = 'content'
-      else if (activeTab === 'banners') contentField = 'description'
-      else contentField = 'message'
-
+      // Content/Description/Message tarjimasi
       const contentKey = `${contentField}_${sourceLang}`
       if (formData[contentKey]?.trim()) {
         const contentResult = await translateApi.translate({
