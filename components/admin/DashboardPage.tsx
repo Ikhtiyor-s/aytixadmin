@@ -410,71 +410,66 @@ export default function DashboardPage({ t }: DashboardPageProps) {
           </div>
 
           {/* Bar Chart */}
-          <div className="relative h-52 sm:h-64">
-            {/* Y-axis labels */}
-            <div className="absolute left-0 top-0 bottom-8 w-12 flex flex-col justify-between text-[10px] text-gray-400 dark:text-gray-500">
-              <span>{formatNumber(maxViews)}</span>
-              <span>{formatNumber(Math.round(maxViews * 0.75))}</span>
-              <span>{formatNumber(Math.round(maxViews * 0.5))}</span>
-              <span>{formatNumber(Math.round(maxViews * 0.25))}</span>
-              <span>0</span>
+          <div className="relative">
+            <div className="flex">
+              {/* Y-axis labels */}
+              <div className="w-10 flex flex-col justify-between text-[10px] text-gray-400 dark:text-gray-500 pr-2" style={{ height: '180px' }}>
+                <span className="text-right">{formatNumber(maxViews)}</span>
+                <span className="text-right">{formatNumber(Math.round(maxViews * 0.75))}</span>
+                <span className="text-right">{formatNumber(Math.round(maxViews * 0.5))}</span>
+                <span className="text-right">{formatNumber(Math.round(maxViews * 0.25))}</span>
+                <span className="text-right">0</span>
+              </div>
+
+              {/* Chart Area */}
+              <div className="flex-1 relative" style={{ height: '180px' }}>
+                {/* Grid lines */}
+                <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <div key={i} className="border-b border-dashed border-gray-200 dark:border-gray-700 w-full"></div>
+                  ))}
+                </div>
+
+                {/* Bars */}
+                <div className="absolute inset-0 flex items-end gap-2 sm:gap-3 px-2">
+                  {chartData.map((d, i) => {
+                    const barHeight = maxViews > 0 ? ((d.views || 0) / maxViews) * 160 : 0
+                    const isHighest = d.views === maxViews && d.views > 0
+                    return (
+                      <div key={i} className="flex-1 flex flex-col items-center group relative">
+                        {/* Tooltip on hover */}
+                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all z-10 bg-gray-800 text-white text-[10px] font-medium px-2 py-1 rounded shadow-lg whitespace-nowrap">
+                          {formatNumber(d.views || 0)} ko'rish
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                        </div>
+                        {/* Bar */}
+                        <div
+                          className="w-full rounded-t-lg transition-all duration-300 cursor-pointer hover:scale-105 relative overflow-hidden"
+                          style={{
+                            height: `${Math.max(barHeight, 4)}px`,
+                            background: isHighest
+                              ? 'linear-gradient(180deg, #00d4d4 0%, #00a6a6 100%)'
+                              : 'linear-gradient(180deg, #4dd9d9 0%, #00a6a6 100%)',
+                            boxShadow: isHighest ? '0 0 20px rgba(0, 166, 166, 0.4)' : '0 2px 4px rgba(0,0,0,0.1)'
+                          }}
+                        >
+                          {/* Highlight effect */}
+                          <div className="absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-white/30 to-transparent rounded-t-lg"></div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
             </div>
 
-            {/* Chart Area */}
-            <div className="ml-14 h-full relative pb-8">
-              {/* Grid lines */}
-              <div className="absolute inset-0 flex flex-col justify-between pointer-events-none" style={{ bottom: '32px' }}>
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <div key={i} className="border-b border-dashed border-gray-100 dark:border-gray-700"></div>
-                ))}
-              </div>
-
-              {/* Bars Container */}
-              <div className="relative h-full flex items-end justify-between gap-1 sm:gap-2 px-1" style={{ paddingBottom: '32px' }}>
-                {chartData.map((d, i) => {
-                  const heightPercent = maxViews > 0 ? ((d.views || 0) / maxViews) * 100 : 0
-                  const isHighest = d.views === maxViews
-                  return (
-                    <div key={i} className="flex-1 flex flex-col items-center group">
-                      {/* Value label on hover */}
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity mb-1 text-[10px] font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap">
-                        {formatNumber(d.views || 0)}
-                      </div>
-                      {/* Bar */}
-                      <div
-                        className="w-full relative rounded-t-md transition-all duration-500 ease-out cursor-pointer hover:opacity-80"
-                        style={{
-                          height: `${Math.max(heightPercent, 2)}%`,
-                          background: isHighest
-                            ? 'linear-gradient(to top, #00a6a6, #00d4d4)'
-                            : 'linear-gradient(to top, #00a6a6, #4dd9d9)',
-                          boxShadow: isHighest ? '0 -4px 12px rgba(0, 166, 166, 0.3)' : 'none'
-                        }}
-                      >
-                        {/* Shine effect */}
-                        <div className="absolute inset-0 rounded-t-md overflow-hidden">
-                          <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/20 to-transparent"></div>
-                        </div>
-                        {/* Value badge for highest */}
-                        {isHighest && d.views && d.views > 0 && (
-                          <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#00a6a6] text-white text-[9px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap">
-                            {formatNumber(d.views)}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-
-              {/* X-axis labels */}
-              <div className="absolute bottom-0 left-0 right-0 flex justify-between text-[10px] text-gray-500 dark:text-gray-400 px-1">
-                {chartData.map((d, i) => (
-                  <div key={i} className="flex-1 text-center">
-                    <span className="font-medium">{d.month}</span>
-                  </div>
-                ))}
-              </div>
+            {/* X-axis labels */}
+            <div className="flex mt-3 ml-10">
+              {chartData.map((d, i) => (
+                <div key={i} className="flex-1 text-center">
+                  <span className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400">{d.month}</span>
+                </div>
+              ))}
             </div>
           </div>
 
