@@ -341,6 +341,30 @@ export interface Translations {
   senderEmail: string
   webhookOptional: string
   secretKeyOptional: string
+  // Footer page
+  footer: string
+  footerSections: string
+  socialLinks: string
+  contacts: string
+  footerDesc: string
+  sectionName: string
+  slug: string
+  itemLink: string
+  newTab: string
+  platform: string
+  contactType: string
+  contactValue: string
+  addSection: string
+  addItem: string
+  addSocialLink: string
+  addContact: string
+  editSection: string
+  editItem: string
+  editSocialLink: string
+  editContact: string
+  noSections: string
+  noSocialLinks: string
+  noContacts: string
 }
 
 export const translations: Record<Language, Translations> = {
@@ -685,6 +709,30 @@ export const translations: Record<Language, Translations> = {
     senderEmail: "Jo'natuvchi Email",
     webhookOptional: 'Webhook URL (ixtiyoriy)',
     secretKeyOptional: 'Secret Key (ixtiyoriy)',
+    // Footer page
+    footer: 'Footer',
+    footerSections: "Bo'limlar",
+    socialLinks: 'Ijtimoiy tarmoqlar',
+    contacts: "Bog'lanish",
+    footerDesc: "Sayt pastki qismidagi ma'lumotlarni boshqaring",
+    sectionName: "Bo'lim nomi",
+    slug: 'Slug',
+    itemLink: 'Havola',
+    newTab: "Yangi oynada ochish",
+    platform: 'Platforma',
+    contactType: 'Kontakt turi',
+    contactValue: 'Qiymat',
+    addSection: "Bo'lim qo'shish",
+    addItem: "Element qo'shish",
+    addSocialLink: "Ijtimoiy tarmoq qo'shish",
+    addContact: "Kontakt qo'shish",
+    editSection: "Bo'limni tahrirlash",
+    editItem: 'Elementni tahrirlash',
+    editSocialLink: 'Ijtimoiy tarmoqni tahrirlash',
+    editContact: 'Kontaktni tahrirlash',
+    noSections: "Bo'limlar topilmadi",
+    noSocialLinks: 'Ijtimoiy tarmoqlar topilmadi',
+    noContacts: 'Kontaktlar topilmadi',
   },
   ru: {
     dashboard: 'Панель',
@@ -1027,6 +1075,30 @@ export const translations: Record<Language, Translations> = {
     senderEmail: 'Email отправителя',
     webhookOptional: 'Webhook URL (необязательно)',
     secretKeyOptional: 'Secret Key (необязательно)',
+    // Footer page
+    footer: 'Футер',
+    footerSections: 'Разделы',
+    socialLinks: 'Социальные сети',
+    contacts: 'Контакты',
+    footerDesc: 'Управление информацией в нижней части сайта',
+    sectionName: 'Название раздела',
+    slug: 'Slug',
+    itemLink: 'Ссылка',
+    newTab: 'Открыть в новой вкладке',
+    platform: 'Платформа',
+    contactType: 'Тип контакта',
+    contactValue: 'Значение',
+    addSection: 'Добавить раздел',
+    addItem: 'Добавить элемент',
+    addSocialLink: 'Добавить соцсеть',
+    addContact: 'Добавить контакт',
+    editSection: 'Редактировать раздел',
+    editItem: 'Редактировать элемент',
+    editSocialLink: 'Редактировать соцсеть',
+    editContact: 'Редактировать контакт',
+    noSections: 'Разделы не найдены',
+    noSocialLinks: 'Социальные сети не найдены',
+    noContacts: 'Контакты не найдены',
   },
   en: {
     dashboard: 'Dashboard',
@@ -1369,6 +1441,30 @@ export const translations: Record<Language, Translations> = {
     senderEmail: 'Sender email',
     webhookOptional: 'Webhook URL (optional)',
     secretKeyOptional: 'Secret Key (optional)',
+    // Footer page
+    footer: 'Footer',
+    footerSections: 'Sections',
+    socialLinks: 'Social Links',
+    contacts: 'Contacts',
+    footerDesc: 'Manage footer information on the website',
+    sectionName: 'Section Name',
+    slug: 'Slug',
+    itemLink: 'Link',
+    newTab: 'Open in new tab',
+    platform: 'Platform',
+    contactType: 'Contact Type',
+    contactValue: 'Value',
+    addSection: 'Add Section',
+    addItem: 'Add Item',
+    addSocialLink: 'Add Social Link',
+    addContact: 'Add Contact',
+    editSection: 'Edit Section',
+    editItem: 'Edit Item',
+    editSocialLink: 'Edit Social Link',
+    editContact: 'Edit Contact',
+    noSections: 'No sections found',
+    noSocialLinks: 'No social links found',
+    noContacts: 'No contacts found',
   },
 }
 

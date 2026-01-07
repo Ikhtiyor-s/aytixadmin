@@ -16,6 +16,7 @@ import AIPage from '@/components/admin/AIPage'
 import DashboardPage from '@/components/admin/DashboardPage'
 import AnalyticsPage from '@/components/admin/AnalyticsPage'
 import AdminProfilePage from '@/components/admin/AdminProfilePage'
+import FooterPage from '@/components/admin/FooterPage'
 
 export default function AdminPanel() {
   const { user, logout, isAuthenticated, loading: authLoading } = useAuth()
@@ -72,6 +73,7 @@ export default function AdminPanel() {
     { id: 'integrations', name: t.integrations, icon: Icons.globe },
     { id: 'ai', name: t.ai, icon: Icons.sparkles },
     { id: 'analytics', name: t.analytics, icon: Icons.trendingUp },
+    { id: 'footer', name: t.footer || 'Footer', icon: Icons.grid },
     { id: 'settings', name: t.settings, icon: Icons.settings },
     { id: 'profile', name: t.profile || 'Profil', icon: Icons.user },
   ]
@@ -317,8 +319,13 @@ export default function AdminPanel() {
               <AdminProfilePage />
             )}
 
+            {/* Footer Page */}
+            {currentPage === 'footer' && (
+              <FooterPage t={t} />
+            )}
+
             {/* Other Pages */}
-            {currentPage !== 'projects' && currentPage !== 'categories' && currentPage !== 'content' && currentPage !== 'users' && currentPage !== 'messages' && currentPage !== 'partners' && currentPage !== 'integrations' && currentPage !== 'ai' && currentPage !== 'dashboard' && currentPage !== 'analytics' && currentPage !== 'profile' && (
+            {currentPage !== 'projects' && currentPage !== 'categories' && currentPage !== 'content' && currentPage !== 'users' && currentPage !== 'messages' && currentPage !== 'partners' && currentPage !== 'integrations' && currentPage !== 'ai' && currentPage !== 'dashboard' && currentPage !== 'analytics' && currentPage !== 'profile' && currentPage !== 'footer' && (
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                   {currentPage === 'dashboard' && t.dashboard}
