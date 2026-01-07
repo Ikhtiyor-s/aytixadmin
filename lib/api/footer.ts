@@ -1,5 +1,17 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
 
+// Xatolik xabarlarini qaytarish
+const handleResponse = async (response: Response) => {
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 403) {
+      throw new Error('Not authenticated - Sessiya muddati tugagan')
+    }
+    const error = await response.json().catch(() => ({ detail: 'Xatolik yuz berdi' }))
+    throw new Error(error.detail || `Xatolik: ${response.status}`)
+  }
+  return response.json()
+}
+
 // ============== SECTION INTERFACES ==============
 
 export interface FooterSection {
@@ -85,8 +97,7 @@ export const footerApi = {
   // ============== PUBLIC ==============
   async getPublicFooter(): Promise<FooterFull> {
     const response = await fetch(`${API_BASE_URL}/footer/public`)
-    if (!response.ok) throw new Error('Footer ma\'lumotlarini olishda xatolik')
-    return response.json()
+    return handleResponse(response)
   },
 
   // ============== SECTIONS ==============
@@ -94,16 +105,14 @@ export const footerApi = {
     const response = await fetch(`${API_BASE_URL}/footer/sections`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
-    if (!response.ok) throw new Error('Bo\'limlarni olishda xatolik')
-    return response.json()
+    return handleResponse(response)
   },
 
   async getSection(id: number, token: string): Promise<FooterSection> {
     const response = await fetch(`${API_BASE_URL}/footer/sections/${id}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
-    if (!response.ok) throw new Error('Bo\'limni olishda xatolik')
-    return response.json()
+    return handleResponse(response)
   },
 
   async createSection(data: Omit<FooterSection, 'id' | 'items' | 'created_at' | 'updated_at'>, token: string): Promise<FooterSection> {
@@ -115,11 +124,7 @@ export const footerApi = {
       },
       body: JSON.stringify(data)
     })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Bo\'lim yaratishda xatolik')
-    }
-    return response.json()
+    return handleResponse(response)
   },
 
   async updateSection(id: number, data: Partial<FooterSection>, token: string): Promise<FooterSection> {
@@ -131,11 +136,7 @@ export const footerApi = {
       },
       body: JSON.stringify(data)
     })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Bo\'limni yangilashda xatolik')
-    }
-    return response.json()
+    return handleResponse(response)
   },
 
   async deleteSection(id: number, token: string): Promise<void> {
@@ -143,7 +144,12 @@ export const footerApi = {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     })
-    if (!response.ok) throw new Error('Bo\'limni o\'chirishda xatolik')
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new Error('Not authenticated - Sessiya muddati tugagan')
+      }
+      throw new Error('Bo\'limni o\'chirishda xatolik')
+    }
   },
 
   async reorderSections(items: ReorderItem[], token: string): Promise<void> {

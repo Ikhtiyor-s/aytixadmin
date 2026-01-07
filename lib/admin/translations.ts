@@ -365,6 +365,18 @@ export interface Translations {
   noSections: string
   noSocialLinks: string
   noContacts: string
+  // FAQ page
+  faq: string
+  faqDesc: string
+  addFaq: string
+  editFaq: string
+  noFaqs: string
+  questionUz: string
+  questionRu: string
+  questionEn: string
+  answerUz: string
+  answerRu: string
+  answerEn: string
 }
 
 export const translations: Record<Language, Translations> = {
@@ -733,6 +745,18 @@ export const translations: Record<Language, Translations> = {
     noSections: "Bo'limlar topilmadi",
     noSocialLinks: 'Ijtimoiy tarmoqlar topilmadi',
     noContacts: 'Kontaktlar topilmadi',
+    // FAQ page
+    faq: "Ko'p so'raladigan savollar",
+    faqDesc: "Saytdagi FAQ savollarini boshqaring",
+    addFaq: "Savol qo'shish",
+    editFaq: "Savolni tahrirlash",
+    noFaqs: "Hozircha savollar yo'q",
+    questionUz: "Savol (UZ)",
+    questionRu: "Savol (RU)",
+    questionEn: "Savol (EN)",
+    answerUz: "Javob (UZ)",
+    answerRu: "Javob (RU)",
+    answerEn: "Javob (EN)",
   },
   ru: {
     dashboard: 'Панель',
@@ -1099,6 +1123,18 @@ export const translations: Record<Language, Translations> = {
     noSections: 'Разделы не найдены',
     noSocialLinks: 'Социальные сети не найдены',
     noContacts: 'Контакты не найдены',
+    // FAQ page
+    faq: 'Часто задаваемые вопросы',
+    faqDesc: 'Управление FAQ вопросами на сайте',
+    addFaq: 'Добавить вопрос',
+    editFaq: 'Редактировать вопрос',
+    noFaqs: 'Пока нет вопросов',
+    questionUz: 'Вопрос (UZ)',
+    questionRu: 'Вопрос (RU)',
+    questionEn: 'Вопрос (EN)',
+    answerUz: 'Ответ (UZ)',
+    answerRu: 'Ответ (RU)',
+    answerEn: 'Ответ (EN)',
   },
   en: {
     dashboard: 'Dashboard',
@@ -1465,6 +1501,18 @@ export const translations: Record<Language, Translations> = {
     noSections: 'No sections found',
     noSocialLinks: 'No social links found',
     noContacts: 'No contacts found',
+    // FAQ page
+    faq: 'Frequently Asked Questions',
+    faqDesc: 'Manage FAQ questions on the website',
+    addFaq: 'Add Question',
+    editFaq: 'Edit Question',
+    noFaqs: 'No questions yet',
+    questionUz: 'Question (UZ)',
+    questionRu: 'Question (RU)',
+    questionEn: 'Question (EN)',
+    answerUz: 'Answer (UZ)',
+    answerRu: 'Answer (RU)',
+    answerEn: 'Answer (EN)',
   },
 }
 

@@ -17,6 +17,7 @@ import DashboardPage from '@/components/admin/DashboardPage'
 import AnalyticsPage from '@/components/admin/AnalyticsPage'
 import AdminProfilePage from '@/components/admin/AdminProfilePage'
 import FooterPage from '@/components/admin/FooterPage'
+import FAQPage from '@/components/admin/FAQPage'
 
 export default function AdminPanel() {
   const { user, logout, isAuthenticated, loading: authLoading } = useAuth()
@@ -74,6 +75,7 @@ export default function AdminPanel() {
     { id: 'ai', name: t.ai, icon: Icons.sparkles },
     { id: 'analytics', name: t.analytics, icon: Icons.trendingUp },
     { id: 'footer', name: t.footer || 'Footer', icon: Icons.grid },
+    { id: 'faq', name: t.faq || 'FAQ', icon: Icons.comments },
     { id: 'settings', name: t.settings, icon: Icons.settings },
     { id: 'profile', name: t.profile || 'Profil', icon: Icons.user },
   ]
@@ -324,8 +326,13 @@ export default function AdminPanel() {
               <FooterPage t={t} />
             )}
 
+            {/* FAQ Page */}
+            {currentPage === 'faq' && (
+              <FAQPage t={t} />
+            )}
+
             {/* Other Pages */}
-            {currentPage !== 'projects' && currentPage !== 'categories' && currentPage !== 'content' && currentPage !== 'users' && currentPage !== 'messages' && currentPage !== 'partners' && currentPage !== 'integrations' && currentPage !== 'ai' && currentPage !== 'dashboard' && currentPage !== 'analytics' && currentPage !== 'profile' && currentPage !== 'footer' && (
+            {currentPage !== 'projects' && currentPage !== 'categories' && currentPage !== 'content' && currentPage !== 'users' && currentPage !== 'messages' && currentPage !== 'partners' && currentPage !== 'integrations' && currentPage !== 'ai' && currentPage !== 'dashboard' && currentPage !== 'analytics' && currentPage !== 'profile' && currentPage !== 'footer' && currentPage !== 'faq' && (
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                   {currentPage === 'dashboard' && t.dashboard}

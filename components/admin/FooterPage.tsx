@@ -83,7 +83,10 @@ export default function FooterPage({ t }: FooterPageProps) {
 
   const loadData = async () => {
     const token = localStorage.getItem('access_token')
-    if (!token) return
+    if (!token) {
+      setLoading(false)
+      return
+    }
 
     setLoading(true)
     try {
@@ -104,8 +107,59 @@ export default function FooterPage({ t }: FooterPageProps) {
 
   const getToken = () => localStorage.getItem('access_token') || ''
 
+  // Error handler - xatoliklarni to'g'ri ko'rsatish
+  const handleError = (error: any) => {
+    const message = error.message || 'Xatolik yuz berdi'
+    // Token xatoliklari - foydalanuvchiga login qilishni taklif qilish
+    if (message.includes('authenticated') || message.includes('401') || message.includes('token') || message.includes('Unauthorized')) {
+      alert('Sessiya muddati tugagan. Iltimos, qayta login qiling.')
+      window.location.href = '/admin/login'
+      return
+    }
+    // Boshqa xatoliklar
+    alert(message)
+  }
+
+  // Validatsiya funksiyalari
+  const validateSection = () => {
+    if (!sectionForm.title_uz?.trim()) {
+      alert('Nomi (UZ) majburiy maydon')
+      return false
+    }
+    if (!sectionForm.slug?.trim()) {
+      alert('Slug majburiy maydon')
+      return false
+    }
+    return true
+  }
+
+  const validateItem = () => {
+    if (!itemForm.title_uz?.trim()) {
+      alert('Nomi (UZ) majburiy maydon')
+      return false
+    }
+    return true
+  }
+
+  const validateSocial = () => {
+    if (!socialForm.link_url?.trim()) {
+      alert('Havola URL majburiy maydon')
+      return false
+    }
+    return true
+  }
+
+  const validateContact = () => {
+    if (!contactForm.value?.trim()) {
+      alert('Qiymat majburiy maydon')
+      return false
+    }
+    return true
+  }
+
   // ============== SECTION HANDLERS ==============
   const handleCreateSection = async () => {
+    if (!validateSection()) return
     setSaving(true)
     try {
       await footerApi.createSection(sectionForm as any, getToken())
@@ -113,7 +167,7 @@ export default function FooterPage({ t }: FooterPageProps) {
       setShowSectionModal(false)
       resetSectionForm()
     } catch (error: any) {
-      alert(error.message)
+      handleError(error)
     } finally {
       setSaving(false)
     }
@@ -121,6 +175,7 @@ export default function FooterPage({ t }: FooterPageProps) {
 
   const handleUpdateSection = async () => {
     if (!selectedSection?.id) return
+    if (!validateSection()) return
     setSaving(true)
     try {
       await footerApi.updateSection(selectedSection.id, sectionForm, getToken())
@@ -129,7 +184,7 @@ export default function FooterPage({ t }: FooterPageProps) {
       setSelectedSection(null)
       resetSectionForm()
     } catch (error: any) {
-      alert(error.message)
+      handleError(error)
     } finally {
       setSaving(false)
     }
@@ -142,7 +197,7 @@ export default function FooterPage({ t }: FooterPageProps) {
       await loadData()
       if (selectedSection?.id === id) setSelectedSection(null)
     } catch (error: any) {
-      alert(error.message)
+      handleError(error)
     }
   }
 
@@ -153,6 +208,7 @@ export default function FooterPage({ t }: FooterPageProps) {
   // ============== ITEM HANDLERS ==============
   const handleCreateItem = async () => {
     if (!selectedSection?.id) return
+    if (!validateItem()) return
     setSaving(true)
     try {
       await footerApi.createItem({ ...itemForm, section_id: selectedSection.id } as any, getToken())
@@ -160,7 +216,7 @@ export default function FooterPage({ t }: FooterPageProps) {
       setShowItemModal(false)
       resetItemForm()
     } catch (error: any) {
-      alert(error.message)
+      handleError(error)
     } finally {
       setSaving(false)
     }
@@ -168,6 +224,7 @@ export default function FooterPage({ t }: FooterPageProps) {
 
   const handleUpdateItem = async () => {
     if (!selectedItem?.id) return
+    if (!validateItem()) return
     setSaving(true)
     try {
       await footerApi.updateItem(selectedItem.id, itemForm, getToken())
@@ -176,7 +233,7 @@ export default function FooterPage({ t }: FooterPageProps) {
       setSelectedItem(null)
       resetItemForm()
     } catch (error: any) {
-      alert(error.message)
+      handleError(error)
     } finally {
       setSaving(false)
     }
@@ -188,7 +245,7 @@ export default function FooterPage({ t }: FooterPageProps) {
       await footerApi.deleteItem(id, getToken())
       await loadData()
     } catch (error: any) {
-      alert(error.message)
+      handleError(error)
     }
   }
 
@@ -201,6 +258,7 @@ export default function FooterPage({ t }: FooterPageProps) {
 
   // ============== SOCIAL LINK HANDLERS ==============
   const handleCreateSocialLink = async () => {
+    if (!validateSocial()) return
     setSaving(true)
     try {
       await footerApi.createSocialLink(socialForm as any, getToken())
@@ -208,7 +266,7 @@ export default function FooterPage({ t }: FooterPageProps) {
       setShowSocialModal(false)
       resetSocialForm()
     } catch (error: any) {
-      alert(error.message)
+      handleError(error)
     } finally {
       setSaving(false)
     }
@@ -216,6 +274,7 @@ export default function FooterPage({ t }: FooterPageProps) {
 
   const handleUpdateSocialLink = async () => {
     if (!selectedSocialLink?.id) return
+    if (!validateSocial()) return
     setSaving(true)
     try {
       await footerApi.updateSocialLink(selectedSocialLink.id, socialForm, getToken())
@@ -224,7 +283,7 @@ export default function FooterPage({ t }: FooterPageProps) {
       setSelectedSocialLink(null)
       resetSocialForm()
     } catch (error: any) {
-      alert(error.message)
+      handleError(error)
     } finally {
       setSaving(false)
     }
@@ -236,7 +295,7 @@ export default function FooterPage({ t }: FooterPageProps) {
       await footerApi.deleteSocialLink(id, getToken())
       await loadData()
     } catch (error: any) {
-      alert(error.message)
+      handleError(error)
     }
   }
 
@@ -246,6 +305,7 @@ export default function FooterPage({ t }: FooterPageProps) {
 
   // ============== CONTACT HANDLERS ==============
   const handleCreateContact = async () => {
+    if (!validateContact()) return
     setSaving(true)
     try {
       await footerApi.createContact(contactForm as any, getToken())
@@ -253,7 +313,7 @@ export default function FooterPage({ t }: FooterPageProps) {
       setShowContactModal(false)
       resetContactForm()
     } catch (error: any) {
-      alert(error.message)
+      handleError(error)
     } finally {
       setSaving(false)
     }
@@ -261,6 +321,7 @@ export default function FooterPage({ t }: FooterPageProps) {
 
   const handleUpdateContact = async () => {
     if (!selectedContact?.id) return
+    if (!validateContact()) return
     setSaving(true)
     try {
       await footerApi.updateContact(selectedContact.id, contactForm, getToken())
@@ -269,7 +330,7 @@ export default function FooterPage({ t }: FooterPageProps) {
       setSelectedContact(null)
       resetContactForm()
     } catch (error: any) {
-      alert(error.message)
+      handleError(error)
     } finally {
       setSaving(false)
     }
@@ -281,7 +342,7 @@ export default function FooterPage({ t }: FooterPageProps) {
       await footerApi.deleteContact(id, getToken())
       await loadData()
     } catch (error: any) {
-      alert(error.message)
+      handleError(error)
     }
   }
 
