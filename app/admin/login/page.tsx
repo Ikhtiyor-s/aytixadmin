@@ -83,7 +83,7 @@ export default function AdminLogin() {
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 className="w-full px-2 xs:px-3 py-1.5 xs:py-2 sm:py-2.5 text-xs xs:text-sm border border-gray-300 rounded-md xs:rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent transition-all"
-                placeholder="admin yoki telefon raqam"
+                placeholder="Username yoki telefon raqam"
                 required
               />
             </div>

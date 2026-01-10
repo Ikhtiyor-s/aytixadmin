@@ -6,6 +6,8 @@ import { authService } from '@/services/auth'
 import Link from 'next/link'
 import CountrySelector from '@/components/CountrySelector'
 import { Country, defaultCountry } from '@/lib/countries'
+import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicator'
+import { validatePassword, sanitizeInput } from '@/utils/passwordValidation'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -22,18 +24,16 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
 
-  // Password validation checks
-  const hasMinLength = formData.password.length >= 8
-  const hasUpperCase = /[A-Z]/.test(formData.password)
-  const hasLowerCase = /[a-z]/.test(formData.password)
-  const hasNumber = /\d/.test(formData.password)
-
   const handleSubmit = async () => {
-    if (!formData.firstName.trim()) {
+    // Sanitize inputs to prevent XSS
+    const firstName = sanitizeInput(formData.firstName.trim())
+    const lastName = sanitizeInput(formData.lastName.trim())
+
+    if (!firstName) {
       setError('Ismingizni kiriting!')
       return
     }
-    if (!formData.lastName.trim()) {
+    if (!lastName) {
       setError('Familiyangizni kiriting!')
       return
     }
@@ -41,22 +41,14 @@ export default function RegisterPage() {
       setError(`Telefon raqam ${selectedCountry.phoneLength} ta raqamdan iborat bo'lishi kerak!`)
       return
     }
-    if (!hasMinLength) {
-      setError('Parol kamida 8 ta belgidan iborat bo\'lishi kerak!')
+
+    // Validate password strength
+    const passwordValidation = validatePassword(formData.password)
+    if (!passwordValidation.isValid) {
+      setError(passwordValidation.feedback[0] || 'Parol talablarga javob bermaydi!')
       return
     }
-    if (!hasUpperCase) {
-      setError('Parolda kamida bitta katta harf bo\'lishi kerak!')
-      return
-    }
-    if (!hasLowerCase) {
-      setError('Parolda kamida bitta kichik harf bo\'lishi kerak!')
-      return
-    }
-    if (!hasNumber) {
-      setError('Parolda kamida bitta raqam bo\'lishi kerak!')
-      return
-    }
+
     if (formData.password !== formData.passwordConfirm) {
       setError('Parollar mos kelmayapti!')
       return
@@ -67,8 +59,8 @@ export default function RegisterPage() {
       setError('')
       // Register user
       const email = `${formData.phone}@temp.uz`
-      const fullName = `${formData.firstName} ${formData.lastName}`
-      const username = `${formData.firstName.toLowerCase()}${formData.phone.slice(-4)}`
+      const fullName = `${firstName} ${lastName}`
+      const username = `${firstName.toLowerCase()}${formData.phone.slice(-4)}`
       await authService.register({
         email,
         username,
@@ -164,41 +156,8 @@ export default function RegisterPage() {
                 </button>
               </div>
 
-              {formData.password && (
-                <div className="mt-2 space-y-1 text-xs">
-                  <div className={`flex items-center gap-2 ${hasMinLength ? 'text-green-600' : 'text-slate-400'}`}>
-                    <span>{hasMinLength ? '✓' : '○'}</span>
-                    <span>Kamida 8 ta belgi</span>
-                  </div>
-                  <div className={`flex items-center gap-2 ${hasUpperCase ? 'text-green-600' : 'text-slate-400'}`}>
-                    <span>{hasUpperCase ? '✓' : '○'}</span>
-                    <span>Bitta katta harf (A-Z)</span>
-                  </div>
-                  <div className={`flex items-center gap-2 ${hasLowerCase ? 'text-green-600' : 'text-slate-400'}`}>
-                    <span>{hasLowerCase ? '✓' : '○'}</span>
-                    <span>Bitta kichik harf (a-z)</span>
-                  </div>
-                  <div className={`flex items-center gap-2 ${hasNumber ? 'text-green-600' : 'text-slate-400'}`}>
-                    <span>{hasNumber ? '✓' : '○'}</span>
-                    <span>Bitta raqam (0-9)</span>
-                  </div>
-                  {formData.passwordConfirm && (
-                    <div>
-                      {formData.password === formData.passwordConfirm ? (
-                        <div className="flex items-center gap-2 text-green-600">
-                          <span>✓</span>
-                          <span>Parollar mos keladi</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2 text-red-500">
-                          <span>✗</span>
-                          <span>Parollar mos kelmayapti</span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
+              {/* Password strength indicator */}
+              <PasswordStrengthIndicator password={formData.password} />
             </div>
 
             <div className="mb-6">

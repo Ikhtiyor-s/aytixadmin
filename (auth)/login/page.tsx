@@ -61,7 +61,7 @@ export default function LoginPage() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent transition-all"
-                placeholder="admin@aytix.uz"
+                placeholder="Email kiriting"
                 required
               />
             </div>
@@ -88,14 +88,6 @@ export default function LoginPage() {
               {loading ? 'Kirish...' : 'Kirish'}
             </button>
           </form>
-
-          {/* Test credentials hint */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
-            <p className="text-xs text-gray-600 text-center mb-2">Test kirish uchun:</p>
-            <p className="text-xs text-gray-500 text-center font-mono">
-              901009300@temp.uz / 123456
-            </p>
-          </div>
         </div>
 
         {/* Footer */}

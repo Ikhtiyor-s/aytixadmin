@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
 import Image from 'next/image'
@@ -9,7 +9,6 @@ export default function LoginPage() {
   const router = useRouter()
   const { login } = useAuth()
 
-  // LocalStorage dan ma'lumotlarni olish
   const [formData, setFormData] = useState({
     phone: '',
     password: ''
@@ -19,29 +18,6 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [logoError, setLogoError] = useState(false)
 
-  // Sahifa yuklanganda localStorage dan ma'lumotlarni olish
-  useEffect(() => {
-    const savedPhone = localStorage.getItem('login_phone')
-    const savedPassword = localStorage.getItem('login_password')
-    if (savedPhone || savedPassword) {
-      setFormData({
-        phone: savedPhone || '',
-        password: savedPassword || ''
-      })
-    }
-  }, [])
-
-  // Ma'lumotlar o'zgarganda localStorage ga saqlash
-  const handlePhoneChange = (phone: string) => {
-    setFormData(prev => ({ ...prev, phone }))
-    localStorage.setItem('login_phone', phone)
-  }
-
-  const handlePasswordChange = (password: string) => {
-    setFormData(prev => ({ ...prev, password }))
-    localStorage.setItem('login_password', password)
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -49,12 +25,8 @@ export default function LoginPage() {
 
     try {
       await login(formData.phone, formData.password)
-      // Muvaffaqiyatli login bo'lganda localStorage ni tozalash
-      localStorage.removeItem('login_phone')
-      localStorage.removeItem('login_password')
       router.push('/admin/advanced')
     } catch (err: any) {
-      // Xato bo'lsa ham ma'lumotlar localStorage da saqlanib qoladi
       setError(err.message || 'Login failed')
     } finally {
       setLoading(false)
@@ -105,9 +77,9 @@ export default function LoginPage() {
               <input
                 type="text"
                 value={formData.phone}
-                onChange={(e) => handlePhoneChange(e.target.value)}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent transition-all"
-                placeholder="admin"
+                placeholder="Login kiriting"
                 required
               />
             </div>
@@ -120,7 +92,7 @@ export default function LoginPage() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
-                  onChange={(e) => handlePasswordChange(e.target.value)}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="w-full px-3 py-2 pr-10 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent transition-all"
                   placeholder="********"
                   required
@@ -154,13 +126,6 @@ export default function LoginPage() {
               {loading ? 'Kirish...' : 'Kirish'}
             </button>
           </form>
-
-          {/* Test credentials hint - kichikroq */}
-          <div className="mt-4 p-2 bg-gray-50 rounded-lg border border-gray-200">
-            <p className="text-[10px] text-gray-500 text-center">
-              Test: <span className="font-mono">admin / Admin123!</span>
-            </p>
-          </div>
         </div>
 
         {/* Footer - kichikroq */}
