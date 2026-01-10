@@ -743,6 +743,19 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
         return
       }
 
+      // Validate required fields
+      if (!formData.name.uz.trim()) {
+        alert('Loyiha nomi (O\'zbekcha) kiritilishi shart!')
+        setSaving(false)
+        return
+      }
+
+      if (!formData.description.uz.trim()) {
+        alert('Loyiha izohi (O\'zbekcha) kiritilishi shart!')
+        setSaving(false)
+        return
+      }
+
       // Upload main image or keep existing
       let imageUrl = formData.existingImage || null
       if (formData.image) {
@@ -1076,8 +1089,8 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
 
       {/* View Modal */}
       {viewProject && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4" onClick={closeViewModal}>
-          <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto" onClick={closeViewModal}>
+          <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl w-full max-w-2xl my-4 sm:my-8 max-h-[95vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             {/* Project Image */}
             {(() => {
               const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:8000'
@@ -1223,17 +1236,17 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
 
       {/* Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4" onClick={closeModal}>
-          <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto" onClick={closeModal}>
+          <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl w-full max-w-2xl my-4 sm:my-8 max-h-[95vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="p-3 sm:p-4 md:p-6 border-b border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
+              <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 dark:text-white">
                 {editingProject ? t.editProject : t.newProject}
               </h2>
               <button
                 type="button"
                 onClick={handleAITranslate}
                 disabled={isTranslating}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl w-full sm:w-auto"
                 title="AI yordamida boshqa tillarga tarjima qilish"
               >
                 {isTranslating ? (
@@ -1488,94 +1501,96 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
               </div>
 
               {/* Imkoniyatlar - 3 tilli */}
-              <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4">
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-3 sm:p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-green-600 dark:text-green-400">{Icons.check}</span>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">{t.featuresList}</h3>
+                    <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">{t.featuresList}</h3>
                   </div>
                 </div>
 
                 {/* Yangi feature qo'shish - 3 ustun */}
                 <div className="space-y-3">
                   {/* Sarlavhalar */}
-                  <div className="grid grid-cols-3 gap-2">
-                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400 text-center">UZ</span>
-                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400 text-center">RU</span>
-                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400 text-center">EN</span>
+                  <div className="grid grid-cols-3 gap-1 sm:gap-2">
+                    <span className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 text-center">UZ</span>
+                    <span className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 text-center">RU</span>
+                    <span className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 text-center">EN</span>
                   </div>
 
                   {/* Yangi feature inputlari */}
-                  <div className="flex gap-2">
-                    <div className="flex-1 grid grid-cols-3 gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="flex-1 grid grid-cols-3 gap-1 sm:gap-2">
                       <input
                         type="text"
                         value={newFeature.uz}
                         onChange={(e) => setNewFeature({ ...newFeature, uz: e.target.value })}
                         onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
-                        placeholder="O'zbekcha"
-                        className="px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="O'z"
+                        className="px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-xs sm:text-sm outline-none focus:ring-2 focus:ring-green-500"
                       />
                       <input
                         type="text"
                         value={newFeature.ru}
                         onChange={(e) => setNewFeature({ ...newFeature, ru: e.target.value })}
                         onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
-                        placeholder="Русский"
-                        className="px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Ру"
+                        className="px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-xs sm:text-sm outline-none focus:ring-2 focus:ring-green-500"
                       />
                       <input
                         type="text"
                         value={newFeature.en}
                         onChange={(e) => setNewFeature({ ...newFeature, en: e.target.value })}
                         onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
-                        placeholder="English"
-                        className="px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="En"
+                        className="px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-xs sm:text-sm outline-none focus:ring-2 focus:ring-green-500"
                       />
                     </div>
-                    <button
-                      type="button"
-                      onClick={handleNewFeatureTranslate}
-                      title={t.aiTranslate}
-                      className="px-3 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm font-medium transition-colors"
-                    >
-                      {Icons.sparkles}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={addFeature}
-                      className="px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors"
-                    >
-                      {Icons.plus}
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={handleNewFeatureTranslate}
+                        title={t.aiTranslate}
+                        className="flex-1 sm:flex-none px-3 py-1.5 sm:py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors"
+                      >
+                        {Icons.sparkles}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={addFeature}
+                        className="flex-1 sm:flex-none px-3 py-1.5 sm:py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors"
+                      >
+                        {Icons.plus}
+                      </button>
+                    </div>
                   </div>
 
                   {/* Mavjud features ro'yxati */}
                   {formData.features.length > 0 && (
                     <div className="space-y-2 mt-3">
                       {formData.features.map((feature, idx) => (
-                        <div key={idx} className="flex gap-2 bg-white dark:bg-gray-800 p-2 rounded-lg">
-                          <div className="flex-1 grid grid-cols-3 gap-2">
+                        <div key={idx} className="flex gap-1 sm:gap-2 bg-white dark:bg-gray-800 p-2 rounded-lg">
+                          <div className="flex-1 grid grid-cols-3 gap-1 sm:gap-2">
                             <input
                               type="text"
                               value={feature.uz}
                               onChange={(e) => updateFeature(idx, 'uz', e.target.value)}
-                              placeholder="O'zbekcha"
-                              className="px-2 py-1.5 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-sm outline-none focus:ring-1 focus:ring-green-500"
+                              placeholder="O'z"
+                              className="px-1.5 sm:px-2 py-1 sm:py-1.5 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-xs sm:text-sm outline-none focus:ring-1 focus:ring-green-500"
                             />
                             <input
                               type="text"
                               value={feature.ru}
                               onChange={(e) => updateFeature(idx, 'ru', e.target.value)}
-                              placeholder="Русский"
-                              className="px-2 py-1.5 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-sm outline-none focus:ring-1 focus:ring-green-500"
+                              placeholder="Ру"
+                              className="px-1.5 sm:px-2 py-1 sm:py-1.5 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-xs sm:text-sm outline-none focus:ring-1 focus:ring-green-500"
                             />
                             <input
                               type="text"
                               value={feature.en}
                               onChange={(e) => updateFeature(idx, 'en', e.target.value)}
-                              placeholder="English"
-                              className="px-2 py-1.5 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-sm outline-none focus:ring-1 focus:ring-green-500"
+                              placeholder="En"
+                              className="px-1.5 sm:px-2 py-1 sm:py-1.5 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-xs sm:text-sm outline-none focus:ring-1 focus:ring-green-500"
                             />
                           </div>
                           <button
