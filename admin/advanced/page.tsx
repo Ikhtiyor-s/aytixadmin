@@ -7,6 +7,7 @@ import { Icons } from '@/components/admin/Icons'
 import { translations, languages, Language, Translations } from '@/lib/admin/translations'
 import ProjectsPage from '@/components/admin/ProjectsPage'
 import CategoriesPage from '@/components/admin/CategoriesPage'
+import ContactsPage from '@/components/admin/ContactsPage'
 
 export default function AdminPanel() {
   const { user, logout, isAuthenticated } = useAuth()
@@ -53,6 +54,7 @@ export default function AdminPanel() {
     { id: 'content', name: t.content, icon: Icons.content },
     { id: 'comments', name: t.comments, icon: Icons.comments },
     { id: 'messages', name: t.messages, icon: Icons.messages },
+    { id: 'contacts', name: 'Kontaktlar', icon: Icons.phone },
     { id: 'partners', name: t.partners, icon: Icons.partners },
     { id: 'integrations', name: t.integrations, icon: Icons.globe },
     { id: 'ai', name: t.ai, icon: Icons.sparkles },
@@ -242,8 +244,13 @@ export default function AdminPanel() {
               <CategoriesPage t={t} globalSearch={globalSearch} lang={lang} />
             )}
 
+            {/* Contacts Page */}
+            {currentPage === 'contacts' && (
+              <ContactsPage t={t} globalSearch={globalSearch} lang={lang} />
+            )}
+
             {/* Other Pages */}
-            {currentPage !== 'projects' && currentPage !== 'categories' && (
+            {currentPage !== 'projects' && currentPage !== 'categories' && currentPage !== 'contacts' && (
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                   {currentPage === 'dashboard' && t.dashboard}
