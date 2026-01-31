@@ -147,6 +147,78 @@ export default function FooterPage({ t }: FooterPageProps) {
       alert('Havola URL majburiy maydon')
       return false
     }
+
+    // Avtomatik URL yaratish
+    let url = socialForm.link_url.trim()
+
+    // Agar @ bilan boshlansa, platform URL qo'shish
+    if (url.startsWith('@')) {
+      const username = url.substring(1) // @ ni olib tashlash
+
+      switch (socialForm.platform) {
+        case 'telegram':
+          url = `https://t.me/${username}`
+          break
+        case 'instagram':
+          url = `https://instagram.com/${username}`
+          break
+        case 'facebook':
+          url = `https://facebook.com/${username}`
+          break
+        case 'twitter':
+          url = `https://twitter.com/${username}`
+          break
+        case 'tiktok':
+          url = `https://tiktok.com/@${username}`
+          break
+        case 'linkedin':
+          url = `https://linkedin.com/in/${username}`
+          break
+        case 'youtube':
+          url = `https://youtube.com/@${username}`
+          break
+        case 'whatsapp':
+          url = `https://wa.me/${username}`
+          break
+        default:
+          url = `https://${socialForm.platform}.com/${username}`
+      }
+
+      // URL ni yangilash
+      setSocialForm({ ...socialForm, link_url: url })
+    }
+    // Agar oddiy username bo'lsa (@ siz)
+    else if (!url.startsWith('http')) {
+      switch (socialForm.platform) {
+        case 'telegram':
+          url = `https://t.me/${url}`
+          break
+        case 'instagram':
+          url = `https://instagram.com/${url}`
+          break
+        case 'facebook':
+          url = `https://facebook.com/${url}`
+          break
+        case 'twitter':
+          url = `https://twitter.com/${url}`
+          break
+        case 'tiktok':
+          url = `https://tiktok.com/@${url}`
+          break
+        case 'linkedin':
+          url = `https://linkedin.com/in/${url}`
+          break
+        case 'youtube':
+          url = `https://youtube.com/@${url}`
+          break
+        case 'whatsapp':
+          url = `https://wa.me/${url}`
+          break
+      }
+
+      setSocialForm({ ...socialForm, link_url: url })
+    }
+
     return true
   }
 
