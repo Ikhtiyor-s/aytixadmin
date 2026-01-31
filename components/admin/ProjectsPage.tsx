@@ -110,6 +110,8 @@ interface Project {
   video_url?: string
   videos?: string[]
   images?: string[]
+  is_top?: boolean
+  is_new?: boolean
 }
 
 // Helper function to convert features from any format to new format
