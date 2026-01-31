@@ -219,6 +219,18 @@ export default function FooterPage({ t }: FooterPageProps) {
       setSocialForm({ ...socialForm, link_url: url })
     }
 
+    // 🔒 XAVFSIZLIK: URL validatsiya - faqat HTTP va HTTPS ruxsat
+    try {
+      const parsed = new URL(url)
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        alert('⚠️ Xavfsizlik: Faqat HTTP yoki HTTPS havolalar ruxsat etilgan')
+        return false
+      }
+    } catch {
+      alert('❌ Noto\'g\'ri URL formati')
+      return false
+    }
+
     return true
   }
 
