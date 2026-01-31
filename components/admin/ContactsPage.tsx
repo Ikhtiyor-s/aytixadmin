@@ -39,7 +39,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
     is_active: true
   })
 
-  const getToken = () => Cookies.get('token') || ''
+  const getToken = () => Cookies.get('access_token') || ''
 
   const loadContacts = async () => {
     try {
