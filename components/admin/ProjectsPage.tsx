@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Cookies from 'js-cookie'
 import { Icons } from './Icons'
 import { Translations } from '@/lib/admin/translations'
@@ -346,24 +346,31 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       return
     }
 
-    // Tarjima qilinadigan tillar
-    const targetLangs = ['uz', 'ru', 'en'].filter(l => l !== sourceLang) as ('uz' | 'ru' | 'en')[]
+    // Faqat bo'sh maydonlarni tarjima qilish uchun targetLangs ni filtrlash
+    const allTargetLangs = ['uz', 'ru', 'en'].filter(l => l !== sourceLang) as ('uz' | 'ru' | 'en')[]
+    const emptyNameLangs = allTargetLangs.filter(lang => !formData.name[lang].trim())
+    const emptyDescLangs = allTargetLangs.filter(lang => !formData.description[lang].trim())
+
+    if (emptyNameLangs.length === 0 && emptyDescLangs.length === 0) {
+      alert('⚠️ Barcha maydonlar to\'ldirilgan. Tarjima kerak emas.')
+      return
+    }
 
     setIsTranslating(true)
     try {
       const token = getToken()
 
-      // Name tarjimasi
-      if (sourceText.name.trim()) {
+      // Name tarjimasi - faqat bo'sh maydonlar uchun
+      if (sourceText.name.trim() && emptyNameLangs.length > 0) {
         const nameResult = await translateApi.translate({
           text: sourceText.name,
           source_lang: sourceLang,
-          target_langs: targetLangs
+          target_langs: emptyNameLangs
         }, token)
 
         if (nameResult.success) {
           const newName = { ...formData.name }
-          targetLangs.forEach(lang => {
+          emptyNameLangs.forEach(lang => {
             if (nameResult.translations[lang]) {
               newName[lang] = nameResult.translations[lang]
             }
@@ -372,17 +379,17 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
         }
       }
 
-      // Description tarjimasi
-      if (sourceText.description.trim()) {
+      // Description tarjimasi - faqat bo'sh maydonlar uchun
+      if (sourceText.description.trim() && emptyDescLangs.length > 0) {
         const descResult = await translateApi.translate({
           text: sourceText.description,
           source_lang: sourceLang,
-          target_langs: targetLangs
+          target_langs: emptyDescLangs
         }, token)
 
         if (descResult.success) {
           const newDesc = { ...formData.description }
-          targetLangs.forEach(lang => {
+          emptyDescLangs.forEach(lang => {
             if (descResult.translations[lang]) {
               newDesc[lang] = descResult.translations[lang]
             }
@@ -391,21 +398,10 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
         }
       }
 
-      // Technologies tarjimasi
-      if (formData.technologies.trim()) {
-        const techResult = await translateApi.translate({
-          text: formData.technologies,
-          source_lang: sourceLang,
-          target_langs: targetLangs
-        }, token)
+      // Technologies tarjima qilinmaydi - texnik terminlar
+      // Foydalanuvchi o'zi kiritishi kerak
 
-        if (techResult.success) {
-          const translatedTech = techResult.translations[targetLangs[0]] || formData.technologies
-          setFormData(prev => ({ ...prev, technologies: translatedTech }))
-        }
-      }
-
-      alert(t.translationSuccess)
+      alert('✅ ' + t.translationSuccess + '\n\n⚠️ Eslatma: Texnik terminlarni (Teknologiyalar) o\'zingiz kiriting - AI noto\'g\'ri tarjima qilishi mumkin.')
     } catch (err) {
       console.error('Translation error:', err)
       alert(err instanceof Error ? err.message : t.translationError)
@@ -556,6 +552,93 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
     setFormData({ ...formData, features: updatedFeatures })
   }
 
+  // Helper function for WYSIWYG text formatting
+  const editorRef = useRef<HTMLDivElement>(null)
+
+  // Update editor content when activeTab or formData changes
+  useEffect(() => {
+    if (editorRef.current && showModal) {
+      const currentContent = formData.description[activeTab] || ''
+      // Only update if content is different to preserve cursor position
+      if (editorRef.current.innerHTML !== currentContent) {
+        editorRef.current.innerHTML = currentContent
+      }
+    }
+  }, [activeTab, showModal])
+
+  const formatText = (command: string, value: string | undefined = undefined) => {
+    if (!editorRef.current) return
+
+    editorRef.current.focus()
+
+    // For better browser compatibility, use setTimeout
+    setTimeout(() => {
+      if (!editorRef.current) return
+
+      try {
+        // Enable design mode temporarily for better execCommand support
+        document.execCommand('styleWithCSS', false, 'true')
+        document.execCommand(command, false, value)
+
+        // Update formData with the new HTML
+        const newContent = editorRef.current.innerHTML
+        setFormData({ ...formData, description: { ...formData.description, [activeTab]: newContent } })
+      } catch (error) {
+        console.error('Format error:', error)
+      }
+    }, 0)
+  }
+
+  const handleEditorInput = (e: React.FormEvent<HTMLDivElement>) => {
+    const newContent = e.currentTarget.innerHTML
+    setFormData({ ...formData, description: { ...formData.description, [activeTab]: newContent } })
+  }
+
+  const handleEditorKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // Handle Enter key for proper line breaks
+    if (e.key === 'Enter' && !e.shiftKey) {
+      // Check if we're in a list - if so, let default behavior work
+      const selection = window.getSelection()
+      if (selection && selection.anchorNode) {
+        const parentElement = selection.anchorNode.parentElement
+        if (parentElement && (parentElement.closest('ul') || parentElement.closest('ol'))) {
+          // We're in a list, let default behavior work
+          return
+        }
+      }
+
+      // Otherwise, insert a line break
+      e.preventDefault()
+      document.execCommand('insertLineBreak', false, undefined)
+
+      // Update state
+      setTimeout(() => {
+        if (editorRef.current) {
+          const newContent = editorRef.current.innerHTML
+          setFormData({ ...formData, description: { ...formData.description, [activeTab]: newContent } })
+        }
+      }, 0)
+    }
+  }
+
+  const moveFeatureUp = (index: number) => {
+    if (index === 0) return
+    const updatedFeatures = [...formData.features]
+    const temp = updatedFeatures[index]
+    updatedFeatures[index] = updatedFeatures[index - 1]
+    updatedFeatures[index - 1] = temp
+    setFormData({ ...formData, features: updatedFeatures })
+  }
+
+  const moveFeatureDown = (index: number) => {
+    if (index === formData.features.length - 1) return
+    const updatedFeatures = [...formData.features]
+    const temp = updatedFeatures[index]
+    updatedFeatures[index] = updatedFeatures[index + 1]
+    updatedFeatures[index + 1] = temp
+    setFormData({ ...formData, features: updatedFeatures })
+  }
+
   // AI tarjima - faqat bitta feature uchun
   const handleFeatureTranslate = async (index: number) => {
     const feature = formData.features[index]
@@ -579,18 +662,25 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       return
     }
 
-    const targetLangs = ['uz', 'ru', 'en'].filter(l => l !== sourceLang) as ('uz' | 'ru' | 'en')[]
+    // Faqat bo'sh maydonlarni tarjima qilish
+    const allTargetLangs = ['uz', 'ru', 'en'].filter(l => l !== sourceLang) as ('uz' | 'ru' | 'en')[]
+    const emptyLangs = allTargetLangs.filter(lang => !feature[lang].trim())
+
+    if (emptyLangs.length === 0) {
+      alert('⚠️ Barcha maydonlar to\'ldirilgan.')
+      return
+    }
 
     try {
       const result = await translateApi.translate({
         text: sourceText,
         source_lang: sourceLang,
-        target_langs: targetLangs
+        target_langs: emptyLangs
       })
 
       if (result.success) {
         const updatedFeatures = [...formData.features]
-        targetLangs.forEach(lang => {
+        emptyLangs.forEach(lang => {
           if (result.translations[lang]) {
             updatedFeatures[index] = { ...updatedFeatures[index], [lang]: result.translations[lang] }
           }
@@ -624,18 +714,25 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       return
     }
 
-    const targetLangs = ['uz', 'ru', 'en'].filter(l => l !== sourceLang) as ('uz' | 'ru' | 'en')[]
+    // Faqat bo'sh maydonlarni tarjima qilish
+    const allTargetLangs = ['uz', 'ru', 'en'].filter(l => l !== sourceLang) as ('uz' | 'ru' | 'en')[]
+    const emptyLangs = allTargetLangs.filter(lang => !newFeature[lang].trim())
+
+    if (emptyLangs.length === 0) {
+      alert('⚠️ Barcha maydonlar to\'ldirilgan.')
+      return
+    }
 
     try {
       const result = await translateApi.translate({
         text: sourceText,
         source_lang: sourceLang,
-        target_langs: targetLangs
+        target_langs: emptyLangs
       })
 
       if (result.success) {
         const updatedFeature = { ...newFeature }
-        targetLangs.forEach(lang => {
+        emptyLangs.forEach(lang => {
           if (result.translations[lang]) {
             updatedFeature[lang] = result.translations[lang]
           }
@@ -681,8 +778,8 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
         enabled: project.integrations.includes(i.name)
       })),
       integrationConfigs: getDefaultIntegrationConfigs(),
-      isTop: false,
-      isNew: false,
+      isTop: project.is_top || false,
+      isNew: project.is_new || false,
       image: null,
       videos: [],
       images: [],
@@ -1022,7 +1119,10 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
               </div>
 
               <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white mb-1">{getLocalizedName(project, lang)}</h3>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">{getLocalizedDescription(project, lang)}</p>
+              <div
+                className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-2"
+                dangerouslySetInnerHTML={{ __html: getLocalizedDescription(project, lang) }}
+              />
 
               <div className="flex items-center gap-1.5 mb-2 flex-wrap">
                 <span className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded">
@@ -1160,7 +1260,10 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
 
               <div>
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t.description}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">{getLocalizedDescription(viewProject, lang)}</p>
+                <div
+                  className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: getLocalizedDescription(viewProject, lang) }}
+                />
               </div>
 
               <div>
@@ -1486,18 +1589,330 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                 <p className="text-xs text-gray-500 mt-1">{t.separateWithComma}</p>
               </div>
 
-              {/* Izoh - Multi-language */}
+              {/* Izoh - Multi-language with Rich Text Editor */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   {t.description} *
                 </label>
-                <textarea
-                  value={formData.description[activeTab]}
-                  onChange={(e) => setFormData({ ...formData, description: { ...formData.description, [activeTab]: e.target.value } })}
-                  placeholder={`Loyiha haqida qisqacha (${activeTab.toUpperCase()})`}
-                  rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6] resize-none"
+
+                {/* Rich Text Formatting Toolbar */}
+                <div className="bg-gray-100 dark:bg-gray-700 rounded-t-xl p-2 border border-b-0 border-gray-200 dark:border-gray-600">
+                  <div className="flex flex-wrap gap-1">
+                    {/* Bold */}
+                    <button
+                      type="button"
+                      onClick={() => formatText('bold')}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 transition-colors"
+                      title="Qalin (Bold)"
+                    >
+                      <b className="text-sm">B</b>
+                    </button>
+
+                    {/* Italic */}
+                    <button
+                      type="button"
+                      onClick={() => formatText('italic')}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 transition-colors"
+                      title="Qiyshiq (Italic)"
+                    >
+                      <i className="text-sm">I</i>
+                    </button>
+
+                    {/* Underline */}
+                    <button
+                      type="button"
+                      onClick={() => formatText('underline')}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 transition-colors"
+                      title="Tagiga chiziq (Underline)"
+                    >
+                      <u className="text-sm">U</u>
+                    </button>
+
+                    {/* Strikethrough */}
+                    <button
+                      type="button"
+                      onClick={() => formatText('strikeThrough')}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 transition-colors"
+                      title="Chizilgan (Strikethrough)"
+                    >
+                      <s className="text-sm">S</s>
+                    </button>
+
+                    <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+
+                    {/* Heading 1 */}
+                    <button
+                      type="button"
+                      onClick={() => formatText('formatBlock', 'h1')}
+                      className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 text-xs font-semibold transition-colors"
+                      title="Sarlavha 1 (H1)"
+                    >
+                      H1
+                    </button>
+
+                    {/* Heading 2 */}
+                    <button
+                      type="button"
+                      onClick={() => formatText('formatBlock', 'h2')}
+                      className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 text-xs font-semibold transition-colors"
+                      title="Sarlavha 2 (H2)"
+                    >
+                      H2
+                    </button>
+
+                    {/* Heading 3 */}
+                    <button
+                      type="button"
+                      onClick={() => formatText('formatBlock', 'h3')}
+                      className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 text-xs font-semibold transition-colors"
+                      title="Sarlavha 3 (H3)"
+                    >
+                      H3
+                    </button>
+
+                    <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+
+                    {/* Text Colors */}
+                    <button
+                      type="button"
+                      onClick={() => formatText('foreColor', '#ef4444')}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+                      title="Qizil rang"
+                    >
+                      <div className="w-4 h-4 bg-red-500 rounded"></div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => formatText('foreColor', '#3b82f6')}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+                      title="Ko'k rang"
+                    >
+                      <div className="w-4 h-4 bg-blue-500 rounded"></div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => formatText('foreColor', '#10b981')}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+                      title="Yashil rang"
+                    >
+                      <div className="w-4 h-4 bg-green-500 rounded"></div>
+                    </button>
+
+                    {/* Highlight */}
+                    <button
+                      type="button"
+                      onClick={() => formatText('backColor', '#fef08a')}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+                      title="Belgilash (Highlight)"
+                    >
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+
+                    <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+
+                    {/* Unordered List */}
+                    <button
+                      type="button"
+                      onClick={() => formatText('insertUnorderedList')}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 transition-colors"
+                      title="Nuqtali ro'yxat"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                      </svg>
+                    </button>
+
+                    {/* Ordered List */}
+                    <button
+                      type="button"
+                      onClick={() => formatText('insertOrderedList')}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 transition-colors"
+                      title="Raqamli ro'yxat"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                      </svg>
+                    </button>
+
+                    {/* Link */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const url = prompt('Havola URL manzilini kiriting:', 'https://')
+                        if (url) formatText('createLink', url)
+                      }}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 transition-colors"
+                      title="Havola (Link)"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                      </svg>
+                    </button>
+
+                    <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+
+                    {/* Clear Formatting */}
+                    <button
+                      type="button"
+                      onClick={() => formatText('removeFormat')}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 transition-colors"
+                      title="Formatni tozalash"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {/* WYSIWYG Editor */}
+                <div
+                  ref={editorRef}
+                  contentEditable
+                  suppressContentEditableWarning
+                  onInput={handleEditorInput}
+                  onKeyDown={handleEditorKeyDown}
+                  onBlur={(e) => {
+                    const newContent = e.currentTarget.innerHTML
+                    setFormData({ ...formData, description: { ...formData.description, [activeTab]: newContent } })
+                  }}
+                  className="w-full min-h-[250px] px-4 py-3 border border-t-0 border-gray-200 dark:border-gray-600 rounded-b-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6] overflow-y-auto"
+                  style={{
+                    maxHeight: '400px',
+                  }}
+                  data-placeholder={formData.description[activeTab] ? '' : `Loyiha haqida yozing (${activeTab.toUpperCase()})...`}
                 />
+
+                {/* Editor and List Styles */}
+                <style jsx global>{`
+                  [contenteditable][data-placeholder]:empty:before {
+                    content: attr(data-placeholder);
+                    color: #9ca3af;
+                    pointer-events: none;
+                    position: absolute;
+                  }
+                  [contenteditable] {
+                    position: relative;
+                  }
+
+                  /* List styling for editor and display */
+                  [contenteditable] ul,
+                  [contenteditable] ol,
+                  .line-clamp-2 ul,
+                  .line-clamp-2 ol,
+                  .leading-relaxed ul,
+                  .leading-relaxed ol {
+                    margin-left: 1.5rem;
+                    margin-top: 0.5rem;
+                    margin-bottom: 0.5rem;
+                  }
+
+                  [contenteditable] ul,
+                  .line-clamp-2 ul,
+                  .leading-relaxed ul {
+                    list-style-type: disc;
+                  }
+
+                  [contenteditable] ol,
+                  .line-clamp-2 ol,
+                  .leading-relaxed ol {
+                    list-style-type: decimal;
+                  }
+
+                  [contenteditable] li,
+                  .line-clamp-2 li,
+                  .leading-relaxed li {
+                    margin-bottom: 0.25rem;
+                    padding-left: 0.25rem;
+                  }
+
+                  /* Preserve line breaks */
+                  [contenteditable] br,
+                  .line-clamp-2 br,
+                  .leading-relaxed br {
+                    display: block;
+                    content: "";
+                    margin-top: 0.5rem;
+                  }
+
+                  /* Paragraph spacing */
+                  [contenteditable] p,
+                  .line-clamp-2 p,
+                  .leading-relaxed p {
+                    margin-bottom: 0.5rem;
+                  }
+
+                  /* Heading styles */
+                  [contenteditable] h1,
+                  .line-clamp-2 h1,
+                  .leading-relaxed h1 {
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    margin-top: 0.75rem;
+                    margin-bottom: 0.5rem;
+                  }
+
+                  [contenteditable] h2,
+                  .line-clamp-2 h2,
+                  .leading-relaxed h2 {
+                    font-size: 1.25rem;
+                    font-weight: 600;
+                    margin-top: 0.75rem;
+                    margin-bottom: 0.5rem;
+                  }
+
+                  [contenteditable] h3,
+                  .line-clamp-2 h3,
+                  .leading-relaxed h3 {
+                    font-size: 1.125rem;
+                    font-weight: 600;
+                    margin-top: 0.5rem;
+                    margin-bottom: 0.5rem;
+                  }
+
+                  /* Link styles */
+                  [contenteditable] a,
+                  .line-clamp-2 a,
+                  .leading-relaxed a {
+                    color: #3b82f6;
+                    text-decoration: underline;
+                  }
+
+                  /* Bold, italic, underline, strikethrough */
+                  [contenteditable] strong,
+                  [contenteditable] b,
+                  .line-clamp-2 strong,
+                  .line-clamp-2 b,
+                  .leading-relaxed strong,
+                  .leading-relaxed b {
+                    font-weight: 700;
+                  }
+
+                  [contenteditable] em,
+                  [contenteditable] i,
+                  .line-clamp-2 em,
+                  .line-clamp-2 i,
+                  .leading-relaxed em,
+                  .leading-relaxed i {
+                    font-style: italic;
+                  }
+
+                  [contenteditable] u,
+                  .line-clamp-2 u,
+                  .leading-relaxed u {
+                    text-decoration: underline;
+                  }
+
+                  [contenteditable] strike,
+                  .line-clamp-2 strike,
+                  .leading-relaxed strike {
+                    text-decoration: line-through;
+                  }
+                `}</style>
               </div>
 
               {/* Imkoniyatlar - 3 tilli */}
@@ -1570,6 +1985,39 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                     <div className="space-y-2 mt-3">
                       {formData.features.map((feature, idx) => (
                         <div key={idx} className="flex gap-1 sm:gap-2 bg-white dark:bg-gray-800 p-2 rounded-lg">
+                          {/* Up/Down buttons */}
+                          <div className="flex flex-col gap-0.5">
+                            <button
+                              type="button"
+                              onClick={() => moveFeatureUp(idx)}
+                              disabled={idx === 0}
+                              title="Yuqoriga ko'tarish"
+                              className={`p-0.5 rounded text-xs ${
+                                idx === 0
+                                  ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                              }`}
+                            >
+                              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                              </svg>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => moveFeatureDown(idx)}
+                              disabled={idx === formData.features.length - 1}
+                              title="Pastga tushirish"
+                              className={`p-0.5 rounded text-xs ${
+                                idx === formData.features.length - 1
+                                  ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                              }`}
+                            >
+                              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                              </svg>
+                            </button>
+                          </div>
                           <div className="flex-1 grid grid-cols-3 gap-1 sm:gap-2">
                             <input
                               type="text"
