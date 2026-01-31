@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Cookies from 'js-cookie'
 import {
   footerApi,
   FooterSection,
@@ -105,7 +106,7 @@ export default function FooterPage({ t }: FooterPageProps) {
     }
   }
 
-  const getToken = () => localStorage.getItem('access_token') || ''
+  const getToken = () => Cookies.get('access_token') || ''
 
   // Error handler - xatoliklarni to'g'ri ko'rsatish
   const handleError = (error: any) => {
