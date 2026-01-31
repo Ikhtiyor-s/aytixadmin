@@ -83,7 +83,7 @@ export default function FooterPage({ t }: FooterPageProps) {
   }, [])
 
   const loadData = async () => {
-    const token = localStorage.getItem('access_token')
+    const token = getToken()
     if (!token) {
       setLoading(false)
       return
