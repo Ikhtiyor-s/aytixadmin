@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { faqApi, FAQ } from '@/lib/api/faq'
+import Cookies from 'js-cookie'
 
 interface FAQPageProps {
   t: any
@@ -26,10 +27,10 @@ export default function FAQPage({ t }: FAQPageProps) {
     answer_en: '',
     category: '',
     order: 0,
-    is_active: true
+    status: 'active'
   })
 
-  const getToken = () => localStorage.getItem('access_token') || ''
+  const getToken = () => Cookies.get('access_token') || ''
 
   // Error handler
   const handleError = (error: any) => {
@@ -93,7 +94,7 @@ export default function FAQPage({ t }: FAQPageProps) {
       answer_en: '',
       category: '',
       order: 0,
-      is_active: true
+      status: 'active'
     })
   }
 
@@ -164,7 +165,7 @@ export default function FAQPage({ t }: FAQPageProps) {
       answer_en: faq.answer_en || '',
       category: faq.category || '',
       order: faq.order || 0,
-      is_active: faq.is_active
+      status: faq.status || 'active'
     })
     setShowModal(true)
   }
@@ -244,7 +245,7 @@ export default function FAQPage({ t }: FAQPageProps) {
                 <div
                   key={faq.id}
                   className={`border rounded-lg overflow-hidden ${
-                    faq.is_active
+                    faq.status === 'active'
                       ? 'border-gray-200 dark:border-gray-600'
                       : 'border-gray-200 dark:border-gray-700 opacity-60'
                   }`}
@@ -261,11 +262,11 @@ export default function FAQPage({ t }: FAQPageProps) {
                           </span>
                         )}
                         <span className={`px-2 py-0.5 text-xs rounded ${
-                          faq.is_active
+                          faq.status === 'active'
                             ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                             : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
                         }`}>
-                          {faq.is_active ? (t.active || 'Faol') : (t.inactive || 'Nofaol')}
+                          {faq.status === 'active' ? (t.active || 'Faol') : (t.inactive || 'Nofaol')}
                         </span>
                       </div>
                       <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -276,15 +277,15 @@ export default function FAQPage({ t }: FAQPageProps) {
                       <button
                         onClick={() => handleToggle(faq.id!)}
                         className={`p-2 rounded-lg transition-colors ${
-                          faq.is_active
+                          faq.status === 'active'
                             ? 'text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20'
                             : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                         }`}
-                        title={faq.is_active ? 'Nofaol qilish' : 'Faol qilish'}
+                        title={faq.status === 'active' ? 'Nofaol qilish' : 'Faol qilish'}
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={
-                            faq.is_active
+                            faq.status === 'active'
                               ? "M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                               : "M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
                           } />
@@ -322,110 +323,124 @@ export default function FAQPage({ t }: FAQPageProps) {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold dark:text-white">
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 xs:p-3 sm:p-4"
+          onClick={() => { setShowModal(false); setSelectedFAQ(null); resetForm() }}
+        >
+          <div
+            className="bg-white dark:bg-gray-800 rounded-lg xs:rounded-xl w-full max-w-[95%] xs:max-w-xl sm:max-w-2xl max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-3 xs:p-4 sm:p-5 md:p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <h3 className="text-base xs:text-lg font-semibold dark:text-white">
                 {selectedFAQ ? (t.editFaq || 'Savolni tahrirlash') : (t.addFaq || "Yangi savol qo'shish")}
               </h3>
+              <button
+                onClick={() => { setShowModal(false); setSelectedFAQ(null); resetForm() }}
+                className="p-1.5 xs:p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+              >
+                <svg className="w-5 h-5 xs:w-6 xs:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="p-3 xs:p-4 sm:p-5 md:p-6 space-y-3 xs:space-y-4">
               {/* Savol UZ */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t.questionUz || 'Savol (UZ)'} *
                 </label>
                 <input
                   type="text"
                   value={form.question_uz}
                   onChange={(e) => setForm({ ...form, question_uz: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
                   placeholder="Savolni kiriting..."
                 />
               </div>
 
               {/* Savol RU */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t.questionRu || 'Savol (RU)'}
                 </label>
                 <input
                   type="text"
                   value={form.question_ru}
                   onChange={(e) => setForm({ ...form, question_ru: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
                   placeholder="Введите вопрос..."
                 />
               </div>
 
               {/* Savol EN */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t.questionEn || 'Savol (EN)'}
                 </label>
                 <input
                   type="text"
                   value={form.question_en}
                   onChange={(e) => setForm({ ...form, question_en: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
                   placeholder="Enter question..."
                 />
               </div>
 
               {/* Javob UZ */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t.answerUz || 'Javob (UZ)'} *
                 </label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   value={form.answer_uz}
                   onChange={(e) => setForm({ ...form, answer_uz: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+                  className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
                   placeholder="Javobni kiriting..."
                 />
               </div>
 
               {/* Javob RU */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t.answerRu || 'Javob (RU)'}
                 </label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   value={form.answer_ru}
                   onChange={(e) => setForm({ ...form, answer_ru: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+                  className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
                   placeholder="Введите ответ..."
                 />
               </div>
 
               {/* Javob EN */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t.answerEn || 'Javob (EN)'}
                 </label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   value={form.answer_en}
                   onChange={(e) => setForm({ ...form, answer_en: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+                  className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
                   placeholder="Enter answer..."
                 />
               </div>
 
               {/* Category and Status */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     {t.category || 'Kategoriya'}
                   </label>
                   <input
                     type="text"
                     value={form.category}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="Umumiy"
                     list="categories"
                   />
@@ -436,32 +451,32 @@ export default function FAQPage({ t }: FAQPageProps) {
                   </datalist>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     {t.status || 'Holat'}
                   </label>
                   <select
-                    value={form.is_active ? 'true' : 'false'}
-                    onChange={(e) => setForm({ ...form, is_active: e.target.value === 'true' })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    value={form.status || 'active'}
+                    onChange={(e) => setForm({ ...form, status: e.target.value })}
+                    className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
                   >
-                    <option value="true">{t.active || 'Faol'}</option>
-                    <option value="false">{t.inactive || 'Nofaol'}</option>
+                    <option value="active">{t.active || 'Faol'}</option>
+                    <option value="inactive">{t.inactive || 'Nofaol'}</option>
                   </select>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex gap-3">
+            <div className="p-3 xs:p-4 sm:p-5 md:p-6 border-t border-gray-200 dark:border-gray-700 flex flex-col xs:flex-row gap-2 xs:gap-3">
               <button
                 onClick={() => { setShowModal(false); setSelectedFAQ(null); resetForm() }}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="flex-1 px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md xs:rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 {t.cancel || 'Bekor qilish'}
               </button>
               <button
                 onClick={selectedFAQ ? handleUpdate : handleCreate}
                 disabled={saving || !form.question_uz || !form.answer_uz}
-                className="flex-1 px-4 py-2 bg-[#00a6a6] text-white rounded-lg hover:bg-[#00a6a6]/90 disabled:opacity-50"
+                className="flex-1 px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm bg-[#00a6a6] text-white rounded-md xs:rounded-lg hover:bg-[#00a6a6]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {saving ? (t.saving || 'Saqlanmoqda...') : (t.save || 'Saqlash')}
               </button>

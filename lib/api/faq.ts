@@ -24,7 +24,7 @@ export interface FAQ {
   answer_en?: string
   category?: string
   order?: number
-  is_active?: boolean
+  status?: string
   created_at?: string
   updated_at?: string
 }
@@ -52,11 +52,11 @@ export const faqApi = {
   },
 
   // ============== ADMIN ==============
-  async getFAQs(token: string, category?: string, isActive?: boolean): Promise<FAQ[]> {
+  async getFAQs(token: string, category?: string, status?: string): Promise<FAQ[]> {
     let url = `${API_BASE_URL}/faq`
     const params = new URLSearchParams()
     if (category) params.append('category', category)
-    if (isActive !== undefined) params.append('is_active', String(isActive))
+    if (status) params.append('status', status)
     if (params.toString()) url += `?${params.toString()}`
 
     const response = await fetch(url, {

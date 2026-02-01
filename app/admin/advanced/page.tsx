@@ -18,12 +18,19 @@ import AnalyticsPage from '@/components/admin/AnalyticsPage'
 import AdminProfilePage from '@/components/admin/AdminProfilePage'
 import FooterPage from '@/components/admin/FooterPage'
 import FAQPage from '@/components/admin/FAQPage'
+import ContactsPage from '@/components/admin/ContactsPage'
 
 export default function AdminPanel() {
   const { user, logout, isAuthenticated, loading: authLoading } = useAuth()
   const router = useRouter()
   const [mounted, setMounted] = useState(false)
-  const [currentPage, setCurrentPage] = useState('dashboard')
+  const [currentPage, setCurrentPage] = useState(() => {
+    // Load saved page from localStorage
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('adminCurrentPage') || 'dashboard'
+    }
+    return 'dashboard'
+  })
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
@@ -36,6 +43,13 @@ export default function AdminPanel() {
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Save current page to localStorage
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem('adminCurrentPage', currentPage)
+    }
+  }, [currentPage, mounted])
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -76,6 +90,7 @@ export default function AdminPanel() {
     { id: 'analytics', name: t.analytics, icon: Icons.trendingUp },
     { id: 'footer', name: t.footer || 'Footer', icon: Icons.grid },
     { id: 'faq', name: t.faq || 'FAQ', icon: Icons.comments },
+    { id: 'contacts', name: t.contacts || 'Kontaktlar', icon: Icons.phone },
     { id: 'settings', name: t.settings, icon: Icons.settings },
     { id: 'profile', name: t.profile || 'Profil', icon: Icons.user },
   ]
@@ -331,8 +346,13 @@ export default function AdminPanel() {
               <FAQPage t={t} />
             )}
 
+            {/* Contacts Page */}
+            {currentPage === 'contacts' && (
+              <ContactsPage t={t} globalSearch={globalSearch} lang={lang} />
+            )}
+
             {/* Other Pages */}
-            {currentPage !== 'projects' && currentPage !== 'categories' && currentPage !== 'content' && currentPage !== 'users' && currentPage !== 'messages' && currentPage !== 'partners' && currentPage !== 'integrations' && currentPage !== 'ai' && currentPage !== 'dashboard' && currentPage !== 'analytics' && currentPage !== 'profile' && currentPage !== 'footer' && currentPage !== 'faq' && (
+            {currentPage !== 'projects' && currentPage !== 'categories' && currentPage !== 'content' && currentPage !== 'users' && currentPage !== 'messages' && currentPage !== 'partners' && currentPage !== 'integrations' && currentPage !== 'ai' && currentPage !== 'dashboard' && currentPage !== 'analytics' && currentPage !== 'profile' && currentPage !== 'footer' && currentPage !== 'faq' && currentPage !== 'contacts' && (
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                   {currentPage === 'dashboard' && t.dashboard}

@@ -15,6 +15,7 @@ interface ContactsPageProps {
 export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProps) {
   const [contacts, setContacts] = useState<FooterContact[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [editingContact, setEditingContact] = useState<FooterContact | null>(null)
   const [saving, setSaving] = useState(false)
@@ -44,16 +45,20 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
   const loadContacts = async () => {
     try {
       setLoading(true)
+      setError(null)
       const token = getToken()
       if (!token) {
-        alert(t.pleaseReLogin)
+        setError('Token topilmadi. Iltimos, qayta login qiling.')
+        window.location.href = '/admin/login'
         return
       }
       const data = await footerApi.getContacts(token)
       setContacts(data)
-    } catch (error) {
+      setError(null)
+    } catch (error: any) {
       console.error('Error loading contacts:', error)
-      alert('Kontaktlarni yuklashda xatolik')
+      const errorMessage = error.response?.data?.detail || error.message || 'Kontaktlarni yuklashda xatolik'
+      setError(`Xatolik: ${errorMessage}`)
     } finally {
       setLoading(false)
     }
@@ -156,6 +161,50 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
     }
   }
 
+  const handleMoveUp = async (index: number) => {
+    if (index === 0) return // Already at top
+
+    const newContacts = [...filteredContacts]
+    const temp = newContacts[index]
+    newContacts[index] = newContacts[index - 1]
+    newContacts[index - 1] = temp
+
+    await saveNewOrder(newContacts)
+  }
+
+  const handleMoveDown = async (index: number) => {
+    if (index === filteredContacts.length - 1) return // Already at bottom
+
+    const newContacts = [...filteredContacts]
+    const temp = newContacts[index]
+    newContacts[index] = newContacts[index + 1]
+    newContacts[index + 1] = temp
+
+    await saveNewOrder(newContacts)
+  }
+
+  const saveNewOrder = async (newContacts: FooterContact[]) => {
+    try {
+      const token = getToken()
+      if (!token) {
+        alert(t.pleaseReLogin)
+        return
+      }
+
+      // Update order values
+      const reorderData = newContacts.map((contact, index) => ({
+        id: contact.id!,
+        order: index
+      }))
+
+      await footerApi.reorderContacts(reorderData, token)
+      loadContacts()
+    } catch (error) {
+      console.error('Error reordering contacts:', error)
+      alert('Tartibni o\'zgartirishda xatolik')
+    }
+  }
+
   const handleTypeChange = (type: 'phone' | 'email' | 'address' | 'telegram' | 'whatsapp') => {
     setFormData({
       ...formData,
@@ -208,9 +257,30 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
       </div>
 
       {/* Contacts Grid */}
-      {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00a6a6]"></div>
+      {error ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="bg-red-100 dark:bg-red-900/30 rounded-full p-6 mb-4">
+            <svg className="w-12 h-12 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Xatolik yuz berdi
+          </h3>
+          <p className="text-red-600 dark:text-red-400 text-center max-w-md mb-4 px-4">
+            {error}
+          </p>
+          <button
+            onClick={loadContacts}
+            className="px-6 py-2 bg-[#00a6a6] text-white rounded-lg hover:bg-[#0a2d5c] transition-colors font-medium"
+          >
+            Qayta urinib ko'rish
+          </button>
+        </div>
+      ) : loading ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00a6a6] mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Kontaktlar yuklanmoqda...</p>
         </div>
       ) : filteredContacts.length === 0 ? (
         <div className="text-center py-20">
@@ -223,23 +293,52 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredContacts.map(contact => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredContacts.map((contact, index) => (
             <div
               key={contact.id}
-              className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-all"
+              className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 group"
             >
-              <div className="flex items-start justify-between mb-3">
+              {/* Header with icon and actions */}
+              <div className="bg-gradient-to-r from-[#00a6a6]/10 to-[#0a2d5c]/10 dark:from-[#00a6a6]/20 dark:to-[#0a2d5c]/20 p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="text-2xl">
-                    {contact.contact_type === 'phone' && '📞'}
-                    {contact.contact_type === 'email' && '📧'}
-                    {contact.contact_type === 'address' && '📍'}
-                    {contact.contact_type === 'telegram' && '✈️'}
-                    {contact.contact_type === 'whatsapp' && '💬'}
+                  {/* SVG Icon */}
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                    contact.contact_type === 'phone' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' :
+                    contact.contact_type === 'email' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' :
+                    contact.contact_type === 'telegram' ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400' :
+                    contact.contact_type === 'whatsapp' ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' :
+                    'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                  }`}>
+                    {contact.contact_type === 'phone' && (
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
+                    )}
+                    {contact.contact_type === 'email' && (
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    )}
+                    {contact.contact_type === 'address' && (
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    )}
+                    {contact.contact_type === 'telegram' && (
+                      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.693-1.653-1.124-2.678-1.8-1.185-.781-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.008-1.252-.241-1.865-.44-.752-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.141.122.1.156.235.172.331.016.095.036.313.02.481z"/>
+                      </svg>
+                    )}
+                    {contact.contact_type === 'whatsapp' && (
+                      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                      </svg>
+                    )}
                   </div>
                   <div>
-                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                    <div className="text-sm font-semibold text-gray-900 dark:text-white">
                       {getContactTypeLabel(contact.contact_type)}
                     </div>
                     {contact.label_uz && (
@@ -249,17 +348,47 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                  {/* Up/Down buttons */}
+                  <button
+                    onClick={() => handleMoveUp(index)}
+                    disabled={index === 0}
+                    className={`p-2 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-lg transition-colors ${
+                      index === 0
+                        ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                        : 'text-gray-600 dark:text-gray-400'
+                    }`}
+                    title="Yuqoriga ko'chirish"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => handleMoveDown(index)}
+                    disabled={index === filteredContacts.length - 1}
+                    className={`p-2 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-lg transition-colors ${
+                      index === filteredContacts.length - 1
+                        ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                        : 'text-gray-600 dark:text-gray-400'
+                    }`}
+                    title="Pastga ko'chirish"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div className="w-px h-6 bg-gray-200 dark:bg-gray-600 mx-1"></div>
                   <button
                     onClick={() => openEditModal(contact)}
-                    className="p-1.5 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg text-blue-600"
+                    className="p-2 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-lg text-gray-600 dark:text-gray-400 transition-colors"
                     title="Tahrirlash"
                   >
                     {Icons.edit}
                   </button>
                   <button
                     onClick={() => contact.id && handleDelete(contact.id)}
-                    className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-600"
+                    className="p-2 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-lg text-red-600 dark:text-red-400 transition-colors"
                     title="O'chirish"
                   >
                     {Icons.trash}
@@ -267,35 +396,44 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
                 </div>
               </div>
 
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
-                <div className="text-sm font-medium text-gray-900 dark:text-white break-all">
-                  {contact.value}
+              {/* Content */}
+              <div className="p-4">
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+                  <div className="text-base font-medium text-gray-900 dark:text-white break-all">
+                    {contact.value}
+                  </div>
+                  {contact.link_url && (
+                    <a
+                      href={contact.link_url}
+                      {...(contact.contact_type === 'telegram' || contact.contact_type === 'whatsapp' || contact.contact_type === 'address' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      className="inline-flex items-center gap-1 text-sm text-[#00a6a6] hover:text-[#0a2d5c] dark:hover:text-[#00a6a6] mt-2 font-medium transition-colors group/link"
+                    >
+                      {contact.contact_type === 'phone' ? 'Qo\'ng\'iroq qilish' :
+                       contact.contact_type === 'email' ? 'Email yuborish' :
+                       contact.contact_type === 'telegram' ? 'Telegramda yozish' :
+                       contact.contact_type === 'whatsapp' ? 'WhatsAppda yozish' :
+                       'Havolaga o\'tish'}
+                      <svg className="w-4 h-4 group-hover/link:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  )}
                 </div>
-                {contact.link_url && (
-                  <a
-                    href={contact.link_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-blue-600 hover:underline mt-1 inline-block"
-                  >
-                    Havolaga o'tish →
-                  </a>
-                )}
-              </div>
 
-              <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-                <span className={`px-2 py-0.5 rounded-md text-xs font-medium ${
-                  contact.is_active !== false
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                    : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
-                }`}>
-                  {contact.is_active !== false ? 'Faol' : 'Faol emas'}
-                </span>
-                {contact.order !== undefined && (
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    #{contact.order}
+                <div className="flex items-center justify-between mt-4">
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    contact.is_active !== false
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                      : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
+                  }`}>
+                    {contact.is_active !== false ? '✓ Faol' : '○ Faol emas'}
                   </span>
-                )}
+                  {contact.order !== undefined && (
+                    <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                      #{contact.order}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -304,15 +442,22 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
 
       {/* Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => { setShowModal(false); setEditingContact(null) }}
+        >
+          <div
+            className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 {editingContact ? 'Kontaktni tahrirlash' : 'Yangi kontakt qo\'shish'}
               </h2>
               <button
-                onClick={() => setShowModal(false)}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                onClick={() => { setShowModal(false); setEditingContact(null) }}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                title="Yopish"
               >
                 {Icons.close}
               </button>
@@ -336,12 +481,33 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
                           : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
                       }`}
                     >
-                      <div className="text-2xl mb-1">
-                        {type === 'phone' && '📞'}
-                        {type === 'email' && '📧'}
-                        {type === 'address' && '📍'}
-                        {type === 'telegram' && '✈️'}
-                        {type === 'whatsapp' && '💬'}
+                      <div className="mb-1 flex justify-center">
+                        {type === 'phone' && (
+                          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          </svg>
+                        )}
+                        {type === 'email' && (
+                          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                        )}
+                        {type === 'address' && (
+                          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                        )}
+                        {type === 'telegram' && (
+                          <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.693-1.653-1.124-2.678-1.8-1.185-.781-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.008-1.252-.241-1.865-.44-.752-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.141.122.1.156.235.172.331.016.095.036.313.02.481z"/>
+                          </svg>
+                        )}
+                        {type === 'whatsapp' && (
+                          <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                          </svg>
+                        )}
                       </div>
                       <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
                         {getContactTypeLabel(type).split(' ')[1]}
@@ -440,8 +606,8 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
 
             <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex gap-3">
               <button
-                onClick={() => setShowModal(false)}
-                className="flex-1 px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 font-medium"
+                onClick={() => { setShowModal(false); setEditingContact(null) }}
+                className="flex-1 px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 font-medium transition-colors"
               >
                 Bekor qilish
               </button>

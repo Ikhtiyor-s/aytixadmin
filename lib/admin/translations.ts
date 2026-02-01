@@ -377,6 +377,36 @@ export interface Translations {
   answerUz: string
   answerRu: string
   answerEn: string
+  // Contacts page
+  contactInfo: string
+  contactInfoDesc: string
+  loadingContacts: string
+  errorOccurred: string
+  retryAgain: string
+  noContactsFound: string
+  clickAddContact: string
+  callPhone: string
+  sendEmail: string
+  writeTelegram: string
+  writeWhatsApp: string
+  goToLink: string
+  moveUp: string
+  moveDown: string
+  activeStatus: string
+  inactiveStatus: string
+  contactDeleted: string
+  deleteError: string
+  orderUpdated: string
+  orderUpdateError: string
+  contactLabel: string
+  contactLinkUrl: string
+  required: string
+  phoneType: string
+  emailType: string
+  addressType: string
+  telegramType: string
+  whatsappType: string
+  valuePlaceholder: string
 }
 
 export const translations: Record<Language, Translations> = {
@@ -757,6 +787,36 @@ export const translations: Record<Language, Translations> = {
     answerUz: "Javob (UZ)",
     answerRu: "Javob (RU)",
     answerEn: "Javob (EN)",
+    // Contacts page
+    contactInfo: "Aloqa ma'lumotlari",
+    contactInfoDesc: "Telefon, email, manzil va boshqa aloqa ma'lumotlarini boshqaring",
+    loadingContacts: 'Kontaktlar yuklanmoqda...',
+    errorOccurred: 'Xatolik yuz berdi',
+    retryAgain: "Qayta urinib ko'rish",
+    noContactsFound: 'Kontaktlar topilmadi',
+    clickAddContact: "Yangi kontakt qo'shish uchun yuqoridagi tugmani bosing",
+    callPhone: "Qo'ng'iroq qilish",
+    sendEmail: 'Email yuborish',
+    writeTelegram: 'Telegramda yozish',
+    writeWhatsApp: 'WhatsAppda yozish',
+    goToLink: "Havolaga o'tish",
+    moveUp: "Yuqoriga ko'chirish",
+    moveDown: "Pastga ko'chirish",
+    activeStatus: 'Faol',
+    inactiveStatus: 'Faol emas',
+    contactDeleted: "Kontakt o'chirildi!",
+    deleteError: "O'chirishda xatolik",
+    orderUpdated: 'Tartib yangilandi',
+    orderUpdateError: "Tartibni o'zgartirishda xatolik",
+    contactLabel: 'Yorliq',
+    contactLinkUrl: 'Havola URL',
+    required: 'majburiy',
+    phoneType: 'Telefon',
+    emailType: 'Email',
+    addressType: 'Manzil',
+    telegramType: 'Telegram',
+    whatsappType: 'WhatsApp',
+    valuePlaceholder: 'Qiymat',
   },
   ru: {
     dashboard: 'Панель',
@@ -1135,6 +1195,36 @@ export const translations: Record<Language, Translations> = {
     answerUz: 'Ответ (UZ)',
     answerRu: 'Ответ (RU)',
     answerEn: 'Ответ (EN)',
+    // Contacts page
+    contactInfo: 'Контактная информация',
+    contactInfoDesc: 'Управление телефоном, email, адресом и другой контактной информацией',
+    loadingContacts: 'Загрузка контактов...',
+    errorOccurred: 'Произошла ошибка',
+    retryAgain: 'Попробовать снова',
+    noContactsFound: 'Контакты не найдены',
+    clickAddContact: 'Нажмите кнопку выше, чтобы добавить новый контакт',
+    callPhone: 'Позвонить',
+    sendEmail: 'Отправить email',
+    writeTelegram: 'Написать в Telegram',
+    writeWhatsApp: 'Написать в WhatsApp',
+    goToLink: 'Перейти по ссылке',
+    moveUp: 'Переместить вверх',
+    moveDown: 'Переместить вниз',
+    activeStatus: 'Активен',
+    inactiveStatus: 'Неактивен',
+    contactDeleted: 'Контакт удалён!',
+    deleteError: 'Ошибка удаления',
+    orderUpdated: 'Порядок обновлён',
+    orderUpdateError: 'Ошибка изменения порядка',
+    contactLabel: 'Метка',
+    contactLinkUrl: 'URL ссылки',
+    required: 'обязательно',
+    phoneType: 'Телефон',
+    emailType: 'Email',
+    addressType: 'Адрес',
+    telegramType: 'Telegram',
+    whatsappType: 'WhatsApp',
+    valuePlaceholder: 'Значение',
   },
   en: {
     dashboard: 'Dashboard',
@@ -1513,6 +1603,36 @@ export const translations: Record<Language, Translations> = {
     answerUz: 'Answer (UZ)',
     answerRu: 'Answer (RU)',
     answerEn: 'Answer (EN)',
+    // Contacts page
+    contactInfo: 'Contact Information',
+    contactInfoDesc: 'Manage phone, email, address and other contact information',
+    loadingContacts: 'Loading contacts...',
+    errorOccurred: 'An error occurred',
+    retryAgain: 'Try again',
+    noContactsFound: 'No contacts found',
+    clickAddContact: 'Click the button above to add a new contact',
+    callPhone: 'Call',
+    sendEmail: 'Send email',
+    writeTelegram: 'Write on Telegram',
+    writeWhatsApp: 'Write on WhatsApp',
+    goToLink: 'Go to link',
+    moveUp: 'Move up',
+    moveDown: 'Move down',
+    activeStatus: 'Active',
+    inactiveStatus: 'Inactive',
+    contactDeleted: 'Contact deleted!',
+    deleteError: 'Error deleting',
+    orderUpdated: 'Order updated',
+    orderUpdateError: 'Error updating order',
+    contactLabel: 'Label',
+    contactLinkUrl: 'Link URL',
+    required: 'required',
+    phoneType: 'Phone',
+    emailType: 'Email',
+    addressType: 'Address',
+    telegramType: 'Telegram',
+    whatsappType: 'WhatsApp',
+    valuePlaceholder: 'Value',
   },
 }
 
