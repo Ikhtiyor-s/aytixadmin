@@ -5,16 +5,12 @@ import Link from 'next/link'
 import Cookies from 'js-cookie'
 import { contentApi, BannerData } from '@/lib/api/content'
 
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1').replace('/api/v1', '')
+
 function getMediaUrl(path: string | null | undefined): string {
   if (!path) return ''
-  if (path.startsWith('http')) {
-    const uploadsIndex = path.indexOf('/uploads/')
-    if (uploadsIndex !== -1) {
-      return `/api${path.substring(uploadsIndex)}`
-    }
-    return path
-  }
-  return `/api${path}`
+  if (path.startsWith('http')) return path
+  return `${API_BASE}${path}`
 }
 
 function isVideo(url: string): boolean {

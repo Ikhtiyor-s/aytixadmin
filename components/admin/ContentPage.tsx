@@ -321,16 +321,9 @@ export default function ContentPage({ t }: ContentPageProps) {
   }
 
   const getMediaUrl = (url: string) => {
-    // Proxy orqali yuklash (CORS muammosini hal qilish uchun)
-    if (url.startsWith('http')) {
-      // To'liq URL bo'lsa, /uploads/ qismini ajratib olamiz
-      const uploadsIndex = url.indexOf('/uploads/')
-      if (uploadsIndex !== -1) {
-        return `/api${url.substring(uploadsIndex)}`
-      }
-      return url
-    }
-    return `/api${url}`
+    if (!url) return ''
+    if (url.startsWith('http')) return url
+    return `${API_URL}${url}`
   }
 
   if (loading) {

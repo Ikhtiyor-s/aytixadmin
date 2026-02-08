@@ -57,7 +57,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: http://localhost:8000 http://127.0.0.1:8000 https://api.aytix.uz https://images.unsplash.com https://*.unsplash.com; font-src 'self' data:; connect-src 'self' http://localhost:8000 http://127.0.0.1:8000 https://api.aytix.uz; frame-ancestors 'self';"
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: http://localhost:8000 http://127.0.0.1:8000 https://api.aytix.uz https://images.unsplash.com https://*.unsplash.com; media-src 'self' http://localhost:8000 http://127.0.0.1:8000 https://api.aytix.uz; font-src 'self' data:; connect-src 'self' http://localhost:8000 http://127.0.0.1:8000 https://api.aytix.uz; frame-ancestors 'self';"
           }
         ],
       },
