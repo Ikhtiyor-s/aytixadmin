@@ -340,6 +340,174 @@ const AVAILABLE_INTEGRATIONS = [
       { key: 'callback_url', label: 'Callback URL', placeholder: 'https://yourdomain.com/api/uzpos/callback', type: 'text', required: false },
     ]
   },
+  {
+    id: 'jowi',
+    name: 'Jowi',
+    icon: '🍕',
+    category: 'pos',
+    description: "Jowi - restoran va kafe avtomatlashtirish tizimi (O'zbekistonda mashhur)",
+    docs_url: 'https://jowi.club/developers',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'Jowi API kaliti', type: 'password', required: true },
+      { key: 'api_secret', label: 'API Secret', placeholder: 'Jowi API secret', type: 'password', required: true },
+      { key: 'restaurant_id', label: 'Restoran ID', placeholder: 'Jowi restoran identifikatori', type: 'text', required: true },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/jowi/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'paloma365',
+    name: 'Paloma365',
+    icon: '🏬',
+    category: 'pos',
+    description: "Paloma365 - savdo va ombor boshqaruv tizimi (Markaziy Osiyo)",
+    docs_url: 'https://paloma365.com',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'Paloma365 API kaliti', type: 'password', required: true },
+      { key: 'company_id', label: 'Kompaniya ID', placeholder: 'Paloma365 kompaniya identifikatori', type: 'text', required: true },
+      { key: 'branch_id', label: 'Filial ID', placeholder: 'Filial identifikatori', type: 'text', required: false },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/paloma/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'smartup',
+    name: 'SmartUP',
+    icon: '📊',
+    category: 'pos',
+    description: "SmartUP - buxgalteriya, savdo va ombor boshqaruv dasturi",
+    docs_url: 'https://smartup.online',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'SmartUP API kaliti', type: 'password', required: true },
+      { key: 'company_id', label: 'Kompaniya ID', placeholder: 'SmartUP kompaniya kodi', type: 'text', required: true },
+      { key: 'branch_code', label: 'Filial kodi', placeholder: 'Filial kodi', type: 'text', required: false },
+      { key: 'base_url', label: 'Server URL', placeholder: 'https://yourcompany.smartup.online', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'billz',
+    name: 'Billz',
+    icon: '🧾',
+    category: 'pos',
+    description: "Billz - chakana savdo uchun bulutli POS tizimi (O'zbekiston)",
+    docs_url: 'https://billz.io',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'Billz API kaliti', type: 'password', required: true },
+      { key: 'shop_id', label: 'Do\'kon ID', placeholder: 'Billz do\'kon identifikatori', type: 'text', required: true },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/billz/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'quick_resto',
+    name: 'Quick Resto',
+    icon: '⚡',
+    category: 'pos',
+    description: "Quick Resto - restoran va kafe uchun bulutli POS tizimi",
+    docs_url: 'https://quickresto.ru/api',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'Quick Resto API kaliti', type: 'password', required: true },
+      { key: 'api_secret', label: 'API Secret', placeholder: 'Quick Resto API secret', type: 'password', required: true },
+      { key: 'module_id', label: 'Modul ID', placeholder: 'Quick Resto modul identifikatori', type: 'text', required: true },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/quickresto/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'tillypad',
+    name: 'Tillypad',
+    icon: '🍽️',
+    category: 'pos',
+    description: "Tillypad - restoran va mehmonxona uchun avtomatlashtirish tizimi",
+    docs_url: 'https://tillypad.ru',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'Tillypad API kaliti', type: 'password', required: true },
+      { key: 'server_url', label: 'Server URL', placeholder: 'https://your-tillypad-server.com', type: 'text', required: true },
+      { key: 'restaurant_id', label: 'Restoran ID', placeholder: 'Tillypad restoran identifikatori', type: 'text', required: true },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/tillypad/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: '1c_roznitsa',
+    name: '1C:Roznitsa',
+    icon: '🏪',
+    category: 'pos',
+    description: "1C:Roznitsa - chakana savdo uchun avtomatlashtirish dasturi",
+    docs_url: 'https://1c.uz',
+    fields: [
+      { key: 'base_url', label: 'Server URL', placeholder: 'http://server:port/base_name', type: 'text', required: true },
+      { key: 'username', label: 'Foydalanuvchi', placeholder: '1C foydalanuvchi nomi', type: 'text', required: true },
+      { key: 'password', label: 'Parol', placeholder: '1C foydalanuvchi paroli', type: 'password', required: true },
+      { key: 'organization_code', label: 'Tashkilot kodi', placeholder: 'Tashkilot kodi', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'atol',
+    name: 'ATOL Online',
+    icon: '🖨️',
+    category: 'pos',
+    description: "ATOL Online - fiskal cheklar va OFD bilan integratsiya",
+    docs_url: 'https://online.atol.ru/api',
+    fields: [
+      { key: 'login', label: 'Login', placeholder: 'ATOL Online login', type: 'text', required: true },
+      { key: 'password', label: 'Parol', placeholder: 'ATOL Online parol', type: 'password', required: true },
+      { key: 'group_code', label: 'Guruh kodi', placeholder: 'Kassa guruhi kodi', type: 'text', required: true },
+      { key: 'inn', label: 'INN', placeholder: 'Tashkilot INN raqami', type: 'text', required: true },
+      { key: 'callback_url', label: 'Callback URL', placeholder: 'https://yourdomain.com/api/atol/callback', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'lightspeed',
+    name: 'Lightspeed',
+    icon: '💡',
+    category: 'pos',
+    description: "Lightspeed POS - xalqaro savdo va restoran avtomatlashtirish",
+    docs_url: 'https://developers.lightspeedhq.com',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'Lightspeed API kaliti', type: 'password', required: true },
+      { key: 'api_secret', label: 'API Secret', placeholder: 'Lightspeed API secret', type: 'password', required: true },
+      { key: 'account_id', label: 'Account ID', placeholder: 'Lightspeed hisob identifikatori', type: 'text', required: true },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/lightspeed/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'square',
+    name: 'Square POS',
+    icon: '🟦',
+    category: 'pos',
+    description: "Square - to'lov va savdo nuqtasi boshqaruv tizimi",
+    docs_url: 'https://developer.squareup.com',
+    fields: [
+      { key: 'access_token', label: 'Access Token', placeholder: 'Square access token', type: 'password', required: true },
+      { key: 'location_id', label: 'Location ID', placeholder: 'Square joylashuv identifikatori', type: 'text', required: true },
+      { key: 'environment', label: 'Muhit', placeholder: 'sandbox yoki production', type: 'text', required: false },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/square/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'toast',
+    name: 'Toast POS',
+    icon: '🍞',
+    category: 'pos',
+    description: "Toast - restoran boshqaruvi va POS tizimi",
+    docs_url: 'https://doc.toasttab.com',
+    fields: [
+      { key: 'client_id', label: 'Client ID', placeholder: 'Toast client identifikatori', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', placeholder: 'Toast client secret', type: 'password', required: true },
+      { key: 'restaurant_guid', label: 'Restaurant GUID', placeholder: 'Toast restoran GUID', type: 'text', required: true },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/toast/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'soliq_terminal',
+    name: 'SolIQ Terminal',
+    icon: '🏛️',
+    category: 'pos',
+    description: "SolIQ Terminal - DYK fiskal terminal va soliq integratsiyasi",
+    docs_url: 'https://soliq.uz',
+    fields: [
+      { key: 'inn', label: 'INN (STIR)', placeholder: 'Soliq to\'lovchi raqami', type: 'text', required: true },
+      { key: 'device_serial', label: 'Qurilma seriya raqami', placeholder: 'Fiskal qurilma seriya raqami', type: 'text', required: true },
+      { key: 'api_key', label: 'API Key', placeholder: 'SolIQ API kaliti', type: 'password', required: true },
+      { key: 'environment', label: 'Muhit', placeholder: 'test yoki production', type: 'text', required: false },
+    ]
+  },
   // ============== KOMMUNAL XIZMATLAR ==============
   {
     id: 'hududgaz',
