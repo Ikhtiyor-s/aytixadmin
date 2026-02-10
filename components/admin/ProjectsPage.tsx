@@ -1027,7 +1027,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value as any)}
-          className="flex-1 sm:flex-none px-3 sm:px-4 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6]"
+          className="px-3 sm:px-4 py-2 pr-8 text-sm border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6]"
         >
           <option value="all">{t.all} {t.status}</option>
           <option value="active">{t.active}</option>
@@ -1037,7 +1037,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
-          className="flex-1 sm:flex-none px-3 sm:px-4 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6]"
+          className="px-3 sm:px-4 py-2 pr-8 text-sm border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6]"
         >
           <option value="all">{t.all} {t.categories}</option>
           {categories.map(cat => (
