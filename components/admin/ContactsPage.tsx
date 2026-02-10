@@ -400,7 +400,9 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
               <div className="p-4">
                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
                   <div className="text-base font-medium text-gray-900 dark:text-white break-all">
-                    {contact.value}
+                    {(contact.contact_type === 'phone' || contact.contact_type === 'whatsapp') && contact.value
+                      ? contact.value.replace(/^\+?998\s?/, '+998 ').replace(/^\+998\s?(\d{2})(\d{3})(\d{2})(\d{2})$/, '+998 $1 $2 $3 $4')
+                      : contact.value}
                   </div>
                   {contact.link_url && (
                     <a
@@ -520,22 +522,42 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
               {/* Value */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Qiymat * {formData.contact_type === 'phone' && '(+998901234567)'}
+                  Qiymat * {formData.contact_type === 'phone' && '(+998 XX XXX XX XX)'}
+                  {formData.contact_type === 'whatsapp' && '(+998 XX XXX XX XX)'}
                   {formData.contact_type === 'email' && '(example@mail.com)'}
                 </label>
-                <input
-                  type={formData.contact_type === 'email' ? 'email' : 'text'}
-                  value={formData.value}
-                  onChange={(e) => setFormData({ ...formData, value: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6]"
-                  placeholder={
-                    formData.contact_type === 'phone' ? '+998901234567' :
-                    formData.contact_type === 'email' ? 'info@example.com' :
-                    formData.contact_type === 'address' ? 'Toshkent, O\'zbekiston' :
-                    formData.contact_type === 'telegram' ? '@username' :
-                    '+998901234567'
-                  }
-                />
+                {(formData.contact_type === 'phone' || formData.contact_type === 'whatsapp') ? (
+                  <div className="flex items-center gap-0">
+                    <span className="px-3 py-2.5 bg-gray-100 dark:bg-gray-700 border border-r-0 border-gray-200 dark:border-gray-700 rounded-l-xl text-gray-700 dark:text-gray-300 text-sm font-medium select-none">
+                      +998
+                    </span>
+                    <input
+                      type="tel"
+                      value={formData.value.replace(/^\+?998\s?/, '').replace(/[^\d]/g, '').replace(/(\d{2})(\d{3})?(\d{2})?(\d{2})?/, (_, a, b, c, d) => [a, b, c, d].filter(Boolean).join(' '))}
+                      onChange={(e) => {
+                        const digits = e.target.value.replace(/[^\d]/g, '').slice(0, 9)
+                        const formatted = digits.replace(/(\d{2})(\d{3})?(\d{2})?(\d{2})?/, (_, a, b, c, d) => [a, b, c, d].filter(Boolean).join(' '))
+                        setFormData({ ...formData, value: '+998' + digits })
+                      }}
+                      className="flex-1 px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-r-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6] tracking-wider"
+                      placeholder="90 123 45 67"
+                      maxLength={12}
+                    />
+                  </div>
+                ) : (
+                  <input
+                    type={formData.contact_type === 'email' ? 'email' : 'text'}
+                    value={formData.value}
+                    onChange={(e) => setFormData({ ...formData, value: e.target.value })}
+                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6]"
+                    placeholder={
+                      formData.contact_type === 'email' ? 'info@example.com' :
+                      formData.contact_type === 'address' ? 'Toshkent, O\'zbekiston' :
+                      formData.contact_type === 'telegram' ? '@username' :
+                      'Qiymatni kiriting'
+                    }
+                  />
+                )}
               </div>
 
               {/* Link URL */}
