@@ -267,6 +267,79 @@ const AVAILABLE_INTEGRATIONS = [
       { key: 'contract_id', label: 'Shartnoma ID', placeholder: 'Shartnoma identifikatori', type: 'text', required: false },
     ]
   },
+  // ============== POS TERMINAL TIZIMLARI ==============
+  {
+    id: 'iiko',
+    name: 'iiko',
+    icon: '🍽️',
+    category: 'pos',
+    description: "iiko - restoran va kafelar uchun boshqaruv tizimi, buyurtmalar, menyu va ombor nazorati",
+    docs_url: 'https://api-ru.iiko.services/',
+    fields: [
+      { key: 'api_login', label: 'API Login', placeholder: 'iiko Cloud API login kaliti', type: 'password', required: true },
+      { key: 'organization_id', label: 'Tashkilot ID', placeholder: 'iiko tashkilot identifikatori', type: 'text', required: true },
+      { key: 'terminal_group_id', label: 'Terminal guruh ID', placeholder: 'Terminal guruh identifikatori', type: 'text', required: false },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/iiko/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'rkeeper',
+    name: 'R-Keeper',
+    icon: '🏪',
+    category: 'pos',
+    description: "R-Keeper - restoran va fast-food uchun POS tizimi, buyurtma va kassani boshqarish",
+    docs_url: 'https://rkeeper.ru/api/',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'R-Keeper API kaliti', type: 'password', required: true },
+      { key: 'api_secret', label: 'API Secret', placeholder: 'R-Keeper API secret', type: 'password', required: true },
+      { key: 'restaurant_id', label: 'Restoran ID', placeholder: 'Restoran identifikatori', type: 'text', required: true },
+      { key: 'station_id', label: 'Kassa ID', placeholder: 'Kassa stantsiyasi identifikatori', type: 'text', required: false },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/rkeeper/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'poster',
+    name: 'Poster POS',
+    icon: '📋',
+    category: 'pos',
+    description: "Poster - restoran, kafe va do'konlar uchun bulutli POS tizimi",
+    docs_url: 'https://dev.joinposter.com/docs',
+    fields: [
+      { key: 'access_token', label: 'Access Token', placeholder: 'Poster API access token', type: 'password', required: true },
+      { key: 'account_name', label: 'Account nomi', placeholder: 'yourcompany (yourcompany.joinposter.com)', type: 'text', required: true },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/poster/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'alise_pos',
+    name: 'Alise Terminal',
+    icon: '🖥️',
+    category: 'pos',
+    description: "Alise - savdo terminali va kassa apparati integratsiyasi, chek chop etish va hisobotlar",
+    docs_url: 'https://alise.uz',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'Alise API kaliti', type: 'password', required: true },
+      { key: 'terminal_id', label: 'Terminal ID', placeholder: 'Terminal identifikatori', type: 'text', required: true },
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Merchant identifikatori', type: 'text', required: false },
+      { key: 'inn', label: 'INN (STIR)', placeholder: 'Soliq to\'lovchi raqami', type: 'text', required: false },
+      { key: 'callback_url', label: 'Callback URL', placeholder: 'https://yourdomain.com/api/alise/callback', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'uzpos',
+    name: 'UzPOS',
+    icon: '💰',
+    category: 'pos',
+    description: "UzPOS - O'zbekiston uchun POS terminal va fiskal qurilma integratsiyasi",
+    docs_url: 'https://uzpos.uz',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'UzPOS API kaliti', type: 'password', required: true },
+      { key: 'terminal_id', label: 'Terminal ID', placeholder: 'POS terminal raqami', type: 'text', required: true },
+      { key: 'inn', label: 'INN (STIR)', placeholder: 'Soliq to\'lovchi raqami', type: 'text', required: true },
+      { key: 'fiscal_module_id', label: 'Fiskal modul ID', placeholder: 'Fiskal modul raqami', type: 'text', required: false },
+      { key: 'callback_url', label: 'Callback URL', placeholder: 'https://yourdomain.com/api/uzpos/callback', type: 'text', required: false },
+    ]
+  },
   // ============== KOMMUNAL XIZMATLAR ==============
   {
     id: 'hududgaz',
@@ -339,6 +412,7 @@ const categoryIcons: Record<string, string> = {
   analytics: '📈',
   communication: '💬',
   delivery: '🚚',
+  pos: '🖥️',
   internet: '🌐',
   utility: '🏠',
   storage: '☁️',
@@ -352,6 +426,7 @@ const categoryLabels: Record<string, string> = {
   analytics: 'Analitika',
   communication: 'Aloqa',
   delivery: 'Yetkazib berish',
+  pos: 'POS Terminallar',
   internet: 'Internet xizmatlari',
   utility: 'Kommunal xizmatlar',
   storage: 'Saqlash',
