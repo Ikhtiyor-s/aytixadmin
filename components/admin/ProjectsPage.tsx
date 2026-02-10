@@ -8,6 +8,7 @@ import { projectsApi, ProjectData } from '@/lib/api/projects'
 import { categoriesApi, CategoryData, SubcategoryData } from '@/lib/api/categories'
 import { uploadsApi } from '@/lib/api/uploads'
 import { translateApi } from '@/lib/api/translate'
+import MultiSelectDropdown from '@/components/ui/MultiSelectDropdown'
 
 // Image Carousel Component for Project Cards
 function ProjectImageCarousel({ images }: { images: string[] }) {
@@ -209,8 +210,8 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
   const [formData, setFormData] = useState({
     name: { uz: '', ru: '', en: '' },
     description: { uz: '', ru: '', en: '' },
-    category: '',
-    subcategory: '',
+    categories: [] as string[],
+    subcategories: [] as string[],
     technologies: '',
     color: 'from-[#00a6a6] to-[#00a6a6]/80',
     status: 'active' as 'active' | 'inactive',
@@ -426,8 +427,8 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
     setFormData({
       name: { uz: '', ru: '', en: '' },
       description: { uz: '', ru: '', en: '' },
-      category: categories.length > 0 ? categories[0].name_uz : '',
-      subcategory: '',
+      categories: [],
+      subcategories: [],
       technologies: '',
       color: 'from-[#00a6a6] to-[#00a6a6]/80',
       status: 'active',
@@ -769,8 +770,8 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
         ru: project.description_ru || '',
         en: project.description_en || ''
       },
-      category: project.category,
-      subcategory: project.subcategory,
+      categories: project.category ? project.category.split(',').map((c: string) => c.trim()).filter(Boolean) : [],
+      subcategories: project.subcategory ? project.subcategory.split(',').map((s: string) => s.trim()).filter(Boolean) : [],
       technologies: project.technologies.join(', '),
       color: project.color,
       status: project.status,
@@ -885,8 +886,8 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
         description_uz: formData.description.uz,
         description_ru: formData.description.ru || null,
         description_en: formData.description.en || null,
-        category: formData.category,
-        subcategory: formData.subcategory || null,
+        category: formData.categories.join(', '),
+        subcategory: formData.subcategories.join(', ') || null,
         technologies: formData.technologies.split(',').map(t => t.trim()).filter(Boolean),
         features: formData.features,
         integrations: formData.integrations.filter(i => i.enabled).map(i => i.name),
@@ -996,7 +997,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
 
   const filteredProjects = projects.filter(p => {
     if (filterStatus !== 'all' && p.status !== filterStatus) return false
-    if (filterCategory !== 'all' && p.category !== filterCategory) return false
+    if (filterCategory !== 'all' && !p.category.split(',').map(c => c.trim()).includes(filterCategory)) return false
     if (globalSearch.trim()) {
       const query = globalSearch.toLowerCase()
       if (!p.name.toLowerCase().includes(query) && !p.description.toLowerCase().includes(query)) return false
@@ -1126,13 +1127,17 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                 dangerouslySetInnerHTML={{ __html: getLocalizedDescription(project, lang) }}
               />
 
-              <div className="flex items-center gap-1.5 mb-2 flex-wrap">
-                <span className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded">
-                  {project.category}
-                </span>
-                <span className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded">
-                  {project.subcategory}
-                </span>
+              <div className="flex items-center gap-1 mb-2 flex-wrap">
+                {project.category && project.category.split(',').map((cat: string) => cat.trim()).filter(Boolean).map((cat, i) => (
+                  <span key={`cat-${i}`} className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded">
+                    {cat}
+                  </span>
+                ))}
+                {project.subcategory && project.subcategory.split(',').map((sub: string) => sub.trim()).filter(Boolean).map((sub, i) => (
+                  <span key={`sub-${i}`} className="px-1.5 py-0.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded">
+                    {sub}
+                  </span>
+                ))}
               </div>
 
               <div className="flex items-center gap-3 mb-2 text-xs text-gray-600 dark:text-gray-400">
@@ -2071,42 +2076,46 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     {t.category} *
                   </label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value, subcategory: '' })}
-                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6]"
-                  >
-                    <option value="">{t.select}</option>
-                    {categories.map(cat => (
-                      <option key={cat.id} value={cat.name_uz}>
-                        {lang === 'uz' ? cat.name_uz : lang === 'ru' ? (cat.name_ru || cat.name_uz) : (cat.name_en || cat.name_uz)}
-                      </option>
-                    ))}
-                  </select>
+                  <MultiSelectDropdown
+                    items={categories.map(cat => ({
+                      value: cat.name_uz,
+                      label: lang === 'uz' ? cat.name_uz : lang === 'ru' ? (cat.name_ru || cat.name_uz) : (cat.name_en || cat.name_uz)
+                    }))}
+                    selectedValues={formData.categories}
+                    onChange={(values) => {
+                      setFormData(prev => ({
+                        ...prev,
+                        categories: values,
+                        subcategories: prev.subcategories.filter(sub =>
+                          values.some(catName => {
+                            const cat = categories.find(c => c.name_uz === catName)
+                            return cat && subcategoriesMap[cat.id!]?.some(s => s.name_uz === sub)
+                          })
+                        )
+                      }))
+                    }}
+                    placeholder={t.select}
+                  />
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    {t.subcategory} *
+                    {t.subcategory}
                   </label>
-                  <select
-                    value={formData.subcategory}
-                    onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6]"
-                  >
-                    <option value="">{t.select}</option>
-                    {formData.category && (() => {
-                      const selectedCat = categories.find(c => c.name_uz === formData.category)
-                      if (selectedCat && subcategoriesMap[selectedCat.id!]) {
-                        return subcategoriesMap[selectedCat.id!].map(sub => (
-                          <option key={sub.id} value={sub.name_uz}>
-                            {lang === 'uz' ? sub.name_uz : lang === 'ru' ? (sub.name_ru || sub.name_uz) : (sub.name_en || sub.name_uz)}
-                          </option>
-                        ))
-                      }
-                      return null
-                    })()}
-                  </select>
+                  <MultiSelectDropdown
+                    items={formData.categories.flatMap(catName => {
+                      const cat = categories.find(c => c.name_uz === catName)
+                      if (!cat || !subcategoriesMap[cat.id!]) return []
+                      return subcategoriesMap[cat.id!].map(sub => ({
+                        value: sub.name_uz,
+                        label: lang === 'uz' ? sub.name_uz : lang === 'ru' ? (sub.name_ru || sub.name_uz) : (sub.name_en || sub.name_uz),
+                        group: lang === 'uz' ? cat.name_uz : lang === 'ru' ? (cat.name_ru || cat.name_uz) : (cat.name_en || cat.name_uz)
+                      }))
+                    })}
+                    selectedValues={formData.subcategories}
+                    onChange={(values) => setFormData(prev => ({ ...prev, subcategories: values }))}
+                    placeholder={t.select}
+                  />
                 </div>
               </div>
 
