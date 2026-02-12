@@ -586,6 +586,21 @@ const AVAILABLE_INTEGRATIONS = [
       { key: 'environment', label: 'Muhit', placeholder: 'test yoki production', type: 'text', required: false },
     ]
   },
+  {
+    id: 'neon_alisa',
+    name: 'NEON Alisa',
+    icon: '🍴',
+    category: 'pos',
+    phone: '+90 850 309 97 76',
+    description: "NEON Alisa - restoran avtomatizatsiya tizimi: buyurtma, ombor, CRM, loyalty, QR menyu va oshxona display",
+    docs_url: 'https://neonalisa.com',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'NEON Alisa API kaliti', type: 'password', required: true },
+      { key: 'restaurant_id', label: 'Restoran ID', placeholder: 'NEON Alisa restoran identifikatori', type: 'text', required: true },
+      { key: 'branch_id', label: 'Filial ID', placeholder: 'Filial identifikatori', type: 'text', required: false },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/neonalisa/webhook', type: 'text', required: false },
+    ]
+  },
   // ============== KOMMUNAL XIZMATLAR ==============
   {
     id: 'hududgaz',
