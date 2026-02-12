@@ -57,8 +57,8 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
       setError(null)
     } catch (error: any) {
       console.error('Error loading contacts:', error)
-      const errorMessage = error.response?.data?.detail || error.message || 'Kontaktlarni yuklashda xatolik'
-      setError(`Xatolik: ${errorMessage}`)
+      const errorMessage = error.response?.data?.detail || error.message || t.contactsLoadError
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -108,7 +108,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
       }
 
       if (!formData.value.trim()) {
-        alert('Qiymatni kiriting!')
+        alert(t.enterValue)
         setSaving(false)
         return
       }
@@ -136,14 +136,14 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
       loadContacts()
     } catch (error) {
       console.error('Error saving contact:', error)
-      alert(error instanceof Error ? error.message : 'Saqlashda xatolik')
+      alert(error instanceof Error ? error.message : t.saveError)
     } finally {
       setSaving(false)
     }
   }
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Rostdan ham o\'chirmoqchimisiz?')) return
+    if (!confirm(t.deleteConfirm)) return
 
     try {
       const token = getToken()
@@ -157,7 +157,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
       loadContacts()
     } catch (error) {
       console.error('Error deleting contact:', error)
-      alert('O\'chirishda xatolik')
+      alert(t.deleteError)
     }
   }
 
@@ -201,7 +201,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
       loadContacts()
     } catch (error) {
       console.error('Error reordering contacts:', error)
-      alert('Tartibni o\'zgartirishda xatolik')
+      alert(t.orderUpdateError)
     }
   }
 
@@ -226,9 +226,9 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
 
   const getContactTypeLabel = (type: string) => {
     const labels = {
-      phone: '📞 Telefon',
-      email: '📧 Email',
-      address: '📍 Manzil',
+      phone: `📞 ${t.phoneType}`,
+      email: `📧 ${t.emailType}`,
+      address: `📍 ${t.addressType}`,
       telegram: '✈️ Telegram',
       whatsapp: '💬 WhatsApp'
     }
@@ -241,10 +241,10 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-            📞 Aloqa ma'lumotlari
+            📞 {t.contactInfo}
           </h1>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Telefon, email, manzil va boshqa aloqa ma'lumotlarini boshqaring
+            {t.contactInfoDesc}
           </p>
         </div>
         <button
@@ -252,7 +252,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
           className="px-4 py-2.5 bg-gradient-to-r from-[#00a6a6] to-[#0a2d5c] text-white rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
         >
           {Icons.plus}
-          <span className="font-medium">Kontakt qo'shish</span>
+          <span className="font-medium">{t.addContact}</span>
         </button>
       </div>
 
@@ -265,7 +265,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
             </svg>
           </div>
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Xatolik yuz berdi
+            {t.errorOccurred}
           </h3>
           <p className="text-red-600 dark:text-red-400 text-center max-w-md mb-4 px-4">
             {error}
@@ -274,22 +274,22 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
             onClick={loadContacts}
             className="px-6 py-2 bg-[#00a6a6] text-white rounded-lg hover:bg-[#0a2d5c] transition-colors font-medium"
           >
-            Qayta urinib ko'rish
+            {t.retryAgain}
           </button>
         </div>
       ) : loading ? (
         <div className="flex flex-col items-center justify-center py-20">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00a6a6] mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Kontaktlar yuklanmoqda...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t.loadingContacts}</p>
         </div>
       ) : filteredContacts.length === 0 ? (
         <div className="text-center py-20">
           <div className="text-6xl mb-4">📞</div>
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Kontaktlar topilmadi
+            {t.noContactsFound}
           </h3>
           <p className="text-gray-600 dark:text-gray-400">
-            Yangi kontakt qo'shish uchun yuqoridagi tugmani bosing
+            {t.clickAddContact}
           </p>
         </div>
       ) : (
@@ -358,7 +358,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
                         ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
                         : 'text-gray-600 dark:text-gray-400'
                     }`}
-                    title="Yuqoriga ko'chirish"
+                    title={t.moveUp}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
@@ -372,7 +372,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
                         ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
                         : 'text-gray-600 dark:text-gray-400'
                     }`}
-                    title="Pastga ko'chirish"
+                    title={t.moveDown}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -382,14 +382,14 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
                   <button
                     onClick={() => openEditModal(contact)}
                     className="p-2 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-lg text-gray-600 dark:text-gray-400 transition-colors"
-                    title="Tahrirlash"
+                    title={t.edit}
                   >
                     {Icons.edit}
                   </button>
                   <button
                     onClick={() => contact.id && handleDelete(contact.id)}
                     className="p-2 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-lg text-red-600 dark:text-red-400 transition-colors"
-                    title="O'chirish"
+                    title={t.delete}
                   >
                     {Icons.trash}
                   </button>
@@ -410,11 +410,11 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
                       {...(contact.contact_type === 'telegram' || contact.contact_type === 'whatsapp' || contact.contact_type === 'address' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                       className="inline-flex items-center gap-1 text-sm text-[#00a6a6] hover:text-[#0a2d5c] dark:hover:text-[#00a6a6] mt-2 font-medium transition-colors group/link"
                     >
-                      {contact.contact_type === 'phone' ? 'Qo\'ng\'iroq qilish' :
-                       contact.contact_type === 'email' ? 'Email yuborish' :
-                       contact.contact_type === 'telegram' ? 'Telegramda yozish' :
-                       contact.contact_type === 'whatsapp' ? 'WhatsAppda yozish' :
-                       'Havolaga o\'tish'}
+                      {contact.contact_type === 'phone' ? t.callPhone :
+                       contact.contact_type === 'email' ? t.sendEmail :
+                       contact.contact_type === 'telegram' ? t.writeTelegram :
+                       contact.contact_type === 'whatsapp' ? t.writeWhatsApp :
+                       t.goToLink}
                       <svg className="w-4 h-4 group-hover/link:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
@@ -428,7 +428,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
                       ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                       : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
                   }`}>
-                    {contact.is_active !== false ? '✓ Faol' : '○ Faol emas'}
+                    {contact.is_active !== false ? `✓ ${t.activeStatus}` : `○ ${t.inactiveStatus}`}
                   </span>
                   {contact.order !== undefined && (
                     <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
@@ -454,12 +454,12 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
           >
             <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                {editingContact ? 'Kontaktni tahrirlash' : 'Yangi kontakt qo\'shish'}
+                {editingContact ? t.editContact : t.addContact}
               </h2>
               <button
                 onClick={() => { setShowModal(false); setEditingContact(null) }}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                title="Yopish"
+                title={t.close}
               >
                 {Icons.close}
               </button>
@@ -469,7 +469,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
               {/* Contact Type */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Kontakt turi *
+                  {t.contactType} *
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                   {(['phone', 'email', 'address', 'telegram', 'whatsapp'] as const).map(type => (
@@ -522,7 +522,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
               {/* Value */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Qiymat * {formData.contact_type === 'phone' && '(+998 XX XXX XX XX)'}
+                  {t.contactValue} * {formData.contact_type === 'phone' && '(+998 XX XXX XX XX)'}
                   {formData.contact_type === 'whatsapp' && '(+998 XX XXX XX XX)'}
                   {formData.contact_type === 'email' && '(example@mail.com)'}
                 </label>
@@ -564,7 +564,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
               {(formData.contact_type === 'telegram' || formData.contact_type === 'whatsapp') && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Havola URL
+                    {t.contactLinkUrl}
                   </label>
                   <input
                     type="url"
@@ -582,7 +582,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
               {/* Labels - 3 languages */}
               <div className="space-y-3">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Yorliq (ixtiyoriy)
+                  {t.contactLabel}
                 </label>
                 <input
                   type="text"
@@ -610,7 +610,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
               {/* Active toggle */}
               <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Faol
+                  {t.activeStatus}
                 </span>
                 <button
                   type="button"
@@ -631,14 +631,14 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
                 onClick={() => { setShowModal(false); setEditingContact(null) }}
                 className="flex-1 px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 font-medium transition-colors"
               >
-                Bekor qilish
+                {t.cancel}
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
                 className="flex-1 px-4 py-2.5 bg-gradient-to-r from-[#00a6a6] to-[#0a2d5c] text-white rounded-xl hover:shadow-lg transition-all font-medium disabled:opacity-50"
               >
-                {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+                {saving ? t.saving : t.save}
               </button>
             </div>
           </div>

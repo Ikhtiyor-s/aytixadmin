@@ -515,7 +515,7 @@ export default function ContentPage({ t }: ContentPageProps) {
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                       </svg>
-                      Video
+                      {t.videoGif}
                     </div>
                   </>
                 ) : banner.image_url ? (
@@ -543,7 +543,7 @@ export default function ContentPage({ t }: ContentPageProps) {
                 {(banner as any).project_id && (
                   <div className="flex items-center gap-1 mb-2">
                     <span className="text-xs px-2 py-0.5 bg-[#33ccff]/10 text-[#33ccff] rounded font-mono">
-                      Loyiha ID: {(banner as any).project_id}
+                      {t.projectIdLabel}: {(banner as any).project_id}
                     </span>
                   </div>
                 )}
@@ -713,7 +713,7 @@ export default function ContentPage({ t }: ContentPageProps) {
                 onClick={handleAITranslate}
                 disabled={isTranslating}
                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
-                title="AI yordamida boshqa tillarga tarjima qilish"
+                title={t.aiTranslate}
               >
                 {isTranslating ? (
                   <>

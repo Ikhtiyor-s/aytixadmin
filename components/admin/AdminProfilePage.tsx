@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Translations } from '@/lib/admin/translations'
 import { useAuth } from '@/hooks/useAuth'
 import Cookies from 'js-cookie'
 
@@ -19,7 +20,11 @@ interface AdminProfile {
   created_at: string
 }
 
-export default function AdminProfilePage() {
+interface AdminProfilePageProps {
+  t: Translations
+}
+
+export default function AdminProfilePage({ t }: AdminProfilePageProps) {
   const { user, token } = useAuth()
   const [profile, setProfile] = useState<AdminProfile | null>(null)
   const [loading, setLoading] = useState(true)
@@ -64,7 +69,7 @@ export default function AdminProfilePage() {
         }))
       }
     } catch (err) {
-      console.error('Profile yuklashda xatolik:', err)
+      console.error('Profile load error:', err)
     } finally {
       setLoading(false)
     }
@@ -99,20 +104,20 @@ export default function AdminProfilePage() {
 
         if (!response.ok) {
           const errorData = await response.json()
-          throw new Error(errorData.detail || 'Profilni yangilashda xatolik')
+          throw new Error(errorData.detail || t.profileError)
         }
       }
 
       // Parolni o'zgartirish
       if (formData.new_password) {
         if (formData.new_password !== formData.confirm_password) {
-          throw new Error('Yangi parollar mos kelmayapti')
+          throw new Error(t.passwordMismatch)
         }
         if (!formData.current_password) {
-          throw new Error('Joriy parolni kiriting')
+          throw new Error(t.enterCurrentPw)
         }
         if (formData.new_password.length < 6) {
-          throw new Error('Yangi parol kamida 6 ta belgidan iborat bo\'lishi kerak')
+          throw new Error(t.passwordMinLength)
         }
 
         const passwordResponse = await fetch(`${API_URL}/users/me/password`, {
@@ -129,11 +134,11 @@ export default function AdminProfilePage() {
 
         if (!passwordResponse.ok) {
           const errorData = await passwordResponse.json()
-          throw new Error(errorData.detail || 'Parolni o\'zgartirishda xatolik')
+          throw new Error(errorData.detail || t.passwordChangeError)
         }
       }
 
-      setSuccess('Profil muvaffaqiyatli yangilandi!')
+      setSuccess(t.profileSuccess)
       setEditing(false)
       setFormData(prev => ({
         ...prev,
@@ -144,7 +149,7 @@ export default function AdminProfilePage() {
       loadProfile()
 
     } catch (err: any) {
-      setError(err.message || 'Xatolik yuz berdi')
+      setError(err.message || t.errorOccurredGeneric)
     } finally {
       setSaving(false)
     }
@@ -181,8 +186,8 @@ export default function AdminProfilePage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Admin Profil</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Profil ma'lumotlarini boshqaring</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">{t.adminProfile}</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{t.manageProfileDesc}</p>
         </div>
         {!editing && (
           <button
@@ -192,7 +197,7 @@ export default function AdminProfilePage() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
-            Tahrirlash
+            {t.edit}
           </button>
         )}
       </div>
@@ -231,7 +236,7 @@ export default function AdminProfilePage() {
                 </span>
                 <span className="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                  Faol
+                  {t.active}
                 </span>
               </div>
             </div>
@@ -247,14 +252,14 @@ export default function AdminProfilePage() {
             <svg className="w-5 h-5 text-[#00a6a6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            Shaxsiy ma'lumotlar
+            {t.personalInfo}
           </h3>
 
           <div className="space-y-4">
             {/* To'liq ism */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                To'liq ism
+                {t.fullName}
               </label>
               {editing ? (
                 <input
@@ -262,7 +267,7 @@ export default function AdminProfilePage() {
                   value={formData.full_name}
                   onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                   className="w-full px-4 py-2.5 bg-gray-100 dark:bg-gray-700 border-0 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-[#00a6a6] outline-none"
-                  placeholder="Ismingizni kiriting"
+                  placeholder={t.enterYourName}
                 />
               ) : (
                 <p className="px-4 py-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-gray-900 dark:text-white">
@@ -274,7 +279,7 @@ export default function AdminProfilePage() {
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                Email
+                {t.email}
               </label>
               {editing ? (
                 <input
@@ -282,7 +287,7 @@ export default function AdminProfilePage() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full px-4 py-2.5 bg-gray-100 dark:bg-gray-700 border-0 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-[#00a6a6] outline-none"
-                  placeholder="Email manzilingiz"
+                  placeholder={t.emailPlaceholder}
                 />
               ) : (
                 <p className="px-4 py-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-gray-900 dark:text-white">
@@ -294,7 +299,7 @@ export default function AdminProfilePage() {
             {/* Telefon */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                Telefon raqam
+                {t.phoneNumber}
               </label>
               <p className="px-4 py-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-gray-900 dark:text-white">
                 {profile?.phone}
@@ -304,7 +309,7 @@ export default function AdminProfilePage() {
             {/* Username */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                Foydalanuvchi nomi
+                {t.usernameLabel}
               </label>
               <p className="px-4 py-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-gray-900 dark:text-white font-mono">
                 @{profile?.username}
@@ -314,7 +319,7 @@ export default function AdminProfilePage() {
             {/* Ro'yxatdan o'tgan sana */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                Ro'yxatdan o'tgan sana
+                {t.registeredDate}
               </label>
               <p className="px-4 py-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-gray-900 dark:text-white">
                 {profile?.created_at ? formatDate(profile.created_at) : '-'}
@@ -329,7 +334,7 @@ export default function AdminProfilePage() {
             <svg className="w-5 h-5 text-[#00a6a6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            Parolni o'zgartirish
+            {t.changePassword}
           </h3>
 
           {editing ? (
@@ -337,7 +342,7 @@ export default function AdminProfilePage() {
               {/* Joriy parol */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  Joriy parol
+                  {t.currentPasswordLabel}
                 </label>
                 <div className="relative">
                   <input
@@ -345,7 +350,7 @@ export default function AdminProfilePage() {
                     value={formData.current_password}
                     onChange={(e) => setFormData({ ...formData, current_password: e.target.value })}
                     className="w-full px-4 py-2.5 pr-10 bg-gray-100 dark:bg-gray-700 border-0 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-[#00a6a6] outline-none"
-                    placeholder="Joriy parolingiz"
+                    placeholder={t.currentPasswordPlaceholder}
                   />
                   <button
                     type="button"
@@ -369,7 +374,7 @@ export default function AdminProfilePage() {
               {/* Yangi parol */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  Yangi parol
+                  {t.newPasswordLabel}
                 </label>
                 <div className="relative">
                   <input
@@ -377,7 +382,7 @@ export default function AdminProfilePage() {
                     value={formData.new_password}
                     onChange={(e) => setFormData({ ...formData, new_password: e.target.value })}
                     className="w-full px-4 py-2.5 pr-10 bg-gray-100 dark:bg-gray-700 border-0 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-[#00a6a6] outline-none"
-                    placeholder="Yangi parol"
+                    placeholder={t.newPasswordLabel}
                   />
                   <button
                     type="button"
@@ -401,7 +406,7 @@ export default function AdminProfilePage() {
               {/* Parolni tasdiqlash */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  Yangi parolni tasdiqlash
+                  {t.confirmNewPassword}
                 </label>
                 <div className="relative">
                   <input
@@ -409,7 +414,7 @@ export default function AdminProfilePage() {
                     value={formData.confirm_password}
                     onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
                     className="w-full px-4 py-2.5 pr-10 bg-gray-100 dark:bg-gray-700 border-0 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-[#00a6a6] outline-none"
-                    placeholder="Yangi parolni qayta kiriting"
+                    placeholder={t.reenterPassword}
                   />
                   <button
                     type="button"
@@ -431,7 +436,7 @@ export default function AdminProfilePage() {
               </div>
 
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Parolni o'zgartirish uchun barcha maydonlarni to'ldiring
+                {t.passwordHint}
               </p>
             </div>
           ) : (
@@ -439,7 +444,7 @@ export default function AdminProfilePage() {
               <svg className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              <p className="text-sm">Parolni o'zgartirish uchun tahrirlash rejimiga o'ting</p>
+              <p className="text-sm">{t.passwordEditMode}</p>
             </div>
           )}
         </div>
@@ -462,7 +467,7 @@ export default function AdminProfilePage() {
             }}
             className="px-6 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-medium transition-colors"
           >
-            Bekor qilish
+            {t.cancel}
           </button>
           <button
             onClick={handleSaveProfile}
@@ -475,7 +480,7 @@ export default function AdminProfilePage() {
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
             )}
-            Saqlash
+            {t.save}
           </button>
         </div>
       )}

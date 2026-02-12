@@ -34,9 +34,9 @@ export default function FAQPage({ t }: FAQPageProps) {
 
   // Error handler
   const handleError = (error: any) => {
-    const message = error.message || 'Xatolik yuz berdi'
+    const message = error.message || t.errorOccurred
     if (message.includes('authenticated') || message.includes('401') || message.includes('token') || message.includes('Unauthorized')) {
-      alert('Sessiya muddati tugagan. Iltimos, qayta login qiling.')
+      alert(t.sessionExpired)
       window.location.href = '/admin/login'
       return
     }
@@ -73,11 +73,11 @@ export default function FAQPage({ t }: FAQPageProps) {
   // Validate form
   const validateForm = () => {
     if (!form.question_uz?.trim()) {
-      alert('Savol (UZ) majburiy maydon')
+      alert(t.questionRequired)
       return false
     }
     if (!form.answer_uz?.trim()) {
-      alert('Javob (UZ) majburiy maydon')
+      alert(t.answerRequired)
       return false
     }
     return true
@@ -134,7 +134,7 @@ export default function FAQPage({ t }: FAQPageProps) {
 
   // Delete FAQ
   const handleDelete = async (id: number) => {
-    if (!confirm('Bu savolni o\'chirishni xohlaysizmi?')) return
+    if (!confirm(t.confirmDelete)) return
     try {
       await faqApi.deleteFAQ(id, getToken())
       await loadData()
@@ -191,10 +191,10 @@ export default function FAQPage({ t }: FAQPageProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {t.faq || "Ko'p so'raladigan savollar"}
+            {t.faq}
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            {t.faqDesc || "FAQ savollarini boshqaring"}
+            {t.faqDesc}
           </p>
         </div>
         <button
@@ -204,7 +204,7 @@ export default function FAQPage({ t }: FAQPageProps) {
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          {t.addFaq || "Savol qo'shish"}
+          {t.addFaq}
         </button>
       </div>
 
@@ -212,14 +212,14 @@ export default function FAQPage({ t }: FAQPageProps) {
       {categories.length > 0 && (
         <div className="flex items-center gap-4">
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {t.category || 'Kategoriya'}:
+            {t.category}:
           </label>
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
             className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#00a6a6] dark:bg-gray-700 dark:text-white"
           >
-            <option value="">{t.all || 'Barchasi'}</option>
+            <option value="">{t.all}</option>
             {categories.map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
@@ -236,7 +236,7 @@ export default function FAQPage({ t }: FAQPageProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <p className="text-gray-500 dark:text-gray-400">
-                {t.noFaqs || "Hozircha savollar yo'q"}
+                {t.noFaqs}
               </p>
             </div>
           ) : (
@@ -266,7 +266,7 @@ export default function FAQPage({ t }: FAQPageProps) {
                             ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                             : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
                         }`}>
-                          {faq.status === 'active' ? (t.active || 'Faol') : (t.inactive || 'Nofaol')}
+                          {faq.status === 'active' ? t.activeStatus : t.inactiveStatus}
                         </span>
                       </div>
                       <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -281,7 +281,7 @@ export default function FAQPage({ t }: FAQPageProps) {
                             ? 'text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20'
                             : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                         }`}
-                        title={faq.status === 'active' ? 'Nofaol qilish' : 'Faol qilish'}
+                        title={faq.status === 'active' ? t.deactivate : t.activate}
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={
@@ -333,7 +333,7 @@ export default function FAQPage({ t }: FAQPageProps) {
           >
             <div className="p-3 xs:p-4 sm:p-5 md:p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
               <h3 className="text-base xs:text-lg font-semibold dark:text-white">
-                {selectedFAQ ? (t.editFaq || 'Savolni tahrirlash') : (t.addFaq || "Yangi savol qo'shish")}
+                {selectedFAQ ? t.editFaq : t.addFaq}
               </h3>
               <button
                 onClick={() => { setShowModal(false); setSelectedFAQ(null); resetForm() }}
@@ -349,84 +349,84 @@ export default function FAQPage({ t }: FAQPageProps) {
               {/* Savol UZ */}
               <div>
                 <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t.questionUz || 'Savol (UZ)'} *
+                  {t.questionUz} *
                 </label>
                 <input
                   type="text"
                   value={form.question_uz}
                   onChange={(e) => setForm({ ...form, question_uz: e.target.value })}
                   className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Savolni kiriting..."
+                  placeholder={t.enterQuestion}
                 />
               </div>
 
               {/* Savol RU */}
               <div>
                 <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t.questionRu || 'Savol (RU)'}
+                  {t.questionRu}
                 </label>
                 <input
                   type="text"
                   value={form.question_ru}
                   onChange={(e) => setForm({ ...form, question_ru: e.target.value })}
                   className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Введите вопрос..."
+                  placeholder={t.enterQuestion}
                 />
               </div>
 
               {/* Savol EN */}
               <div>
                 <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t.questionEn || 'Savol (EN)'}
+                  {t.questionEn}
                 </label>
                 <input
                   type="text"
                   value={form.question_en}
                   onChange={(e) => setForm({ ...form, question_en: e.target.value })}
                   className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Enter question..."
+                  placeholder={t.enterQuestion}
                 />
               </div>
 
               {/* Javob UZ */}
               <div>
                 <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t.answerUz || 'Javob (UZ)'} *
+                  {t.answerUz} *
                 </label>
                 <textarea
                   rows={3}
                   value={form.answer_uz}
                   onChange={(e) => setForm({ ...form, answer_uz: e.target.value })}
                   className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
-                  placeholder="Javobni kiriting..."
+                  placeholder={t.enterAnswer}
                 />
               </div>
 
               {/* Javob RU */}
               <div>
                 <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t.answerRu || 'Javob (RU)'}
+                  {t.answerRu}
                 </label>
                 <textarea
                   rows={3}
                   value={form.answer_ru}
                   onChange={(e) => setForm({ ...form, answer_ru: e.target.value })}
                   className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
-                  placeholder="Введите ответ..."
+                  placeholder={t.enterAnswer}
                 />
               </div>
 
               {/* Javob EN */}
               <div>
                 <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t.answerEn || 'Javob (EN)'}
+                  {t.answerEn}
                 </label>
                 <textarea
                   rows={3}
                   value={form.answer_en}
                   onChange={(e) => setForm({ ...form, answer_en: e.target.value })}
                   className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
-                  placeholder="Enter answer..."
+                  placeholder={t.enterAnswer}
                 />
               </div>
 
@@ -434,7 +434,7 @@ export default function FAQPage({ t }: FAQPageProps) {
               <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4">
                 <div>
                   <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {t.category || 'Kategoriya'}
+                    {t.category}
                   </label>
                   <input
                     type="text"
@@ -452,15 +452,15 @@ export default function FAQPage({ t }: FAQPageProps) {
                 </div>
                 <div>
                   <label className="block text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {t.status || 'Holat'}
+                    {t.status}
                   </label>
                   <select
                     value={form.status || 'active'}
                     onChange={(e) => setForm({ ...form, status: e.target.value })}
                     className="w-full px-2.5 xs:px-3 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 rounded-md xs:rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
                   >
-                    <option value="active">{t.active || 'Faol'}</option>
-                    <option value="inactive">{t.inactive || 'Nofaol'}</option>
+                    <option value="active">{t.active}</option>
+                    <option value="inactive">{t.inactive}</option>
                   </select>
                 </div>
               </div>
@@ -471,14 +471,14 @@ export default function FAQPage({ t }: FAQPageProps) {
                 onClick={() => { setShowModal(false); setSelectedFAQ(null); resetForm() }}
                 className="flex-1 px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md xs:rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
-                {t.cancel || 'Bekor qilish'}
+                {t.cancel}
               </button>
               <button
                 onClick={selectedFAQ ? handleUpdate : handleCreate}
                 disabled={saving || !form.question_uz || !form.answer_uz}
                 className="flex-1 px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm bg-[#00a6a6] text-white rounded-md xs:rounded-lg hover:bg-[#00a6a6]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                {saving ? (t.saving || 'Saqlanmoqda...') : (t.save || 'Saqlash')}
+                {saving ? t.saving : t.save}
               </button>
             </div>
           </div>

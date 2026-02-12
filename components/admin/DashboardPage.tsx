@@ -44,7 +44,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
 
   const loadData = async () => {
     if (!token) {
-      setError('Token topilmadi. Iltimos qayta kiring.')
+      setError(t.tokenNotFoundError)
       return
     }
     try {
@@ -58,7 +58,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
       setAnalytics(analyticsData)
     } catch (err: unknown) {
       console.error('Dashboard error:', err)
-      const errorMessage = err instanceof Error ? err.message : 'Ma\'lumotlarni yuklashda xatolik'
+      const errorMessage = err instanceof Error ? err.message : t.dataLoadError
       setError(errorMessage)
     } finally {
       setLoading(false)
@@ -101,7 +101,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
           onClick={() => loadData()}
           className="px-4 py-2 bg-[#00a6a6] text-white rounded-lg hover:bg-[#008f8f] text-sm"
         >
-          Qayta urinish
+          {t.retryAction}
         </button>
       </div>
     )
@@ -110,26 +110,26 @@ export default function DashboardPage({ t }: DashboardPageProps) {
   if (!stats || !analytics) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-gray-500">Ma'lumotlar topilmadi</p>
+        <p className="text-gray-500">{t.noData}</p>
       </div>
     )
   }
 
   const periods: { key: PeriodType; label: string }[] = [
-    { key: 'daily', label: 'Kunlik' },
-    { key: 'weekly', label: 'Haftalik' },
-    { key: 'monthly', label: 'Oylik' },
-    { key: 'yearly', label: 'Yillik' },
-    { key: 'custom', label: "Sana oralig'i" }
+    { key: 'daily', label: t.daily },
+    { key: 'weekly', label: t.weekly },
+    { key: 'monthly', label: t.monthly },
+    { key: 'yearly', label: t.yearly },
+    { key: 'custom', label: t.dateRange }
   ]
 
   const categories = [
-    { key: 'all', label: 'Barchasi' },
-    { key: 'web', label: 'Veb-saytlar' },
-    { key: 'mobile', label: 'Mobil ilovalar' },
-    { key: 'ecommerce', label: 'E-commerce' },
-    { key: 'crm', label: 'CRM & ERP' },
-    { key: 'ai', label: 'AI & ML' }
+    { key: 'all', label: t.all },
+    { key: 'web', label: t.websitesLabel },
+    { key: 'mobile', label: t.mobileAppsLabel },
+    { key: 'ecommerce', label: t.ecommerceLabel },
+    { key: 'crm', label: t.crmErpLabel },
+    { key: 'ai', label: t.aiMlLabel }
   ]
 
   // Prepare bar chart data
@@ -201,7 +201,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
             <svg className="w-3 h-3 xs:w-3.5 xs:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            <span className="hidden xs:inline">Taqqoslash</span>
+            <span className="hidden xs:inline">{t.compare}</span>
           </button>
 
           {/* Export Button */}
@@ -209,7 +209,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
             <svg className="w-3 h-3 xs:w-3.5 xs:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
-            <span className="hidden xs:inline">Export</span>
+            <span className="hidden xs:inline">{t.exportData}</span>
           </button>
         </div>
       </div>
@@ -219,7 +219,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
         <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400">Dan:</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">{t.from}:</span>
               <input
                 type="date"
                 value={startDate}
@@ -228,7 +228,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
               />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400">Gacha:</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">{t.to}:</span>
               <input
                 type="date"
                 value={endDate}
@@ -240,13 +240,13 @@ export default function DashboardPage({ t }: DashboardPageProps) {
               onClick={handleDateFilter}
               className="px-4 py-1.5 bg-[#00a6a6] hover:bg-[#008f8f] text-white rounded-lg text-xs font-medium"
             >
-              Qo'llash
+              {t.apply}
             </button>
             <button
               onClick={resetDateFilter}
               className="px-4 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-xs font-medium"
             >
-              Bekor qilish
+              {t.cancel}
             </button>
           </div>
         </div>
@@ -263,13 +263,13 @@ export default function DashboardPage({ t }: DashboardPageProps) {
               </svg>
             </div>
             <div>
-              <p className="text-white/70 text-[10px] xs:text-xs">Sana oralig'i statistika</p>
-              <p className="text-white/90 text-[10px] xs:text-xs mt-0.5">{period === 'custom' ? 'Maxsus' : analytics.period_label}</p>
+              <p className="text-white/70 text-[10px] xs:text-xs">{t.periodStatistics}</p>
+              <p className="text-white/90 text-[10px] xs:text-xs mt-0.5">{period === 'custom' ? t.customPeriod : analytics.period_label}</p>
             </div>
           </div>
           <div className="text-right">
             <p className="text-2xl xs:text-3xl sm:text-4xl font-bold">{formatNumber(analytics.period_stats.views)}</p>
-            <p className="text-white/70 text-[10px] xs:text-xs">Ko'rishlar</p>
+            <p className="text-white/70 text-[10px] xs:text-xs">{t.views}</p>
           </div>
         </div>
       </div>
@@ -292,7 +292,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
             </div>
           </div>
           <p className="text-lg xs:text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{formatNumber(stats.users.current_period || stats.users.total)}</p>
-          <p className="text-[10px] xs:text-xs text-gray-500 dark:text-gray-400 mt-0.5">Foydalanuvchilar <span className="text-gray-400">({formatNumber(stats.users.total)} jami)</span></p>
+          <p className="text-[10px] xs:text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t.users} <span className="text-gray-400">({formatNumber(stats.users.total)} {t.totalSuffix})</span></p>
         </div>
 
         {/* Projects */}
@@ -311,7 +311,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
             </div>
           </div>
           <p className="text-lg xs:text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{stats.projects.current_period || stats.projects.total}</p>
-          <p className="text-[10px] xs:text-xs text-gray-500 dark:text-gray-400 mt-0.5">Loyihalar <span className="text-gray-400">({stats.projects.total} jami)</span></p>
+          <p className="text-[10px] xs:text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t.projects} <span className="text-gray-400">({stats.projects.total} {t.totalSuffix})</span></p>
         </div>
 
         {/* Views */}
@@ -331,7 +331,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
             </div>
           </div>
           <p className="text-lg xs:text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{formatNumber(stats.views?.total || 0)}</p>
-          <p className="text-[10px] xs:text-xs text-gray-500 dark:text-gray-400 mt-0.5">Ko'rishlar</p>
+          <p className="text-[10px] xs:text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t.views}</p>
         </div>
 
         {/* Revenue */}
@@ -350,7 +350,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
             </div>
           </div>
           <p className="text-lg xs:text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(stats.revenue?.total || 0)}</p>
-          <p className="text-[10px] xs:text-xs text-gray-500 dark:text-gray-400 mt-0.5">Daromad</p>
+          <p className="text-[10px] xs:text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t.revenue}</p>
         </div>
 
         {/* Leads */}
@@ -369,7 +369,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
             </div>
           </div>
           <p className="text-lg xs:text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{stats.leads?.total || stats.messages.total || 0}</p>
-          <p className="text-[10px] xs:text-xs text-gray-500 dark:text-gray-400 mt-0.5">Lidlar</p>
+          <p className="text-[10px] xs:text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t.totalLeadsCount}</p>
         </div>
 
         {/* Conversion */}
@@ -388,7 +388,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
             </div>
           </div>
           <p className="text-lg xs:text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{stats.conversion?.rate || 0}%</p>
-          <p className="text-[10px] xs:text-xs text-gray-500 dark:text-gray-400 mt-0.5">Konversiya</p>
+          <p className="text-[10px] xs:text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t.conversion}</p>
         </div>
       </div>
 
@@ -398,13 +398,13 @@ export default function DashboardPage({ t }: DashboardPageProps) {
         <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 border border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">Trafik dinamikasi</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Oylik ko'rishlar statistikasi</p>
+              <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">{t.trafficDynamics}</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{t.monthlyViewStats}</p>
             </div>
             <div className="flex items-center gap-3 text-xs">
               <span className="flex items-center gap-1.5">
                 <span className="w-3 h-3 bg-gradient-to-t from-[#00a6a6] to-[#00d4d4] rounded"></span>
-                Ko'rishlar
+                {t.views}
               </span>
             </div>
           </div>
@@ -439,7 +439,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
                       <div key={i} className="flex-1 flex flex-col items-center group relative">
                         {/* Tooltip on hover */}
                         <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all z-10 bg-gray-800 text-white text-[10px] font-medium px-2 py-1 rounded shadow-lg whitespace-nowrap">
-                          {formatNumber(d.views || 0)} ko'rish
+                          {formatNumber(d.views || 0)} {t.views}
                           <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                         </div>
                         {/* Bar */}
@@ -479,26 +479,26 @@ export default function DashboardPage({ t }: DashboardPageProps) {
               <p className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
                 {formatNumber(chartData.reduce((sum, d) => sum + (d.views || 0), 0))}
               </p>
-              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">Jami ko'rishlar</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">{t.totalViews}</p>
             </div>
             <div className="text-center">
               <p className="text-lg sm:text-xl font-bold text-[#00a6a6]">
                 {formatNumber(Math.round(chartData.reduce((sum, d) => sum + (d.views || 0), 0) / chartData.length))}
               </p>
-              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">O'rtacha/oy</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">{t.avgPerMonth}</p>
             </div>
             <div className="text-center">
               <p className="text-lg sm:text-xl font-bold text-emerald-500">
                 {formatNumber(maxViews)}
               </p>
-              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">Eng yuqori</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">{t.highestValue}</p>
             </div>
           </div>
         </div>
 
         {/* Categories */}
         <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 border border-gray-100 dark:border-gray-700">
-          <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white mb-4">Kategoriyalar bo'yicha</h3>
+          <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white mb-4">{t.byCategories}</h3>
           <div className="space-y-3">
             {analytics.categories.map((cat, idx) => {
               const iconData = categoryIcons[cat.name] || categoryIcons['Boshqalar']
@@ -539,19 +539,19 @@ export default function DashboardPage({ t }: DashboardPageProps) {
       {/* Top Projects Table */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 border border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">Top loyihalar</h3>
-          <button className="text-xs text-[#00a6a6] hover:underline">Barchasini ko'rish</button>
+          <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">{t.topProjects}</h3>
+          <button className="text-xs text-[#00a6a6] hover:underline">{t.viewAll}</button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[600px]">
             <thead>
               <tr className="text-xs text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
-                <th className="text-left py-3 font-medium">Loyiha</th>
-                <th className="text-right py-3 font-medium">Ko'rishlar</th>
-                <th className="text-right py-3 font-medium">Lidlar</th>
-                <th className="text-right py-3 font-medium">Konversiya</th>
-                <th className="text-right py-3 font-medium">Daromad</th>
-                <th className="text-right py-3 font-medium">Trend</th>
+                <th className="text-left py-3 font-medium">{t.project}</th>
+                <th className="text-right py-3 font-medium">{t.views}</th>
+                <th className="text-right py-3 font-medium">{t.totalLeadsCount}</th>
+                <th className="text-right py-3 font-medium">{t.conversion}</th>
+                <th className="text-right py-3 font-medium">{t.revenue}</th>
+                <th className="text-right py-3 font-medium">{t.trend}</th>
               </tr>
             </thead>
             <tbody>
@@ -562,7 +562,7 @@ export default function DashboardPage({ t }: DashboardPageProps) {
                       <span className="w-6 h-6 bg-gray-100 dark:bg-gray-700 rounded flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-400">
                         {idx + 1}
                       </span>
-                      <span className="font-medium text-gray-900 dark:text-white">{project.title || 'Nomsiz loyiha'}</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{project.title || t.noProjectName}</span>
                     </div>
                   </td>
                   <td className="text-right py-3 text-gray-700 dark:text-gray-300">{formatNumber(project.views)}</td>

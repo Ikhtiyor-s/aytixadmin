@@ -51,8 +51,8 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Tahlillar</h1>
-          <p className="text-sm text-gray-500">Platforma statistikasi va tahlillari</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">{t.analytics}</h1>
+          <p className="text-sm text-gray-500">{t.platformStatsDesc}</p>
         </div>
         <button
           onClick={loadAnalytics}
@@ -61,7 +61,7 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          Yangilash
+          {t.refresh}
         </button>
       </div>
 
@@ -69,10 +69,10 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
       <div className="bg-white dark:bg-gray-800 rounded-xl p-2 border border-gray-200 dark:border-gray-700">
         <div className="flex flex-wrap gap-2">
           {[
-            { id: 'overview', label: 'Umumiy', icon: Icons.dashboard },
-            { id: 'users', label: 'Foydalanuvchilar', icon: Icons.users },
-            { id: 'projects', label: 'Loyihalar', icon: Icons.projects },
-            { id: 'messages', label: 'Xabarlar', icon: Icons.messages }
+            { id: 'overview', label: t.overview, icon: Icons.dashboard },
+            { id: 'users', label: t.users, icon: Icons.users },
+            { id: 'projects', label: t.projects, icon: Icons.projects },
+            { id: 'messages', label: t.messages, icon: Icons.messages }
           ].map(tab => (
             <button
               key={tab.id}
@@ -102,7 +102,7 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{totalUsers}</p>
-                  <p className="text-xs text-white/80">Jami foydalanuvchilar</p>
+                  <p className="text-xs text-white/80">{t.totalUsersLabel}</p>
                 </div>
               </div>
             </div>
@@ -113,7 +113,7 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{totalProjects}</p>
-                  <p className="text-xs text-white/80">Jami loyihalar</p>
+                  <p className="text-xs text-white/80">{t.totalProjects}</p>
                 </div>
               </div>
             </div>
@@ -124,7 +124,7 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{totalMessages}</p>
-                  <p className="text-xs text-white/80">Jami xabarlar</p>
+                  <p className="text-xs text-white/80">{t.messages}</p>
                 </div>
               </div>
             </div>
@@ -135,7 +135,7 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{totalViews}</p>
-                  <p className="text-xs text-white/80">Jami ko'rishlar</p>
+                  <p className="text-xs text-white/80">{t.totalViews}</p>
                 </div>
               </div>
             </div>
@@ -143,7 +143,7 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
 
           {/* Monthly Chart */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Oylik statistika</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t.monthlyStats}</h3>
             <div className="flex items-end gap-2 h-48">
               {analytics.monthly_data.map((month, index) => (
                 <div key={index} className="flex-1 flex flex-col items-center gap-1">
@@ -151,17 +151,17 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
                     <div
                       className="w-full bg-[#00a6a6] rounded-t"
                       style={{ height: `${maxMonthlyValue > 0 ? (month.users / maxMonthlyValue) * 100 : 0}%` }}
-                      title={`Foydalanuvchilar: ${month.users}`}
+                      title={`${t.users}: ${month.users}`}
                     ></div>
                     <div
                       className="w-full bg-[#0a2d5c]"
                       style={{ height: `${maxMonthlyValue > 0 ? (month.projects / maxMonthlyValue) * 100 : 0}%` }}
-                      title={`Loyihalar: ${month.projects}`}
+                      title={`${t.projects}: ${month.projects}`}
                     ></div>
                     <div
                       className="w-full bg-[#6366f1] rounded-b"
                       style={{ height: `${maxMonthlyValue > 0 ? (month.messages / maxMonthlyValue) * 100 : 0}%` }}
-                      title={`Xabarlar: ${month.messages}`}
+                      title={`${t.messages}: ${month.messages}`}
                     ></div>
                   </div>
                   <span className="text-xs text-gray-500">{month.month}</span>
@@ -171,22 +171,22 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
             <div className="flex items-center justify-center gap-6 mt-4">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-[#00a6a6] rounded"></div>
-                <span className="text-xs text-gray-500">Foydalanuvchilar</span>
+                <span className="text-xs text-gray-500">{t.users}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-[#0a2d5c] rounded"></div>
-                <span className="text-xs text-gray-500">Loyihalar</span>
+                <span className="text-xs text-gray-500">{t.projects}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-[#6366f1] rounded"></div>
-                <span className="text-xs text-gray-500">Xabarlar</span>
+                <span className="text-xs text-gray-500">{t.messages}</span>
               </div>
             </div>
           </div>
 
           {/* Daily Chart */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Oxirgi 7 kun</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t.last7Days}</h3>
             <div className="grid grid-cols-7 gap-2">
               {analytics.daily_data.map((day, index) => {
                 const maxDaily = Math.max(...analytics.daily_data.map(d => d.users + d.messages))
@@ -213,10 +213,10 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Top Projects */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Eng ko'p ko'rilgan loyihalar</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t.mostViewedProjects}</h3>
               <div className="space-y-3">
                 {analytics.top_projects.length === 0 ? (
-                  <p className="text-sm text-gray-500 text-center py-4">Loyihalar topilmadi</p>
+                  <p className="text-sm text-gray-500 text-center py-4">{t.noProjectsFoundEmpty}</p>
                 ) : analytics.top_projects.map((project, index) => (
                   <div key={project.id} className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm ${
@@ -238,7 +238,7 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
 
             {/* Recent Activity */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">So'nggi faoliyat</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t.recentActivity}</h3>
               <div className="space-y-3">
                 {analytics.recent_users.slice(0, 3).map(user => (
                   <div key={user.id} className="flex items-center gap-3">
@@ -247,7 +247,7 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-900 dark:text-white">{user.username}</p>
-                      <p className="text-xs text-gray-500">Yangi foydalanuvchi</p>
+                      <p className="text-xs text-gray-500">{t.newUserLabel}</p>
                     </div>
                     <span className="text-xs text-gray-400">
                       {user.created_at ? new Date(user.created_at).toLocaleDateString('uz') : '-'}
@@ -280,7 +280,7 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
           {/* User Roles Distribution */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Foydalanuvchi rollari</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t.userRoles}</h3>
               <div className="space-y-4">
                 {Object.entries(analytics.user_roles).map(([role, count]) => {
                   const total = Object.values(analytics.user_roles).reduce((a, b) => a + b, 0)
@@ -291,9 +291,9 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
                     buyer: 'bg-green-500'
                   }
                   const labels: Record<string, string> = {
-                    admin: 'Adminlar',
-                    seller: 'Sotuvchilar',
-                    buyer: 'Xaridorlar'
+                    admin: t.admins,
+                    seller: t.sellers,
+                    buyer: t.buyers
                   }
                   return (
                     <div key={role}>
@@ -312,7 +312,7 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
 
             {/* Recent Users */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">So'nggi foydalanuvchilar</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t.recentUsers}</h3>
               <div className="space-y-3">
                 {analytics.recent_users.map(user => (
                   <div key={user.id} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
@@ -340,21 +340,21 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
           {/* Top Projects Table */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="p-5 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Eng mashhur loyihalar</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t.popularProjects}</h3>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-gray-700/50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">#</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Loyiha nomi</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Ko'rishlar</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.projectName}</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t.views}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                   {analytics.top_projects.length === 0 ? (
                     <tr>
-                      <td colSpan={3} className="px-6 py-8 text-center text-gray-500">Loyihalar topilmadi</td>
+                      <td colSpan={3} className="px-6 py-8 text-center text-gray-500">{t.noProjectsFoundEmpty}</td>
                     </tr>
                   ) : analytics.top_projects.map((project, index) => (
                     <tr key={project.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
@@ -397,10 +397,10 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
                 archived: 'from-orange-500 to-orange-600'
               }
               const labels: Record<string, string> = {
-                new: 'Yangi',
-                read: "O'qilgan",
-                replied: 'Javob berilgan',
-                archived: 'Arxivlangan'
+                new: t.newMsgStatus,
+                read: t.readMsgStatus,
+                replied: t.repliedMsgStatus,
+                archived: t.archivedMsgStatus
               }
               return (
                 <div key={status} className={`bg-gradient-to-br ${colors[status]} rounded-xl p-4 text-white`}>
@@ -414,11 +414,11 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
           {/* Recent Messages */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="p-5 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">So'nggi xabarlar</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t.recentMsgs}</h3>
             </div>
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
               {analytics.recent_messages.length === 0 ? (
-                <div className="px-6 py-8 text-center text-gray-500">Xabarlar topilmadi</div>
+                <div className="px-6 py-8 text-center text-gray-500">{t.messagesNotFound}</div>
               ) : analytics.recent_messages.map(msg => {
                 const statusColors: Record<string, string> = {
                   new: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
@@ -427,17 +427,17 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
                   archived: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
                 }
                 const statusLabels: Record<string, string> = {
-                  new: 'Yangi',
-                  read: "O'qilgan",
-                  replied: 'Javob berilgan',
-                  archived: 'Arxivlangan'
+                  new: t.newMsgStatus,
+                  read: t.readMsgStatus,
+                  replied: t.repliedMsgStatus,
+                  archived: t.archivedMsgStatus
                 }
                 return (
                   <div key={msg.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium text-gray-900 dark:text-white">{msg.name}</span>
                       <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColors[msg.status] || statusColors.new}`}>
-                        {statusLabels[msg.status] || 'Yangi'}
+                        {statusLabels[msg.status] || t.newMsgStatus}
                       </span>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">{msg.subject}</p>

@@ -27,20 +27,19 @@ const PLATFORMS = [
   { value: 'whatsapp', label: 'WhatsApp' },
 ]
 
-// Contact type options
-const CONTACT_TYPES = [
-  { value: 'phone', label: 'Telefon' },
-  { value: 'email', label: 'Email' },
-  { value: 'address', label: 'Manzil' },
-  { value: 'telegram', label: 'Telegram' },
-  { value: 'whatsapp', label: 'WhatsApp' },
-]
-
 interface FooterPageProps {
   t: any
 }
 
 export default function FooterPage({ t }: FooterPageProps) {
+  // Contact type options (inside component to access translations)
+  const CONTACT_TYPES = [
+    { value: 'phone', label: t.phoneContact },
+    { value: 'email', label: t.email },
+    { value: 'address', label: t.addressType },
+    { value: 'telegram', label: 'Telegram' },
+    { value: 'whatsapp', label: 'WhatsApp' },
+  ]
   const [activeTab, setActiveTab] = useState<TabType>('sections')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -110,10 +109,10 @@ export default function FooterPage({ t }: FooterPageProps) {
 
   // Error handler - xatoliklarni to'g'ri ko'rsatish
   const handleError = (error: any) => {
-    const message = error.message || 'Xatolik yuz berdi'
+    const message = error.message || t.errorOccurred
     // Token xatoliklari - foydalanuvchiga login qilishni taklif qilish
     if (message.includes('authenticated') || message.includes('401') || message.includes('token') || message.includes('Unauthorized')) {
-      alert('Sessiya muddati tugagan. Iltimos, qayta login qiling.')
+      alert(t.sessionExpired)
       window.location.href = '/admin/login'
       return
     }
@@ -276,7 +275,7 @@ export default function FooterPage({ t }: FooterPageProps) {
   }
 
   const handleDeleteSection = async (id: number) => {
-    if (!confirm('Bu bo\'limni o\'chirishni xohlaysizmi? Barcha elementlar ham o\'chiriladi.')) return
+    if (!confirm(t.deleteConfirm)) return
     try {
       await footerApi.deleteSection(id, getToken())
       await loadData()
@@ -325,7 +324,7 @@ export default function FooterPage({ t }: FooterPageProps) {
   }
 
   const handleDeleteItem = async (id: number) => {
-    if (!confirm('Bu elementni o\'chirishni xohlaysizmi?')) return
+    if (!confirm(t.deleteConfirm)) return
     try {
       await footerApi.deleteItem(id, getToken())
       await loadData()
@@ -375,7 +374,7 @@ export default function FooterPage({ t }: FooterPageProps) {
   }
 
   const handleDeleteSocialLink = async (id: number) => {
-    if (!confirm('Bu ijtimoiy tarmoqni o\'chirishni xohlaysizmi?')) return
+    if (!confirm(t.deleteConfirm)) return
     try {
       await footerApi.deleteSocialLink(id, getToken())
       await loadData()
@@ -422,7 +421,7 @@ export default function FooterPage({ t }: FooterPageProps) {
   }
 
   const handleDeleteContact = async (id: number) => {
-    if (!confirm('Bu kontaktni o\'chirishni xohlaysizmi?')) return
+    if (!confirm(t.deleteConfirm)) return
     try {
       await footerApi.deleteContact(id, getToken())
       await loadData()
@@ -510,8 +509,8 @@ export default function FooterPage({ t }: FooterPageProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Footer Boshqaruvi</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Sayt pastki qismidagi ma'lumotlarni boshqaring</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t.footer}</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">{t.footerDesc}</p>
         </div>
       </div>
 
@@ -519,9 +518,9 @@ export default function FooterPage({ t }: FooterPageProps) {
       <div className="border-b border-gray-200 dark:border-gray-700">
         <nav className="flex gap-4">
           {[
-            { id: 'sections', label: 'Bo\'limlar', icon: '📂' },
-            { id: 'social', label: 'Ijtimoiy Tarmoqlar', icon: '🌐' },
-            { id: 'contacts', label: 'Kontaktlar', icon: '📞' },
+            { id: 'sections', label: t.footerSections, icon: '📂' },
+            { id: 'social', label: t.socialLinks, icon: '🌐' },
+            { id: 'contacts', label: t.contacts, icon: '📞' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -545,21 +544,21 @@ export default function FooterPage({ t }: FooterPageProps) {
         {activeTab === 'sections' && (
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold dark:text-white">Footer Bo'limlari</h2>
+              <h2 className="text-lg font-semibold dark:text-white">{t.footerSections}</h2>
               <button
                 onClick={() => { resetSectionForm(); setSelectedSection(null); setShowSectionModal(true) }}
                 className="px-4 py-2 bg-[#00a6a6] text-white rounded-lg hover:bg-[#00a6a6]/90 transition-colors"
               >
-                + Yangi Bo'lim
+                + {t.addSection}
               </button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Sections list */}
               <div className="space-y-4">
-                <h3 className="font-medium text-gray-700 dark:text-gray-300">Bo'limlar ro'yxati</h3>
+                <h3 className="font-medium text-gray-700 dark:text-gray-300">{t.footerSections}</h3>
                 {sections.length === 0 ? (
-                  <p className="text-gray-500 text-center py-8">Hozircha bo'lim yo'q</p>
+                  <p className="text-gray-500 text-center py-8">{t.noSections}</p>
                 ) : (
                   sections.map((section) => (
                     <div
@@ -580,7 +579,7 @@ export default function FooterPage({ t }: FooterPageProps) {
                           <span className={`px-2 py-1 text-xs rounded ${
                             section.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                           }`}>
-                            {section.is_active ? 'Faol' : 'Nofaol'}
+                            {section.is_active ? t.activeStatus : t.inactiveStatus}
                           </span>
                           <button
                             onClick={(e) => { e.stopPropagation(); openEditSection(section) }}
@@ -619,7 +618,7 @@ export default function FooterPage({ t }: FooterPageProps) {
                       onClick={() => { resetItemForm(); setSelectedItem(null); setShowItemModal(true) }}
                       className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
                     >
-                      + Element
+                      + {t.addItem}
                     </button>
                   )}
                 </div>
@@ -680,18 +679,18 @@ export default function FooterPage({ t }: FooterPageProps) {
         {activeTab === 'social' && (
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold dark:text-white">Ijtimoiy Tarmoqlar</h2>
+              <h2 className="text-lg font-semibold dark:text-white">{t.socialLinks}</h2>
               <button
                 onClick={() => { resetSocialForm(); setSelectedSocialLink(null); setShowSocialModal(true) }}
                 className="px-4 py-2 bg-[#00a6a6] text-white rounded-lg hover:bg-[#00a6a6]/90 transition-colors"
               >
-                + Yangi Ijtimoiy Tarmoq
+                + {t.addSocialLink}
               </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {socialLinks.length === 0 ? (
-                <p className="col-span-full text-gray-500 text-center py-8">Hozircha ijtimoiy tarmoq yo'q</p>
+                <p className="col-span-full text-gray-500 text-center py-8">{t.noSocialLinks}</p>
               ) : (
                 socialLinks.map((link) => (
                   <div key={link.id} className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
@@ -711,7 +710,7 @@ export default function FooterPage({ t }: FooterPageProps) {
                         <span className={`px-2 py-1 text-xs rounded ${
                           link.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                         }`}>
-                          {link.is_active ? 'Faol' : 'Nofaol'}
+                          {link.is_active ? t.activeStatus : t.inactiveStatus}
                         </span>
                         <button
                           onClick={() => openEditSocialLink(link)}
@@ -742,18 +741,18 @@ export default function FooterPage({ t }: FooterPageProps) {
         {activeTab === 'contacts' && (
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold dark:text-white">Kontaktlar</h2>
+              <h2 className="text-lg font-semibold dark:text-white">{t.contacts}</h2>
               <button
                 onClick={() => { resetContactForm(); setSelectedContact(null); setShowContactModal(true) }}
                 className="px-4 py-2 bg-[#00a6a6] text-white rounded-lg hover:bg-[#00a6a6]/90 transition-colors"
               >
-                + Yangi Kontakt
+                + {t.addContact}
               </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {contacts.length === 0 ? (
-                <p className="col-span-full text-gray-500 text-center py-8">Hozircha kontakt yo'q</p>
+                <p className="col-span-full text-gray-500 text-center py-8">{t.noContacts}</p>
               ) : (
                 contacts.map((contact) => (
                   <div key={contact.id} className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
@@ -774,7 +773,7 @@ export default function FooterPage({ t }: FooterPageProps) {
                         <span className={`px-2 py-1 text-xs rounded ${
                           contact.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                         }`}>
-                          {contact.is_active ? 'Faol' : 'Nofaol'}
+                          {contact.is_active ? t.activeStatus : t.inactiveStatus}
                         </span>
                         <button
                           onClick={() => openEditContact(contact)}
@@ -808,12 +807,12 @@ export default function FooterPage({ t }: FooterPageProps) {
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold dark:text-white">
-                {selectedSection ? 'Bo\'limni Tahrirlash' : 'Yangi Bo\'lim'}
+                {selectedSection ? t.editSection : t.newSection}
               </h3>
               <button
                 onClick={() => { setShowSectionModal(false); setSelectedSection(null) }}
                 className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                title="Yopish"
+                title={t.close}
               >
                 <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -822,7 +821,7 @@ export default function FooterPage({ t }: FooterPageProps) {
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nomi (UZ) *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.sectionName} (UZ) *</label>
                 <input
                   type="text"
                   value={sectionForm.title_uz}
@@ -832,7 +831,7 @@ export default function FooterPage({ t }: FooterPageProps) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nomi (RU)</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.sectionName} (RU)</label>
                 <input
                   type="text"
                   value={sectionForm.title_ru}
@@ -853,7 +852,7 @@ export default function FooterPage({ t }: FooterPageProps) {
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tartib</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.order}</label>
                   <input
                     type="number"
                     value={sectionForm.order}
@@ -862,14 +861,14 @@ export default function FooterPage({ t }: FooterPageProps) {
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Holat</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.status}</label>
                   <select
                     value={sectionForm.is_active ? 'true' : 'false'}
                     onChange={(e) => setSectionForm({ ...sectionForm, is_active: e.target.value === 'true' })}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent dark:bg-gray-700 dark:text-white"
                   >
-                    <option value="true">Faol</option>
-                    <option value="false">Nofaol</option>
+                    <option value="true">{t.activeStatus}</option>
+                    <option value="false">{t.inactiveStatus}</option>
                   </select>
                 </div>
               </div>
@@ -879,14 +878,14 @@ export default function FooterPage({ t }: FooterPageProps) {
                 onClick={() => { setShowSectionModal(false); setSelectedSection(null) }}
                 className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                Bekor qilish
+                {t.cancel}
               </button>
               <button
                 onClick={selectedSection ? handleUpdateSection : handleCreateSection}
                 disabled={saving || !sectionForm.title_uz || !sectionForm.slug}
                 className="flex-1 px-4 py-2 bg-[#00a6a6] text-white rounded-lg hover:bg-[#00a6a6]/90 disabled:opacity-50"
               >
-                {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+                {saving ? t.saving : t.save}
               </button>
             </div>
           </div>
@@ -899,12 +898,12 @@ export default function FooterPage({ t }: FooterPageProps) {
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold dark:text-white">
-                {selectedItem ? 'Elementni Tahrirlash' : 'Yangi Element'}
+                {selectedItem ? t.editElement : t.newElement}
               </h3>
               <button
                 onClick={() => { setShowItemModal(false); setSelectedItem(null) }}
                 className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                title="Yopish"
+                title={t.close}
               >
                 <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -913,7 +912,7 @@ export default function FooterPage({ t }: FooterPageProps) {
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nomi (UZ) *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.sectionName} (UZ) *</label>
                 <input
                   type="text"
                   value={itemForm.title_uz}
@@ -922,7 +921,7 @@ export default function FooterPage({ t }: FooterPageProps) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Havola URL</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.itemLink}</label>
                 <input
                   type="text"
                   value={itemForm.link_url}
@@ -939,7 +938,7 @@ export default function FooterPage({ t }: FooterPageProps) {
                     onChange={(e) => setItemForm({ ...itemForm, new_tab: e.target.checked })}
                     className="rounded text-[#00a6a6]"
                   />
-                  <span className="text-sm dark:text-gray-300">Yangi tabda ochish</span>
+                  <span className="text-sm dark:text-gray-300">{t.newTab}</span>
                 </label>
               </div>
             </div>
@@ -948,14 +947,14 @@ export default function FooterPage({ t }: FooterPageProps) {
                 onClick={() => { setShowItemModal(false); setSelectedItem(null) }}
                 className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                Bekor qilish
+                {t.cancel}
               </button>
               <button
                 onClick={selectedItem ? handleUpdateItem : handleCreateItem}
                 disabled={saving || !itemForm.title_uz}
                 className="flex-1 px-4 py-2 bg-[#00a6a6] text-white rounded-lg hover:bg-[#00a6a6]/90 disabled:opacity-50"
               >
-                {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+                {saving ? t.saving : t.save}
               </button>
             </div>
           </div>
@@ -968,12 +967,12 @@ export default function FooterPage({ t }: FooterPageProps) {
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold dark:text-white">
-                {selectedSocialLink ? 'Ijtimoiy Tarmoqni Tahrirlash' : 'Yangi Ijtimoiy Tarmoq'}
+                {selectedSocialLink ? t.editSocialLink : t.newSocialLink}
               </h3>
               <button
                 onClick={() => { setShowSocialModal(false); setSelectedSocialLink(null) }}
                 className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                title="Yopish"
+                title={t.close}
               >
                 <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -982,7 +981,7 @@ export default function FooterPage({ t }: FooterPageProps) {
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Platforma *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.platform} *</label>
                 <select
                   value={socialForm.platform}
                   onChange={(e) => setSocialForm({ ...socialForm, platform: e.target.value })}
@@ -994,7 +993,7 @@ export default function FooterPage({ t }: FooterPageProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Havola URL *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.itemLink} *</label>
                 <input
                   type="text"
                   value={socialForm.link_url}
@@ -1009,14 +1008,14 @@ export default function FooterPage({ t }: FooterPageProps) {
                 onClick={() => { setShowSocialModal(false); setSelectedSocialLink(null) }}
                 className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                Bekor qilish
+                {t.cancel}
               </button>
               <button
                 onClick={selectedSocialLink ? handleUpdateSocialLink : handleCreateSocialLink}
                 disabled={saving || !socialForm.link_url}
                 className="flex-1 px-4 py-2 bg-[#00a6a6] text-white rounded-lg hover:bg-[#00a6a6]/90 disabled:opacity-50"
               >
-                {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+                {saving ? t.saving : t.save}
               </button>
             </div>
           </div>
@@ -1029,12 +1028,12 @@ export default function FooterPage({ t }: FooterPageProps) {
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold dark:text-white">
-                {selectedContact ? 'Kontaktni Tahrirlash' : 'Yangi Kontakt'}
+                {selectedContact ? t.editContact : t.addContact}
               </h3>
               <button
                 onClick={() => { setShowContactModal(false); setSelectedContact(null) }}
                 className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                title="Yopish"
+                title={t.close}
               >
                 <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1043,7 +1042,7 @@ export default function FooterPage({ t }: FooterPageProps) {
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Turi *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.contactType} *</label>
                 <select
                   value={contactForm.contact_type}
                   onChange={(e) => setContactForm({ ...contactForm, contact_type: e.target.value as any })}
@@ -1055,7 +1054,7 @@ export default function FooterPage({ t }: FooterPageProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Qiymat *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.contactValue} *</label>
                 <input
                   type="text"
                   value={contactForm.value}
@@ -1065,7 +1064,7 @@ export default function FooterPage({ t }: FooterPageProps) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Yorliq (UZ)</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.contactLabel} (UZ)</label>
                 <input
                   type="text"
                   value={contactForm.label_uz}
@@ -1080,14 +1079,14 @@ export default function FooterPage({ t }: FooterPageProps) {
                 onClick={() => { setShowContactModal(false); setSelectedContact(null) }}
                 className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                Bekor qilish
+                {t.cancel}
               </button>
               <button
                 onClick={selectedContact ? handleUpdateContact : handleCreateContact}
                 disabled={saving || !contactForm.value}
                 className="flex-1 px-4 py-2 bg-[#00a6a6] text-white rounded-lg hover:bg-[#00a6a6]/90 disabled:opacity-50"
               >
-                {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+                {saving ? t.saving : t.save}
               </button>
             </div>
           </div>

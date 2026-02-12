@@ -238,8 +238,8 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
   const availableIntegrations = [
     { id: 'telegram', name: 'Telegram' },
     { id: 'api', name: 'API' },
-    { id: 'phone', name: 'Telefon' },
-    { id: 'payment', name: "To'lov tizimlari" },
+    { id: 'phone', name: t.phoneType },
+    { id: 'payment', name: t.paymentSystem },
     { id: 'sms', name: 'SMS' },
     { id: 'email', name: 'Email' }
   ]
@@ -355,7 +355,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
     const emptyDescLangs = allTargetLangs.filter(lang => !formData.description[lang].trim())
 
     if (emptyNameLangs.length === 0 && emptyDescLangs.length === 0) {
-      alert('⚠️ Barcha maydonlar to\'ldirilgan. Tarjima kerak emas.')
+      alert('⚠️ ' + t.allFieldsFilled)
       return
     }
 
@@ -404,7 +404,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       // Technologies tarjima qilinmaydi - texnik terminlar
       // Foydalanuvchi o'zi kiritishi kerak
 
-      alert('✅ ' + t.translationSuccess + '\n\n⚠️ Eslatma: Texnik terminlarni (Teknologiyalar) o\'zingiz kiriting - AI noto\'g\'ri tarjima qilishi mumkin.')
+      alert('✅ ' + t.translationSuccess + '\n\n⚠️ ' + t.techTermNote)
     } catch (err) {
       console.error('Translation error:', err)
       alert(err instanceof Error ? err.message : t.translationError)
@@ -670,7 +670,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
     const emptyLangs = allTargetLangs.filter(lang => !feature[lang].trim())
 
     if (emptyLangs.length === 0) {
-      alert('⚠️ Barcha maydonlar to\'ldirilgan.')
+      alert('⚠️ ' + t.allFieldsFilled)
       return
     }
 
@@ -722,7 +722,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
     const emptyLangs = allTargetLangs.filter(lang => !newFeature[lang].trim())
 
     if (emptyLangs.length === 0) {
-      alert('⚠️ Barcha maydonlar to\'ldirilgan.')
+      alert('⚠️ ' + t.allFieldsFilled)
       return
     }
 
@@ -845,13 +845,13 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
 
       // Validate required fields
       if (!formData.name.uz.trim()) {
-        alert('Loyiha nomi (O\'zbekcha) kiritilishi shart!')
+        alert(t.projectNameRequired)
         setSaving(false)
         return
       }
 
       if (!formData.description.uz.trim()) {
-        alert('Loyiha izohi (O\'zbekcha) kiritilishi shart!')
+        alert(t.descriptionRequired)
         setSaving(false)
         return
       }
@@ -1357,7 +1357,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                 onClick={handleAITranslate}
                 disabled={isTranslating}
                 className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl w-full sm:w-auto"
-                title="AI yordamida boshqa tillarga tarjima qilish"
+                title={t.aiTranslate}
               >
                 {isTranslating ? (
                   <>
@@ -1365,14 +1365,14 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <span className="hidden sm:inline">Tarjima...</span>
+                    <span className="hidden sm:inline">{t.translating}</span>
                   </>
                 ) : (
                   <>
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
-                    <span className="hidden sm:inline">AI Tarjima</span>
+                    <span className="hidden sm:inline">{t.aiTranslate}</span>
                   </>
                 )}
               </button>
@@ -1575,7 +1575,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                     type="text"
                     value={formData.name[activeTab]}
                     onChange={(e) => setFormData({ ...formData, name: { ...formData.name, [activeTab]: e.target.value } })}
-                    placeholder={`Loyiha nomini kiriting (${activeTab.toUpperCase()})`}
+                    placeholder={`${t.enterProjectName} (${activeTab.toUpperCase()})`}
                     className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-[#00a6a6]"
                   />
                 </div>
@@ -1749,11 +1749,11 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                     <button
                       type="button"
                       onClick={() => {
-                        const url = prompt('Havola URL manzilini kiriting:', 'https://')
+                        const url = prompt(t.enterLinkUrl, 'https://')
                         if (url) formatText('createLink', url)
                       }}
                       className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 transition-colors"
-                      title="Havola (Link)"
+                      title={t.linkButtonTitle}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />

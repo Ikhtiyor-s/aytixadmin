@@ -54,7 +54,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
       setUsers(data)
       setError(null)
     } catch (err) {
-      setError('Foydalanuvchilarni yuklashda xatolik')
+      setError(t.usersLoadError)
       console.error(err)
     } finally {
       setLoading(false)
@@ -66,19 +66,19 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
       case 'admin':
         return (
           <span className="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
-            Admin
+            {t.admins}
           </span>
         )
       case 'seller':
         return (
           <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-            Sotuvchi
+            {t.sellerLabel}
           </span>
         )
       default:
         return (
           <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
-            Foydalanuvchi
+            {t.userLabel}
           </span>
         )
     }
@@ -89,14 +89,14 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
       return (
         <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 flex items-center gap-1">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-          Faol
+          {t.activeStatus}
         </span>
       )
     }
     return (
       <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400 flex items-center gap-1">
         <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
-        Nofaol
+        {t.inactiveStatus}
       </span>
     )
   }
@@ -131,11 +131,10 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
       ))
       setError(null)
     } catch (err: any) {
-      console.error('Holatni o\'zgartirishda xatolik:', err)
-      // Backend xatolik xabarini ko'rsatish
-      const errorMessage = err.message || 'Holatni o\'zgartirishda xatolik yuz berdi'
+      console.error('Status change error:', err)
+      const errorMessage = err.message || t.statusChangeError
       if (errorMessage.includes('own account') || errorMessage.includes('deactivate')) {
-        setError('O\'z akkauntingizni bloklay olmaysiz')
+        setError(t.cannotBlockSelf)
       } else {
         setError(errorMessage)
       }
@@ -154,8 +153,8 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
       setShowDeleteModal(false)
       setSelectedUser(null)
     } catch (err) {
-      console.error('O\'chirishda xatolik:', err)
-      setError('Foydalanuvchini o\'chirishda xatolik yuz berdi')
+      console.error('Delete error:', err)
+      setError(t.userDeleteError)
     } finally {
       setActionLoading(false)
     }
@@ -246,8 +245,8 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
       setSelectedUser(null)
       setError(null)
     } catch (err: any) {
-      console.error('Tahrirlashda xatolik:', err)
-      setError(err.message || 'Foydalanuvchini tahrirlashda xatolik yuz berdi')
+      console.error('Edit error:', err)
+      setError(err.message || t.userEditError)
     } finally {
       setActionLoading(false)
     }
@@ -513,7 +512,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
             {/* Header */}
             <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Foydalanuvchi ma'lumotlari
+                {t.userDetails}
               </h3>
               <button
                 onClick={() => setShowViewModal(false)}
@@ -551,7 +550,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Telefon</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t.phoneContact}</p>
                     <p className="text-sm font-medium text-gray-900 dark:text-white">{selectedUser.phone}</p>
                   </div>
                 </div>
@@ -575,7 +574,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Ro'yxatdan o'tgan sana</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t.date}</p>
                     <p className="text-sm font-medium text-gray-900 dark:text-white">{formatDate(selectedUser.created_at)}</p>
                   </div>
                 </div>
@@ -588,7 +587,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                 onClick={() => setShowViewModal(false)}
                 className="w-full px-4 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-medium transition-colors"
               >
-                Yopish
+                {t.close}
               </button>
             </div>
           </div>
@@ -608,7 +607,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
             {/* Header */}
             <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Foydalanuvchini o'chirish
+                {t.deleteUser}
               </h3>
             </div>
 
@@ -622,10 +621,10 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                 </div>
               </div>
               <p className="text-center text-gray-600 dark:text-gray-300 mb-2">
-                Haqiqatan ham <strong className="text-gray-900 dark:text-white">{selectedUser.full_name || selectedUser.username}</strong> foydalanuvchisini o'chirmoqchimisiz?
+                <strong className="text-gray-900 dark:text-white">{selectedUser.full_name || selectedUser.username}</strong> {t.deleteUserConfirm}
               </p>
               <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-                Bu amalni ortga qaytarib bo'lmaydi.
+                {t.deleteIrreversible}
               </p>
             </div>
 
@@ -635,7 +634,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                 onClick={() => setShowDeleteModal(false)}
                 className="flex-1 px-4 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-medium transition-colors"
               >
-                Bekor qilish
+                {t.cancel}
               </button>
               <button
                 onClick={handleDelete}
@@ -648,7 +647,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                 )}
-                O'chirish
+                {t.delete}
               </button>
             </div>
           </div>
@@ -675,7 +674,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                Ko'rish
+                {t.userDetails}
               </button>
               <button
                 onClick={() => openEditModal(filteredUsers.find(u => u.id === showDropdown)!)}
@@ -684,7 +683,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                 <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
-                Tahrirlash
+                {t.edit}
               </button>
               <button
                 onClick={() => handleBlockUser(filteredUsers.find(u => u.id === showDropdown)!)}
@@ -693,7 +692,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                 <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                 </svg>
-                {filteredUsers.find(u => u.id === showDropdown)?.is_active ? 'Bloklash' : 'Faollashtirish'}
+                {filteredUsers.find(u => u.id === showDropdown)?.is_active ? t.blockUser : t.activateUser}
               </button>
               <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
               <button
@@ -703,7 +702,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
-                O'chirish
+                {t.delete}
               </button>
             </>
           )}
@@ -723,7 +722,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
             {/* Header */}
             <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
-                Foydalanuvchini tahrirlash
+                {t.editUserTitle}
               </h3>
               <button
                 onClick={() => setShowEditModal(false)}
@@ -740,57 +739,57 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
               {/* Full Name */}
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
-                  To'liq ism
+                  {t.fullName}
                 </label>
                 <input
                   type="text"
                   value={editForm.full_name}
                   onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
                   className="w-full px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 dark:bg-gray-700 border-0 rounded-lg sm:rounded-xl text-sm sm:text-base text-gray-900 dark:text-white focus:ring-2 focus:ring-[#00a6a6] outline-none"
-                  placeholder="To'liq ismni kiriting"
+                  placeholder={t.enterFullName}
                 />
               </div>
 
               {/* Username */}
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
-                  Foydalanuvchi nomi
+                  {t.usernameLabel}
                 </label>
                 <input
                   type="text"
                   value={editForm.username}
                   onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
                   className="w-full px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 dark:bg-gray-700 border-0 rounded-lg sm:rounded-xl text-sm sm:text-base text-gray-900 dark:text-white focus:ring-2 focus:ring-[#00a6a6] outline-none"
-                  placeholder="Foydalanuvchi nomini kiriting"
+                  placeholder={t.enterUsername}
                 />
               </div>
 
               {/* Phone */}
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
-                  Telefon raqam
+                  {t.phoneNumber}
                 </label>
                 <input
                   type="tel"
                   value={editForm.phone}
                   onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
                   className="w-full px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 dark:bg-gray-700 border-0 rounded-lg sm:rounded-xl text-sm sm:text-base text-gray-900 dark:text-white focus:ring-2 focus:ring-[#00a6a6] outline-none"
-                  placeholder="Telefon raqamini kiriting"
+                  placeholder={t.enterPhone}
                 />
               </div>
 
               {/* Role */}
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
-                  Rol
+                  {t.role}
                 </label>
                 <select
                   value={editForm.role}
                   onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
                   className="w-full px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 dark:bg-gray-700 border-0 rounded-lg sm:rounded-xl text-sm sm:text-base text-gray-900 dark:text-white focus:ring-2 focus:ring-[#00a6a6] outline-none"
                 >
-                  <option value="user">Foydalanuvchi</option>
-                  <option value="seller">Sotuvchi</option>
+                  <option value="user">{t.userRole}</option>
+                  <option value="seller">{t.sellerRole}</option>
                 </select>
               </div>
             </div>
@@ -801,7 +800,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                 onClick={() => setShowEditModal(false)}
                 className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-colors"
               >
-                Bekor qilish
+                {t.cancel}
               </button>
               <button
                 onClick={handleEditUser}
@@ -814,7 +813,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                 )}
-                Saqlash
+                {t.save}
               </button>
             </div>
           </div>

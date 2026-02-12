@@ -313,7 +313,7 @@ export default function AdminPanel() {
 
             {/* Integrations Page */}
             {currentPage === 'integrations' && (
-              <IntegrationsPage t={t} />
+              <IntegrationsPage t={t} lang={lang} />
             )}
 
             {/* AI Page */}
@@ -333,7 +333,7 @@ export default function AdminPanel() {
 
             {/* Admin Profile Page */}
             {currentPage === 'profile' && (
-              <AdminProfilePage />
+              <AdminProfilePage t={t} />
             )}
 
             {/* Footer Page */}

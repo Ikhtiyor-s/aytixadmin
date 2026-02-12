@@ -407,6 +407,129 @@ export interface Translations {
   telegramType: string
   whatsappType: string
   valuePlaceholder: string
+  // Dashboard specific
+  exportData: string
+  retryAction: string
+  periodStatistics: string
+  customPeriod: string
+  totalSuffix: string
+  monthlyViewStats: string
+  avgPerMonth: string
+  highestValue: string
+  noProjectName: string
+  dataLoadError: string
+  tokenNotFoundError: string
+  // Analytics specific
+  platformStatsDesc: string
+  overview: string
+  monthlyStats: string
+  last7Days: string
+  mostViewedProjects: string
+  userRoles: string
+  admins: string
+  sellers: string
+  buyers: string
+  recentUsers: string
+  popularProjects: string
+  newUserLabel: string
+  newMsgStatus: string
+  readMsgStatus: string
+  repliedMsgStatus: string
+  archivedMsgStatus: string
+  recentMsgs: string
+  messagesNotFound: string
+  // AI specific
+  aiDesc: string
+  newFeature: string
+  totalFeatures: string
+  availableStatus: string
+  comingSoon: string
+  noAiFeatures: string
+  editFeatureTitle: string
+  newAiFeature: string
+  nameUzRequired: string
+  nameRuLabel: string
+  nameEnLabel: string
+  iconEmoji: string
+  chatbotOption: string
+  analyticsOption: string
+  automationOption: string
+  generationOption: string
+  recognitionOption: string
+  otherOption: string
+  descriptionUz: string
+  deleteAiConfirm: string
+  // Messages specific
+  messagesDesc: string
+  archivedLabel: string
+  messageCount: string
+  deleteMessageConfirm: string
+  messageModal: string
+  replyAnswer: string
+  writeReply: string
+  replyPlaceholder: string
+  sendReply: string
+  archiveAction: string
+  // Profile specific
+  adminProfile: string
+  manageProfileDesc: string
+  personalInfo: string
+  enterYourName: string
+  emailPlaceholder: string
+  changePassword: string
+  currentPasswordLabel: string
+  currentPasswordPlaceholder: string
+  newPasswordLabel: string
+  confirmNewPassword: string
+  reenterPassword: string
+  passwordHint: string
+  passwordEditMode: string
+  profileSuccess: string
+  profileError: string
+  passwordMismatch: string
+  enterCurrentPw: string
+  passwordMinLength: string
+  passwordChangeError: string
+  errorOccurredGeneric: string
+  // Category labels for dashboard
+  websitesLabel: string
+  mobileAppsLabel: string
+  ecommerceLabel: string
+  crmErpLabel: string
+  aiMlLabel: string
+  othersLabel: string
+  // Users page (additional)
+  sellerLabel: string
+  userLabel: string
+  userDetails: string
+  deleteIrreversible: string
+  usersLoadError: string
+  enterPhoneNumber: string
+  // Footer page (additional)
+  footerSection: string
+  newSection: string
+  editElement: string
+  newElement: string
+  newSocialLink: string
+  newContact: string
+  // Contacts page (additional)
+  contactsDesc: string
+  contactsLoadError: string
+  enterValue: string
+  saveError: string
+  orderChangeError: string
+  phoneContact: string
+  // FAQ page (additional)
+  enterQuestion: string
+  enterAnswer: string
+  deactivate: string
+  // Projects page (additional)
+  enterLinkUrl: string
+  techTermNote: string
+  allFieldsFilled: string
+  projectNameRequired: string
+  descriptionRequired: string
+  linkButtonTitle: string
 }
 
 export const translations: Record<Language, Translations> = {
@@ -817,6 +940,129 @@ export const translations: Record<Language, Translations> = {
     telegramType: 'Telegram',
     whatsappType: 'WhatsApp',
     valuePlaceholder: 'Qiymat',
+    // Dashboard specific
+    exportData: 'Export',
+    retryAction: 'Qayta urinish',
+    periodStatistics: "Sana oralig'i statistika",
+    customPeriod: 'Maxsus',
+    totalSuffix: 'jami',
+    monthlyViewStats: "Oylik ko'rishlar statistikasi",
+    avgPerMonth: "O'rtacha/oy",
+    highestValue: 'Eng yuqori',
+    noProjectName: 'Nomsiz loyiha',
+    dataLoadError: "Ma'lumotlarni yuklashda xatolik",
+    tokenNotFoundError: 'Token topilmadi. Iltimos qayta kiring.',
+    // Analytics specific
+    platformStatsDesc: 'Platforma statistikasi va tahlillari',
+    overview: 'Umumiy',
+    monthlyStats: 'Oylik statistika',
+    last7Days: 'Oxirgi 7 kun',
+    mostViewedProjects: "Eng ko'p ko'rilgan loyihalar",
+    userRoles: 'Foydalanuvchi rollari',
+    admins: 'Adminlar',
+    sellers: 'Sotuvchilar',
+    buyers: 'Xaridorlar',
+    recentUsers: "So'nggi foydalanuvchilar",
+    popularProjects: 'Eng mashhur loyihalar',
+    newUserLabel: 'Yangi foydalanuvchi',
+    newMsgStatus: 'Yangi',
+    readMsgStatus: "O'qilgan",
+    repliedMsgStatus: 'Javob berilgan',
+    archivedMsgStatus: 'Arxivlangan',
+    recentMsgs: "So'nggi xabarlar",
+    messagesNotFound: 'Xabarlar topilmadi',
+    // AI specific
+    aiDesc: 'AI xususiyatlari va imkoniyatlarini boshqaring',
+    newFeature: 'Yangi xususiyat',
+    totalFeatures: 'Jami xususiyatlar',
+    availableStatus: 'Mavjud',
+    comingSoon: 'Tez kunda',
+    noAiFeatures: 'AI xususiyatlari topilmadi',
+    editFeatureTitle: 'Xususiyatni tahrirlash',
+    newAiFeature: 'Yangi AI xususiyat',
+    nameUzRequired: 'Nomi (UZ) *',
+    nameRuLabel: 'Nomi (RU)',
+    nameEnLabel: 'Nomi (EN)',
+    iconEmoji: 'Icon (emoji)',
+    chatbotOption: 'Chatbot',
+    analyticsOption: 'Analitika',
+    automationOption: 'Avtomatlashtirish',
+    generationOption: 'Generatsiya',
+    recognitionOption: 'Tanib olish',
+    otherOption: 'Boshqa',
+    descriptionUz: 'Tavsif (UZ)',
+    deleteAiConfirm: "AI xususiyatini o'chirmoqchimisiz?",
+    // Messages specific
+    messagesDesc: 'Foydalanuvchilardan kelgan xabarlar',
+    archivedLabel: 'Arxiv',
+    messageCount: 'ta xabar',
+    deleteMessageConfirm: "Xabarni o'chirmoqchimisiz?",
+    messageModal: 'Xabar',
+    replyAnswer: 'Javob',
+    writeReply: 'Javob yozish',
+    replyPlaceholder: 'Javobingizni yozing...',
+    sendReply: 'Javob yuborish',
+    archiveAction: 'Arxivlash',
+    // Profile specific
+    adminProfile: 'Admin Profil',
+    manageProfileDesc: "Profil ma'lumotlarini boshqaring",
+    personalInfo: "Shaxsiy ma'lumotlar",
+    enterYourName: 'Ismingizni kiriting',
+    emailPlaceholder: 'Email manzilingiz',
+    changePassword: "Parolni o'zgartirish",
+    currentPasswordLabel: 'Joriy parol',
+    currentPasswordPlaceholder: 'Joriy parolingiz',
+    newPasswordLabel: 'Yangi parol',
+    confirmNewPassword: 'Yangi parolni tasdiqlash',
+    reenterPassword: 'Yangi parolni qayta kiriting',
+    passwordHint: "Parolni o'zgartirish uchun barcha maydonlarni to'ldiring",
+    passwordEditMode: "Parolni o'zgartirish uchun tahrirlash rejimiga o'ting",
+    profileSuccess: 'Profil muvaffaqiyatli yangilandi!',
+    profileError: "Profilni yangilashda xatolik",
+    passwordMismatch: 'Yangi parollar mos kelmayapti',
+    enterCurrentPw: 'Joriy parolni kiriting',
+    passwordMinLength: "Yangi parol kamida 6 ta belgidan iborat bo'lishi kerak",
+    passwordChangeError: "Parolni o'zgartirishda xatolik",
+    errorOccurredGeneric: 'Xatolik yuz berdi',
+    // Category labels
+    websitesLabel: 'Veb-saytlar',
+    mobileAppsLabel: 'Mobil ilovalar',
+    ecommerceLabel: 'E-commerce',
+    crmErpLabel: 'CRM & ERP',
+    aiMlLabel: 'AI & ML',
+    othersLabel: 'Boshqalar',
+    // Users page (additional)
+    sellerLabel: 'Sotuvchi',
+    userLabel: 'Foydalanuvchi',
+    userDetails: "Foydalanuvchi ma'lumotlari",
+    deleteIrreversible: "Bu amalni ortga qaytarib bo'lmaydi.",
+    usersLoadError: 'Foydalanuvchilarni yuklashda xatolik',
+    enterPhoneNumber: 'Telefon raqamini kiriting',
+    // Footer page (additional)
+    footerSection: "Bo'lim",
+    newSection: "Yangi bo'lim",
+    editElement: 'Elementni tahrirlash',
+    newElement: 'Yangi element',
+    newSocialLink: 'Yangi ijtimoiy tarmoq',
+    newContact: 'Yangi kontakt',
+    // Contacts page (additional)
+    contactsDesc: "Telefon, email, manzil va boshqa aloqa ma'lumotlarini boshqaring",
+    contactsLoadError: 'Kontaktlarni yuklashda xatolik',
+    enterValue: 'Qiymatni kiriting!',
+    saveError: 'Saqlashda xatolik',
+    orderChangeError: "Tartibni o'zgartirishda xatolik",
+    phoneContact: 'Telefon',
+    // FAQ page (additional)
+    enterQuestion: 'Savolni kiriting...',
+    enterAnswer: 'Javobni kiriting...',
+    deactivate: 'Nofaol qilish',
+    // Projects page (additional)
+    enterLinkUrl: 'Havola URL manzilini kiriting:',
+    techTermNote: 'Texnik terminlarni o\'zingiz kiriting',
+    allFieldsFilled: 'Barcha maydonlar to\'ldirilgan. Tarjima kerak emas.',
+    projectNameRequired: 'Loyiha nomi (O\'zbekcha) kiritilishi shart!',
+    descriptionRequired: 'Loyiha izohi (O\'zbekcha) kiritilishi shart!',
+    linkButtonTitle: 'Havola (Link)',
   },
   ru: {
     dashboard: 'Панель',
@@ -1225,6 +1471,129 @@ export const translations: Record<Language, Translations> = {
     telegramType: 'Telegram',
     whatsappType: 'WhatsApp',
     valuePlaceholder: 'Значение',
+    // Dashboard specific
+    exportData: 'Экспорт',
+    retryAction: 'Повторить',
+    periodStatistics: 'Статистика за период',
+    customPeriod: 'Произвольный',
+    totalSuffix: 'всего',
+    monthlyViewStats: 'Статистика просмотров по месяцам',
+    avgPerMonth: 'В среднем/мес',
+    highestValue: 'Максимум',
+    noProjectName: 'Безымянный проект',
+    dataLoadError: 'Ошибка загрузки данных',
+    tokenNotFoundError: 'Токен не найден. Войдите снова.',
+    // Analytics specific
+    platformStatsDesc: 'Статистика и аналитика платформы',
+    overview: 'Обзор',
+    monthlyStats: 'Месячная статистика',
+    last7Days: 'Последние 7 дней',
+    mostViewedProjects: 'Самые просматриваемые проекты',
+    userRoles: 'Роли пользователей',
+    admins: 'Админы',
+    sellers: 'Продавцы',
+    buyers: 'Покупатели',
+    recentUsers: 'Недавние пользователи',
+    popularProjects: 'Популярные проекты',
+    newUserLabel: 'Новый пользователь',
+    newMsgStatus: 'Новое',
+    readMsgStatus: 'Прочитано',
+    repliedMsgStatus: 'Отвечено',
+    archivedMsgStatus: 'В архиве',
+    recentMsgs: 'Недавние сообщения',
+    messagesNotFound: 'Сообщения не найдены',
+    // AI specific
+    aiDesc: 'Управление AI функциями и возможностями',
+    newFeature: 'Новая функция',
+    totalFeatures: 'Всего функций',
+    availableStatus: 'Доступно',
+    comingSoon: 'Скоро',
+    noAiFeatures: 'AI функции не найдены',
+    editFeatureTitle: 'Редактировать функцию',
+    newAiFeature: 'Новая AI функция',
+    nameUzRequired: 'Название (UZ) *',
+    nameRuLabel: 'Название (RU)',
+    nameEnLabel: 'Название (EN)',
+    iconEmoji: 'Иконка (emoji)',
+    chatbotOption: 'Чатбот',
+    analyticsOption: 'Аналитика',
+    automationOption: 'Автоматизация',
+    generationOption: 'Генерация',
+    recognitionOption: 'Распознавание',
+    otherOption: 'Другое',
+    descriptionUz: 'Описание (UZ)',
+    deleteAiConfirm: 'Удалить AI функцию?',
+    // Messages specific
+    messagesDesc: 'Сообщения от пользователей',
+    archivedLabel: 'Архив',
+    messageCount: 'сообщений',
+    deleteMessageConfirm: 'Удалить сообщение?',
+    messageModal: 'Сообщение',
+    replyAnswer: 'Ответ',
+    writeReply: 'Написать ответ',
+    replyPlaceholder: 'Напишите ответ...',
+    sendReply: 'Отправить ответ',
+    archiveAction: 'Архивировать',
+    // Profile specific
+    adminProfile: 'Профиль администратора',
+    manageProfileDesc: 'Управляйте данными профиля',
+    personalInfo: 'Личные данные',
+    enterYourName: 'Введите ваше имя',
+    emailPlaceholder: 'Ваш email',
+    changePassword: 'Изменить пароль',
+    currentPasswordLabel: 'Текущий пароль',
+    currentPasswordPlaceholder: 'Ваш текущий пароль',
+    newPasswordLabel: 'Новый пароль',
+    confirmNewPassword: 'Подтвердите новый пароль',
+    reenterPassword: 'Введите новый пароль снова',
+    passwordHint: 'Заполните все поля для смены пароля',
+    passwordEditMode: 'Перейдите в режим редактирования для смены пароля',
+    profileSuccess: 'Профиль успешно обновлён!',
+    profileError: 'Ошибка обновления профиля',
+    passwordMismatch: 'Пароли не совпадают',
+    enterCurrentPw: 'Введите текущий пароль',
+    passwordMinLength: 'Новый пароль должен содержать не менее 6 символов',
+    passwordChangeError: 'Ошибка смены пароля',
+    errorOccurredGeneric: 'Произошла ошибка',
+    // Category labels
+    websitesLabel: 'Веб-сайты',
+    mobileAppsLabel: 'Мобильные приложения',
+    ecommerceLabel: 'E-commerce',
+    crmErpLabel: 'CRM & ERP',
+    aiMlLabel: 'AI & ML',
+    othersLabel: 'Другое',
+    // Users page (additional)
+    sellerLabel: 'Продавец',
+    userLabel: 'Пользователь',
+    userDetails: 'Данные пользователя',
+    deleteIrreversible: 'Это действие нельзя отменить.',
+    usersLoadError: 'Ошибка загрузки пользователей',
+    enterPhoneNumber: 'Введите номер телефона',
+    // Footer page (additional)
+    footerSection: 'Раздел',
+    newSection: 'Новый раздел',
+    editElement: 'Редактировать элемент',
+    newElement: 'Новый элемент',
+    newSocialLink: 'Новая соцсеть',
+    newContact: 'Новый контакт',
+    // Contacts page (additional)
+    contactsDesc: 'Управление телефонами, email, адресами и другими контактами',
+    contactsLoadError: 'Ошибка загрузки контактов',
+    enterValue: 'Введите значение!',
+    saveError: 'Ошибка сохранения',
+    orderChangeError: 'Ошибка изменения порядка',
+    phoneContact: 'Телефон',
+    // FAQ page (additional)
+    enterQuestion: 'Введите вопрос...',
+    enterAnswer: 'Введите ответ...',
+    deactivate: 'Деактивировать',
+    // Projects page (additional)
+    enterLinkUrl: 'Введите URL ссылки:',
+    techTermNote: 'Технические термины вводите вручную',
+    allFieldsFilled: 'Все поля заполнены. Перевод не требуется.',
+    projectNameRequired: 'Название проекта (узбекский) обязательно!',
+    descriptionRequired: 'Описание проекта (узбекский) обязательно!',
+    linkButtonTitle: 'Ссылка (Link)',
   },
   en: {
     dashboard: 'Dashboard',
@@ -1633,6 +2002,129 @@ export const translations: Record<Language, Translations> = {
     telegramType: 'Telegram',
     whatsappType: 'WhatsApp',
     valuePlaceholder: 'Value',
+    // Dashboard specific
+    exportData: 'Export',
+    retryAction: 'Retry',
+    periodStatistics: 'Period statistics',
+    customPeriod: 'Custom',
+    totalSuffix: 'total',
+    monthlyViewStats: 'Monthly views statistics',
+    avgPerMonth: 'Avg/month',
+    highestValue: 'Highest',
+    noProjectName: 'Unnamed project',
+    dataLoadError: 'Error loading data',
+    tokenNotFoundError: 'Token not found. Please login again.',
+    // Analytics specific
+    platformStatsDesc: 'Platform statistics and analytics',
+    overview: 'Overview',
+    monthlyStats: 'Monthly statistics',
+    last7Days: 'Last 7 days',
+    mostViewedProjects: 'Most viewed projects',
+    userRoles: 'User roles',
+    admins: 'Admins',
+    sellers: 'Sellers',
+    buyers: 'Buyers',
+    recentUsers: 'Recent users',
+    popularProjects: 'Popular projects',
+    newUserLabel: 'New user',
+    newMsgStatus: 'New',
+    readMsgStatus: 'Read',
+    repliedMsgStatus: 'Replied',
+    archivedMsgStatus: 'Archived',
+    recentMsgs: 'Recent messages',
+    messagesNotFound: 'No messages found',
+    // AI specific
+    aiDesc: 'Manage AI features and capabilities',
+    newFeature: 'New feature',
+    totalFeatures: 'Total features',
+    availableStatus: 'Available',
+    comingSoon: 'Coming soon',
+    noAiFeatures: 'No AI features found',
+    editFeatureTitle: 'Edit feature',
+    newAiFeature: 'New AI feature',
+    nameUzRequired: 'Name (UZ) *',
+    nameRuLabel: 'Name (RU)',
+    nameEnLabel: 'Name (EN)',
+    iconEmoji: 'Icon (emoji)',
+    chatbotOption: 'Chatbot',
+    analyticsOption: 'Analytics',
+    automationOption: 'Automation',
+    generationOption: 'Generation',
+    recognitionOption: 'Recognition',
+    otherOption: 'Other',
+    descriptionUz: 'Description (UZ)',
+    deleteAiConfirm: 'Delete AI feature?',
+    // Messages specific
+    messagesDesc: 'Messages from users',
+    archivedLabel: 'Archive',
+    messageCount: 'messages',
+    deleteMessageConfirm: 'Delete message?',
+    messageModal: 'Message',
+    replyAnswer: 'Reply',
+    writeReply: 'Write reply',
+    replyPlaceholder: 'Write your reply...',
+    sendReply: 'Send reply',
+    archiveAction: 'Archive',
+    // Profile specific
+    adminProfile: 'Admin Profile',
+    manageProfileDesc: 'Manage profile information',
+    personalInfo: 'Personal information',
+    enterYourName: 'Enter your name',
+    emailPlaceholder: 'Your email',
+    changePassword: 'Change password',
+    currentPasswordLabel: 'Current password',
+    currentPasswordPlaceholder: 'Your current password',
+    newPasswordLabel: 'New password',
+    confirmNewPassword: 'Confirm new password',
+    reenterPassword: 'Re-enter new password',
+    passwordHint: 'Fill in all fields to change password',
+    passwordEditMode: 'Enter edit mode to change password',
+    profileSuccess: 'Profile updated successfully!',
+    profileError: 'Error updating profile',
+    passwordMismatch: 'Passwords do not match',
+    enterCurrentPw: 'Enter current password',
+    passwordMinLength: 'New password must be at least 6 characters',
+    passwordChangeError: 'Error changing password',
+    errorOccurredGeneric: 'An error occurred',
+    // Category labels
+    websitesLabel: 'Websites',
+    mobileAppsLabel: 'Mobile apps',
+    ecommerceLabel: 'E-commerce',
+    crmErpLabel: 'CRM & ERP',
+    aiMlLabel: 'AI & ML',
+    othersLabel: 'Others',
+    // Users page (additional)
+    sellerLabel: 'Seller',
+    userLabel: 'User',
+    userDetails: 'User Details',
+    deleteIrreversible: 'This action cannot be undone.',
+    usersLoadError: 'Error loading users',
+    enterPhoneNumber: 'Enter phone number',
+    // Footer page (additional)
+    footerSection: 'Section',
+    newSection: 'New Section',
+    editElement: 'Edit Element',
+    newElement: 'New Element',
+    newSocialLink: 'New Social Link',
+    newContact: 'New Contact',
+    // Contacts page (additional)
+    contactsDesc: 'Manage phones, emails, addresses and other contact information',
+    contactsLoadError: 'Error loading contacts',
+    enterValue: 'Enter value!',
+    saveError: 'Error saving',
+    orderChangeError: 'Error changing order',
+    phoneContact: 'Phone',
+    // FAQ page (additional)
+    enterQuestion: 'Enter question...',
+    enterAnswer: 'Enter answer...',
+    deactivate: 'Deactivate',
+    // Projects page (additional)
+    enterLinkUrl: 'Enter link URL:',
+    techTermNote: 'Enter technical terms manually',
+    allFieldsFilled: 'All fields are filled. No translation needed.',
+    projectNameRequired: 'Project name (Uzbek) is required!',
+    descriptionRequired: 'Project description (Uzbek) is required!',
+    linkButtonTitle: 'Link',
   },
 }
 
