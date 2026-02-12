@@ -53,9 +53,12 @@ const AVAILABLE_INTEGRATIONS = [
     phone: null,
     description: "Telegram bot integratsiyasi - bildirishnomalar, buyurtmalar va mijozlar bilan aloqa",
     docs_url: 'https://core.telegram.org/bots/api',
+    signup_url: 'https://t.me/BotFather',
+    api_docs: 'https://core.telegram.org/bots/api',
+    tutorial_url: 'https://core.telegram.org/bots/tutorial',
     fields: [
-      { key: 'bot_token', label: 'Bot Token', placeholder: '123456789:ABCdefGHIjklMNOpqrsTUVwxyz', type: 'password', required: true },
-      { key: 'chat_id', label: 'Chat ID (Admin)', placeholder: '-1001234567890 yoki 123456789', type: 'text', required: false },
+      { key: 'bot_token', label: 'Bot Token', placeholder: 'BotFather dan olingan token', type: 'password', required: true },
+      { key: 'chat_id', label: 'Chat ID (Admin)', placeholder: '@userinfobot dan bilish mumkin', type: 'text', required: false },
       { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/telegram/webhook', type: 'text', required: false },
     ]
   },
@@ -67,10 +70,14 @@ const AVAILABLE_INTEGRATIONS = [
     phone: '+998 78 150 22 24',
     description: "Payme to'lov tizimi integratsiyasi - onlayn to'lovlarni qabul qilish",
     docs_url: 'https://developer.help.paycom.uz/',
+    signup_url: 'https://business.payme.uz/',
+    merchant_portal: 'https://cabinet.paycom.uz/',
+    api_docs: 'https://developer.help.paycom.uz/metody-merchant-api',
+    support_email: 'support@paycom.uz',
     fields: [
-      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Payme merchant identifikatori', type: 'text', required: true },
-      { key: 'secret_key', label: 'Secret Key (Test)', placeholder: 'Test muhit uchun kalit', type: 'password', required: true },
-      { key: 'secret_key_prod', label: 'Secret Key (Production)', placeholder: 'Production muhit uchun kalit', type: 'password', required: false },
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Cabinet.paycom.uz dan olish', type: 'text', required: true },
+      { key: 'secret_key', label: 'Secret Key (Test)', placeholder: 'Test muhit kaliti', type: 'password', required: true },
+      { key: 'secret_key_prod', label: 'Secret Key (Production)', placeholder: 'Production kaliti', type: 'password', required: false },
       { key: 'callback_url', label: 'Callback URL', placeholder: 'https://yourdomain.com/api/payme/callback', type: 'text', required: true },
       { key: 'test_mode', label: 'Test rejimi', placeholder: '', type: 'checkbox', required: false },
     ]
@@ -83,11 +90,15 @@ const AVAILABLE_INTEGRATIONS = [
     phone: '+998 71 231 08 80',
     description: "Click to'lov tizimi integratsiyasi - onlayn to'lovlarni qabul qilish",
     docs_url: 'https://docs.click.uz/',
+    signup_url: 'https://my.click.uz/registration',
+    merchant_portal: 'https://my.click.uz/services/merchant',
+    api_docs: 'https://docs.click.uz/click-api/',
+    support_email: 'support@click.uz',
     fields: [
-      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Click merchant identifikatori', type: 'text', required: true },
-      { key: 'service_id', label: 'Service ID', placeholder: 'Click service identifikatori', type: 'text', required: true },
-      { key: 'secret_key', label: 'Secret Key', placeholder: 'Click secret key', type: 'password', required: true },
-      { key: 'merchant_user_id', label: 'Merchant User ID', placeholder: 'Click merchant user ID', type: 'text', required: false },
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'My.click.uz kabinetdan olish', type: 'text', required: true },
+      { key: 'service_id', label: 'Service ID', placeholder: 'Xizmat identifikatori', type: 'text', required: true },
+      { key: 'secret_key', label: 'Secret Key', placeholder: 'API kaliti (kabinetdan)', type: 'password', required: true },
+      { key: 'merchant_user_id', label: 'Merchant User ID', placeholder: 'Merchant user ID', type: 'text', required: false },
       { key: 'callback_url', label: 'Callback URL', placeholder: 'https://yourdomain.com/api/click/callback', type: 'text', required: true },
     ]
   },
@@ -112,10 +123,14 @@ const AVAILABLE_INTEGRATIONS = [
     phone: '+998 71 202 60 60',
     description: "Eskiz SMS xizmati - SMS xabarlar yuborish va OTP tasdiqlash",
     docs_url: 'https://eskiz.uz/documentation',
+    signup_url: 'https://my.eskiz.uz/register',
+    merchant_portal: 'https://my.eskiz.uz/',
+    api_docs: 'https://documenter.getpostman.com/view/663428/RzfmES4z',
+    support_email: 'info@eskiz.uz',
     fields: [
-      { key: 'email', label: 'Email', placeholder: 'Eskiz hisobingiz email', type: 'email', required: true },
-      { key: 'password', label: 'Parol', placeholder: 'Eskiz hisobingiz paroli', type: 'password', required: true },
-      { key: 'sender_name', label: "Jo'natuvchi nomi", placeholder: '4546 (tasdiqlangan nom)', type: 'text', required: false },
+      { key: 'email', label: 'Email', placeholder: 'My.eskiz.uz ga kirish email', type: 'email', required: true },
+      { key: 'password', label: 'Parol', placeholder: 'My.eskiz.uz paroli', type: 'password', required: true },
+      { key: 'sender_name', label: "Jo'natuvchi nomi", placeholder: '4546 (kabinetda tasdiqlangan)', type: 'text', required: false },
     ]
   },
   // ============== YETKAZIB BERISH XIZMATLARI ==============
@@ -652,6 +667,10 @@ const AVAILABLE_INTEGRATIONS = [
     phone: '+998 71 202 02 01',
     description: "Paynet to'lov tizimi - 20M+ foydalanuvchi, kommunal, mobil to'lovlar va pul o'tkazmalari",
     docs_url: 'https://paynet.uz',
+    signup_url: 'https://paynet.uz/business',
+    merchant_portal: 'https://cabinet.paynet.uz/',
+    api_docs: 'https://paynet.uz/developers',
+    support_email: 'support@paynet.uz',
     fields: [
       { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Paynet merchant identifikatori', type: 'text', required: true },
       { key: 'secret_key', label: 'Secret Key', placeholder: 'Paynet secret key', type: 'password', required: true },
@@ -667,6 +686,10 @@ const AVAILABLE_INTEGRATIONS = [
     phone: '+998 71 200 06 44',
     description: "Uzcard - milliy to'lov kartasi tizimi, onlayn ekvayring va karta-karta o'tkazmalar",
     docs_url: 'https://api.uzcard.uz',
+    signup_url: 'https://uzcard.uz/business',
+    merchant_portal: 'https://cabinet.uzcard.uz/',
+    api_docs: 'https://api.uzcard.uz/docs',
+    support_email: 'support@uzcard.uz',
     fields: [
       { key: 'terminal_id', label: 'Terminal ID', placeholder: 'Uzcard terminal identifikatori', type: 'text', required: true },
       { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Merchant identifikatori', type: 'text', required: true },
@@ -682,6 +705,10 @@ const AVAILABLE_INTEGRATIONS = [
     phone: '+998 71 200 01 01',
     description: "Humo - milliy to'lov kartasi tizimi, Uzcard bilan interoperabel, onlayn ekvayring",
     docs_url: 'https://humocard.uz',
+    signup_url: 'https://humocard.uz/business',
+    merchant_portal: 'https://cabinet.humocard.uz/',
+    api_docs: 'https://humocard.uz/developers',
+    support_email: 'support@humocard.uz',
     fields: [
       { key: 'terminal_id', label: 'Terminal ID', placeholder: 'Humo terminal identifikatori', type: 'text', required: true },
       { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Merchant identifikatori', type: 'text', required: true },
@@ -697,6 +724,10 @@ const AVAILABLE_INTEGRATIONS = [
     phone: '+998 71 200 03 15',
     description: "ATMOS - fintech to'lov platformasi, ekvayring, processing va to'lov avtomatizatsiyasi",
     docs_url: 'https://atmos.uz',
+    signup_url: 'https://atmos.uz/business',
+    merchant_portal: 'https://my.atmos.uz/',
+    api_docs: 'https://atmos.uz/api-docs',
+    support_email: 'support@atmos.uz',
     fields: [
       { key: 'store_id', label: 'Store ID', placeholder: 'ATMOS store identifikatori', type: 'text', required: true },
       { key: 'api_key', label: 'API Key', placeholder: 'ATMOS API kaliti', type: 'password', required: true },
@@ -712,6 +743,10 @@ const AVAILABLE_INTEGRATIONS = [
     phone: '+998 71 200 00 44',
     description: "Apelsin - Kapitalbank raqamli to'lov tizimi, onlayn to'lovlar va pul o'tkazmalari",
     docs_url: 'https://kapitalbank.uz',
+    signup_url: 'https://kapitalbank.uz/business',
+    merchant_portal: 'https://business.kapitalbank.uz/',
+    api_docs: 'https://kapitalbank.uz/api',
+    support_email: 'support@kapitalbank.uz',
     fields: [
       { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Kapitalbank merchant ID', type: 'text', required: true },
       { key: 'api_key', label: 'API Key', placeholder: 'Apelsin API kaliti', type: 'password', required: true },
@@ -742,6 +777,10 @@ const AVAILABLE_INTEGRATIONS = [
     phone: '+998 71 207 07 07',
     description: "OSON - mobil to'lov tizimi, 30M+ tranzaksiya, tezkor to'lovlar",
     docs_url: 'https://oson.uz',
+    signup_url: 'https://oson.uz/business',
+    merchant_portal: 'https://cabinet.oson.uz/',
+    api_docs: 'https://oson.uz/api',
+    support_email: 'info@oson.uz',
     fields: [
       { key: 'merchant_id', label: 'Merchant ID', placeholder: 'OSON merchant identifikatori', type: 'text', required: true },
       { key: 'api_key', label: 'API Key', placeholder: 'OSON API kaliti', type: 'password', required: true },
@@ -756,6 +795,10 @@ const AVAILABLE_INTEGRATIONS = [
     phone: '+998 95 199 11 99',
     description: "UPay - onlayn to'lov xizmati, Uzcard/Humo kartalar, kommunal to'lovlar",
     docs_url: 'https://upay.net',
+    signup_url: 'https://upay.net/business',
+    merchant_portal: 'https://cabinet.upay.net/',
+    api_docs: 'https://upay.net/api-docs',
+    support_email: 'support@upay.net',
     fields: [
       { key: 'merchant_id', label: 'Merchant ID', placeholder: 'UPay merchant identifikatori', type: 'text', required: true },
       { key: 'api_key', label: 'API Key', placeholder: 'UPay API kaliti', type: 'password', required: true },
@@ -770,6 +813,10 @@ const AVAILABLE_INTEGRATIONS = [
     phone: '+998 78 777 07 07',
     description: "Uzum Bank - merchant ekvayring, karta chiqarish, Humo/Uzcard/Visa/Mastercard",
     docs_url: 'https://merchants.uzumbank.uz',
+    signup_url: 'https://merchants.uzumbank.uz/registration',
+    merchant_portal: 'https://merchants.uzumbank.uz/',
+    api_docs: 'https://merchants.uzumbank.uz/docs',
+    support_email: 'merchant@uzumbank.uz',
     fields: [
       { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Uzum Bank merchant ID', type: 'text', required: true },
       { key: 'api_key', label: 'API Key', placeholder: 'API kaliti', type: 'password', required: true },
@@ -1308,6 +1355,895 @@ const AVAILABLE_INTEGRATIONS = [
       { key: 'api_key', label: 'API Key', placeholder: 'Express24 API kaliti', type: 'password', required: true },
       { key: 'restaurant_id', label: 'Restoran ID', placeholder: 'Express24 restoran identifikatori', type: 'text', required: true },
       { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/express24/webhook', type: 'text', required: false },
+    ]
+  },
+  // ============== XALQARO TO'LOV TIZIMLARI ==============
+  {
+    id: 'visa',
+    name: 'Visa',
+    icon: '💳',
+    category: 'payment',
+    phone: null,
+    description: "Visa - jahon miqyosidagi to'lov kartasi tizimi, onlayn va offline to'lovlar",
+    docs_url: 'https://developer.visa.com/',
+    signup_url: 'https://developer.visa.com/',
+    merchant_portal: 'https://developer.visa.com/portal',
+    api_docs: 'https://developer.visa.com/capabilities',
+    support_email: 'developer@visa.com',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'Visa Developer API key', type: 'password', required: true },
+      { key: 'user_id', label: 'User ID', placeholder: 'Visa API user ID', type: 'text', required: true },
+      { key: 'password', label: 'Password', placeholder: 'Visa API password', type: 'password', required: true },
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Savdogar identifikatori', type: 'text', required: true },
+      { key: 'certificate_path', label: 'Certificate Path', placeholder: 'SSL sertifikat yo\'li', type: 'text', required: false },
+      { key: 'sandbox_mode', label: 'Sandbox rejimi', placeholder: '', type: 'checkbox', required: false },
+    ]
+  },
+  {
+    id: 'mastercard',
+    name: 'Mastercard',
+    icon: '💳',
+    category: 'payment',
+    phone: null,
+    description: "Mastercard - jahon miqyosidagi to'lov kartasi tizimi, Gateway API integratsiyasi",
+    docs_url: 'https://developer.mastercard.com/',
+    signup_url: 'https://developer.mastercard.com/',
+    merchant_portal: 'https://developer.mastercard.com/dashboard',
+    api_docs: 'https://developer.mastercard.com/gateway/documentation',
+    support_email: 'apisupport@mastercard.com',
+    fields: [
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Mastercard merchant ID', type: 'text', required: true },
+      { key: 'api_username', label: 'API Username', placeholder: 'Gateway API username', type: 'text', required: true },
+      { key: 'api_password', label: 'API Password', placeholder: 'Gateway API password', type: 'password', required: true },
+      { key: 'authentication_password', label: 'Authentication Password', placeholder: 'Tasdiqlash paroli', type: 'password', required: false },
+      { key: 'gateway_url', label: 'Gateway URL', placeholder: 'https://gateway.mastercard.com', type: 'text', required: false },
+      { key: 'test_mode', label: 'Test rejimi', placeholder: '', type: 'checkbox', required: false },
+    ]
+  },
+  {
+    id: 'stripe',
+    name: 'Stripe',
+    icon: '💳',
+    category: 'payment',
+    phone: '+1 888 926 2289',
+    description: "Stripe - xalqaro to'lov tizimi, onlayn to'lovlar, Subscription va invoicing",
+    docs_url: 'https://stripe.com/docs/api',
+    signup_url: 'https://dashboard.stripe.com/register',
+    merchant_portal: 'https://dashboard.stripe.com/',
+    api_docs: 'https://stripe.com/docs/api',
+    support_email: 'support@stripe.com',
+    fields: [
+      { key: 'publishable_key', label: 'Publishable Key', placeholder: 'pk_test_... yoki pk_live_...', type: 'text', required: true },
+      { key: 'secret_key', label: 'Secret Key', placeholder: 'sk_test_... yoki sk_live_...', type: 'password', required: true },
+      { key: 'webhook_secret', label: 'Webhook Secret', placeholder: 'whsec_... (Dashboard > Webhooks)', type: 'password', required: false },
+      { key: 'test_mode', label: 'Test rejimi', placeholder: '', type: 'checkbox', required: false },
+    ]
+  },
+  {
+    id: 'paypal',
+    name: 'PayPal',
+    icon: '💰',
+    category: 'payment',
+    phone: null,
+    description: "PayPal - xalqaro to'lov tizimi va elektron hamyon",
+    docs_url: 'https://developer.paypal.com/docs/api/',
+    signup_url: 'https://www.paypal.com/business',
+    merchant_portal: 'https://www.paypal.com/merchantapps',
+    api_docs: 'https://developer.paypal.com/api/rest/',
+    support_email: 'developer-support@paypal.com',
+    fields: [
+      { key: 'client_id', label: 'Client ID', placeholder: 'PayPal client ID', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', placeholder: 'PayPal client secret', type: 'password', required: true },
+      { key: 'webhook_id', label: 'Webhook ID', placeholder: 'PayPal webhook ID', type: 'text', required: false },
+      { key: 'sandbox_mode', label: 'Sandbox rejimi', placeholder: '', type: 'checkbox', required: false },
+    ]
+  },
+  // ============== XITOY TO'LOV TIZIMLARI ==============
+  {
+    id: 'alipay',
+    name: 'Alipay (支付宝)',
+    icon: '🇨🇳',
+    category: 'payment',
+    phone: '+86 571 8502 2088',
+    description: "Alipay - Xitoyning eng yirik mobil to'lov platformasi, QR kod va onlayn to'lovlar",
+    docs_url: 'https://global.alipay.com/docs/ac/global/global_overview',
+    fields: [
+      { key: 'app_id', label: 'App ID', placeholder: '2021001234567890', type: 'text', required: true },
+      { key: 'private_key', label: 'Private Key (Sizning kalitingiz)', placeholder: 'MIIEvQIBADANBgkqhkiG9w0BAQE...', type: 'password', required: true },
+      { key: 'alipay_public_key', label: 'Alipay Public Key', placeholder: 'MIIBIjANBgkqhkiG9w0BAQE...', type: 'password', required: true },
+      { key: 'partner_id', label: 'Partner ID (PID)', placeholder: '2088102123456789', type: 'text', required: false },
+      { key: 'notify_url', label: 'Notify URL (Callback)', placeholder: 'https://yourdomain.com/api/alipay/notify', type: 'text', required: false },
+      { key: 'return_url', label: 'Return URL', placeholder: 'https://yourdomain.com/payment/success', type: 'text', required: false },
+      { key: 'charset', label: 'Charset', placeholder: 'utf-8', type: 'text', required: false },
+      { key: 'sign_type', label: 'Sign Type', placeholder: 'RSA2', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'wechat_pay',
+    name: 'WeChat Pay (微信支付)',
+    icon: '🇨🇳',
+    category: 'payment',
+    phone: '+86 95017',
+    description: "WeChat Pay - WeChat ekotizimi ichida to'lov xizmati, mobil to'lovlar va QR kod",
+    docs_url: 'https://pay.weixin.qq.com/wiki/doc/apiv3/index.shtml',
+    fields: [
+      { key: 'app_id', label: 'App ID (APPID)', placeholder: 'wx1234567890abcdef', type: 'text', required: true },
+      { key: 'mch_id', label: 'Merchant ID (商户号)', placeholder: '1234567890', type: 'text', required: true },
+      { key: 'api_key', label: 'API Key (V2)', placeholder: '32belgili API key', type: 'password', required: true },
+      { key: 'api_v3_key', label: 'API v3 Key (APIv3密钥)', placeholder: '32belgili v3 key', type: 'password', required: false },
+      { key: 'cert_serial_no', label: 'Certificate Serial No', placeholder: 'Sertifikat seriya raqami', type: 'text', required: false },
+      { key: 'private_key_path', label: 'Private Key Path', placeholder: 'apiclient_key.pem fayl yo\'li', type: 'text', required: false },
+      { key: 'notify_url', label: 'Notify URL', placeholder: 'https://yourdomain.com/api/wechat/notify', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'unionpay',
+    name: 'UnionPay (银联)',
+    icon: '🇨🇳',
+    category: 'payment',
+    phone: null,
+    description: "UnionPay - Xitoyning milliy to'lov kartasi tizimi, xalqaro to'lovlar",
+    docs_url: 'https://open.unionpay.com/tjweb/index',
+    fields: [
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'UnionPay merchant ID', type: 'text', required: true },
+      { key: 'terminal_id', label: 'Terminal ID', placeholder: 'Terminal ID', type: 'text', required: true },
+      { key: 'access_key', label: 'Access Key', placeholder: 'UnionPay access key', type: 'password', required: true },
+      { key: 'secret_key', label: 'Secret Key', placeholder: 'UnionPay secret key', type: 'password', required: true },
+      { key: 'notify_url', label: 'Notify URL', placeholder: 'https://yourdomain.com/api/unionpay/notify', type: 'text', required: false },
+      { key: 'sandbox_mode', label: 'Test rejimi', placeholder: '', type: 'checkbox', required: false },
+    ]
+  },
+  // ============== TURKIYA TO'LOV TIZIMLARI ==============
+  {
+    id: 'iyzico',
+    name: 'iyzico',
+    icon: '🇹🇷',
+    category: 'payment',
+    phone: '+90 850 222 49 92',
+    description: "iyzico - Turkiyaning yetakchi to'lov xizmati, onlayn to'lovlar va marketplace uchun",
+    docs_url: 'https://dev.iyzipay.com/',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'iyzico API key', type: 'password', required: true },
+      { key: 'secret_key', label: 'Secret Key', placeholder: 'iyzico secret key', type: 'password', required: true },
+      { key: 'base_url', label: 'Base URL', placeholder: 'https://api.iyzipay.com', type: 'text', required: false },
+      { key: 'sandbox_mode', label: 'Sandbox rejimi', placeholder: '', type: 'checkbox', required: false },
+    ]
+  },
+  {
+    id: 'paytr',
+    name: 'PayTR',
+    icon: '🇹🇷',
+    category: 'payment',
+    phone: '+90 850 305 33 78',
+    description: "PayTR - Turkiya to'lov xizmati, kredit karta va bo'lib to'lash imkoniyati",
+    docs_url: 'https://www.paytr.com/entegrasyon',
+    fields: [
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'PayTR merchant ID', type: 'text', required: true },
+      { key: 'merchant_key', label: 'Merchant Key', placeholder: 'PayTR merchant key', type: 'password', required: true },
+      { key: 'merchant_salt', label: 'Merchant Salt', placeholder: 'PayTR merchant salt', type: 'password', required: true },
+      { key: 'success_url', label: 'Success URL', placeholder: 'https://yourdomain.com/payment/success', type: 'text', required: false },
+      { key: 'fail_url', label: 'Fail URL', placeholder: 'https://yourdomain.com/payment/fail', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'param',
+    name: 'Param',
+    icon: '🇹🇷',
+    category: 'payment',
+    phone: '+90 850 252 00 00',
+    description: "Param - Turkiya sanal pos xizmati, kredit karta to'lovlari",
+    docs_url: 'https://dev.param.com.tr/',
+    fields: [
+      { key: 'client_code', label: 'Client Code', placeholder: 'Param client code', type: 'text', required: true },
+      { key: 'client_username', label: 'Client Username', placeholder: 'API username', type: 'text', required: true },
+      { key: 'client_password', label: 'Client Password', placeholder: 'API password', type: 'password', required: true },
+      { key: 'guid', label: 'GUID', placeholder: 'Param GUID', type: 'text', required: true },
+      { key: 'mode', label: 'Mode', placeholder: 'T (test) yoki P (production)', type: 'text', required: false },
+    ]
+  },
+  // ============== O'RTA OSIYO TO'LOV TIZIMLARI ==============
+  {
+    id: 'elcart_kz',
+    name: 'ELCART (Qozog\'iston)',
+    icon: '🇰🇿',
+    category: 'payment',
+    phone: '+7 727 311 07 18',
+    description: "ELCART - Qozog'iston milliy to'lov tizimi, kartalar va mobil to'lovlar",
+    docs_url: 'https://elcart.kz',
+    fields: [
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'ELCART merchant identifikatori', type: 'text', required: true },
+      { key: 'terminal_id', label: 'Terminal ID', placeholder: 'Terminal identifikatori', type: 'text', required: true },
+      { key: 'secret_key', label: 'Secret Key', placeholder: 'ELCART secret key', type: 'password', required: true },
+      { key: 'callback_url', label: 'Callback URL', placeholder: 'https://yourdomain.com/api/elcart/callback', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'paybox_kz',
+    name: 'PayBox (Qozog\'iston)',
+    icon: '🇰🇿',
+    category: 'payment',
+    phone: '+7 727 222 11 99',
+    description: "PayBox - Qozog'iston to'lov xizmati, kartalar va mobil to'lovlar",
+    docs_url: 'https://paybox.money/docs/',
+    fields: [
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'PayBox merchant ID', type: 'text', required: true },
+      { key: 'secret_key', label: 'Secret Key', placeholder: 'PayBox secret key', type: 'password', required: true },
+      { key: 'success_url', label: 'Success URL', placeholder: 'https://yourdomain.com/payment/success', type: 'text', required: false },
+      { key: 'failure_url', label: 'Failure URL', placeholder: 'https://yourdomain.com/payment/failure', type: 'text', required: false },
+      { key: 'test_mode', label: 'Test rejimi', placeholder: '', type: 'checkbox', required: false },
+    ]
+  },
+  {
+    id: 'kaspi_kz',
+    name: 'Kaspi.kz',
+    icon: '🇰🇿',
+    category: 'payment',
+    phone: '+7 727 258 58 58',
+    description: "Kaspi.kz - Qozog'istonning eng yirik mobil bank va to'lov tizimi",
+    docs_url: 'https://kaspi.kz/merchantcabinet/',
+    signup_url: 'https://kaspi.kz/merchantcabinet/registration',
+    merchant_portal: 'https://idmc.shop.kaspi.kz/login',
+    api_docs: 'https://kaspi.kz/merchantcabinet/#/docs',
+    fields: [
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Merchant kabinetdan olish', type: 'text', required: true },
+      { key: 'api_key', label: 'API Key', placeholder: 'API kalitni kabinetdan yarating', type: 'password', required: true },
+      { key: 'terminal_id', label: 'Terminal ID', placeholder: 'Terminal ID (ixtiyoriy)', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'oson_tj',
+    name: 'Oson (Tojikiston)',
+    icon: '🇹🇯',
+    category: 'payment',
+    phone: '+992 44 640 00 10',
+    description: "Oson - Tojikiston mobil to'lov tizimi va elektron hamyon",
+    docs_url: 'https://oson.tj',
+    fields: [
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Oson merchant ID', type: 'text', required: true },
+      { key: 'api_key', label: 'API Key', placeholder: 'Oson API key', type: 'password', required: true },
+      { key: 'secret_key', label: 'Secret Key', placeholder: 'Oson secret key', type: 'password', required: true },
+    ]
+  },
+  {
+    id: 'megapay_kg',
+    name: 'MegaPay (Qirg\'iziston)',
+    icon: '🇰🇬',
+    category: 'payment',
+    phone: '+996 312 97 00 00',
+    description: "MegaPay - Qirg'iziston mobil to'lov xizmati",
+    docs_url: 'https://megapay.kg',
+    fields: [
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'MegaPay merchant ID', type: 'text', required: true },
+      { key: 'api_key', label: 'API Key', placeholder: 'MegaPay API key', type: 'password', required: true },
+      { key: 'terminal_id', label: 'Terminal ID', placeholder: 'Terminal identifikatori', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'altyn_asyr_tm',
+    name: 'Altyn Asyr (Turkmaniston)',
+    icon: '🇹🇲',
+    category: 'payment',
+    phone: null,
+    description: "Altyn Asyr - Turkmaniston milliy bank kartasi tizimi",
+    docs_url: 'https://www.ab.tm',
+    fields: [
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Altyn Asyr merchant ID', type: 'text', required: true },
+      { key: 'terminal_id', label: 'Terminal ID', placeholder: 'Terminal identifikatori', type: 'text', required: true },
+      { key: 'secret_key', label: 'Secret Key', placeholder: 'Altyn Asyr secret key', type: 'password', required: true },
+    ]
+  },
+  // ============== E-COMMERCE PLATFORMALAR ==============
+  {
+    id: 'shopify',
+    name: 'Shopify',
+    icon: '🛍️',
+    category: 'ecommerce',
+    phone: '+1 888 746 7439',
+    description: "Shopify - elektron tijorat platformasi, onlayn do'kon yaratish va boshqarish",
+    docs_url: 'https://shopify.dev/docs/api/admin-rest',
+    fields: [
+      { key: 'shop_domain', label: "Do'kon domeni", placeholder: 'yourstore.myshopify.com', type: 'text', required: true },
+      { key: 'access_token', label: 'Admin API Access Token', placeholder: 'shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', type: 'password', required: true },
+      { key: 'api_key', label: 'API Key (Client ID)', placeholder: 'Shopify app API key', type: 'text', required: false },
+      { key: 'api_secret', label: 'API Secret Key', placeholder: 'Shopify app secret key', type: 'password', required: false },
+      { key: 'api_version', label: 'API Version', placeholder: '2024-01', type: 'text', required: false },
+      { key: 'webhook_secret', label: 'Webhook Secret', placeholder: 'Webhook verification secret', type: 'password', required: false },
+      { key: 'storefront_access_token', label: 'Storefront API Token', placeholder: 'Storefront API uchun (ixtiyoriy)', type: 'password', required: false },
+    ]
+  },
+  {
+    id: 'woocommerce',
+    name: 'WooCommerce',
+    icon: '🛒',
+    category: 'ecommerce',
+    phone: null,
+    description: "WooCommerce - WordPress uchun elektron tijorat plagini",
+    docs_url: 'https://woocommerce.github.io/woocommerce-rest-api-docs/',
+    fields: [
+      { key: 'store_url', label: "Do'kon URL", placeholder: 'https://yourstore.com', type: 'text', required: true },
+      { key: 'consumer_key', label: 'Consumer Key', placeholder: 'ck_...', type: 'text', required: true },
+      { key: 'consumer_secret', label: 'Consumer Secret', placeholder: 'cs_...', type: 'password', required: true },
+      { key: 'webhook_secret', label: 'Webhook Secret', placeholder: 'Webhook tasdiqlash kaliti', type: 'password', required: false },
+    ]
+  },
+  // ============== XABARLAR VA ALOQA ==============
+  {
+    id: 'whatsapp_business',
+    name: 'WhatsApp Business API',
+    icon: '💬',
+    category: 'communication',
+    phone: null,
+    description: "WhatsApp Business API - mijozlar bilan WhatsApp orqali aloqa, xabarlar va bildirishnomalar",
+    docs_url: 'https://developers.facebook.com/docs/whatsapp',
+    signup_url: 'https://business.facebook.com/wa/manage/home/',
+    merchant_portal: 'https://business.facebook.com/wa/manage/',
+    api_docs: 'https://developers.facebook.com/docs/whatsapp/cloud-api',
+    support_url: 'https://developers.facebook.com/community/',
+    fields: [
+      { key: 'phone_number_id', label: 'Telefon raqam ID', placeholder: 'WhatsApp Business telefon raqam ID', type: 'text', required: true },
+      { key: 'business_account_id', label: 'Business Account ID', placeholder: 'WhatsApp Business account ID', type: 'text', required: true },
+      { key: 'access_token', label: 'Access Token', placeholder: 'Meta/Facebook access token', type: 'password', required: true },
+      { key: 'webhook_verify_token', label: 'Webhook Verify Token', placeholder: 'Webhook tasdiqlash tokeni', type: 'password', required: false },
+    ]
+  },
+  {
+    id: 'viber_business',
+    name: 'Viber Business',
+    icon: '📱',
+    category: 'communication',
+    phone: null,
+    description: "Viber Business - biznes uchun xabarlar, botlar va kampaniyalar",
+    docs_url: 'https://developers.viber.com/docs/api/',
+    signup_url: 'https://partners.viber.com/',
+    merchant_portal: 'https://partners.viber.com/account/',
+    api_docs: 'https://developers.viber.com/docs/api/',
+    support_email: 'partners@viber.com',
+    fields: [
+      { key: 'auth_token', label: 'Auth Token', placeholder: 'Viber bot auth token', type: 'password', required: true },
+      { key: 'sender_name', label: "Jo'natuvchi nomi", placeholder: 'Bot yoki biznes nomi', type: 'text', required: true },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/viber/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'slack',
+    name: 'Slack',
+    icon: '💼',
+    category: 'communication',
+    phone: null,
+    description: "Slack - jamoaviy aloqa va hamkorlik platformasi, xabarlar va bildirishnomalar",
+    docs_url: 'https://api.slack.com/',
+    fields: [
+      { key: 'workspace_url', label: 'Workspace URL', placeholder: 'yourworkspace.slack.com', type: 'text', required: true },
+      { key: 'bot_token', label: 'Bot User OAuth Token', placeholder: 'xoxb-...', type: 'password', required: true },
+      { key: 'signing_secret', label: 'Signing Secret', placeholder: 'Slack signing secret', type: 'password', required: false },
+      { key: 'webhook_url', label: 'Incoming Webhook URL', placeholder: 'https://hooks.slack.com/services/...', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'zoom',
+    name: 'Zoom',
+    icon: '📹',
+    category: 'communication',
+    phone: null,
+    description: "Zoom - video konferensiya va onlayn uchrashuvlar platformasi",
+    docs_url: 'https://marketplace.zoom.us/docs/api-reference/',
+    fields: [
+      { key: 'account_id', label: 'Account ID', placeholder: 'Zoom account ID', type: 'text', required: true },
+      { key: 'client_id', label: 'Client ID', placeholder: 'Zoom OAuth client ID', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', placeholder: 'Zoom OAuth client secret', type: 'password', required: true },
+      { key: 'webhook_secret', label: 'Webhook Secret Token', placeholder: 'Webhook verification token', type: 'password', required: false },
+    ]
+  },
+  {
+    id: 'microsoft_teams',
+    name: 'Microsoft Teams',
+    icon: '👥',
+    category: 'communication',
+    phone: null,
+    description: "Microsoft Teams - jamoaviy aloqa, chat va video konferensiya",
+    docs_url: 'https://learn.microsoft.com/en-us/graph/teams-concept-overview',
+    fields: [
+      { key: 'tenant_id', label: 'Tenant ID', placeholder: 'Azure AD tenant ID', type: 'text', required: true },
+      { key: 'client_id', label: 'Client ID (Application ID)', placeholder: 'Azure app client ID', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', placeholder: 'Azure app client secret', type: 'password', required: true },
+      { key: 'webhook_url', label: 'Incoming Webhook URL', placeholder: 'Teams channel webhook URL', type: 'text', required: false },
+    ]
+  },
+  // ============== CALL CENTER VA TELEFON API'LARI ==============
+  {
+    id: 'twilio',
+    name: 'Twilio',
+    icon: '📞',
+    category: 'call_center',
+    phone: '+1 844 945 4659',
+    description: "Twilio - cloud-based telefon, SMS va video API platformasi, global qo'ng'iroqlar",
+    docs_url: 'https://www.twilio.com/docs/usage/api',
+    fields: [
+      { key: 'account_sid', label: 'Account SID', placeholder: 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', type: 'text', required: true },
+      { key: 'auth_token', label: 'Auth Token', placeholder: 'Twilio auth token', type: 'password', required: true },
+      { key: 'phone_number', label: 'Twilio telefon raqam', placeholder: '+12345678900', type: 'text', required: false },
+      { key: 'messaging_service_sid', label: 'Messaging Service SID', placeholder: 'MGxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', type: 'text', required: false },
+      { key: 'twiml_app_sid', label: 'TwiML App SID', placeholder: 'APxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', type: 'text', required: false },
+      { key: 'api_key_sid', label: 'API Key SID', placeholder: 'SKxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', type: 'text', required: false },
+      { key: 'api_key_secret', label: 'API Key Secret', placeholder: 'API key secret', type: 'password', required: false },
+      { key: 'status_callback', label: 'Status Callback URL', placeholder: 'https://yourdomain.com/api/twilio/status', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'vonage',
+    name: 'Vonage (Nexmo)',
+    icon: '📱',
+    category: 'call_center',
+    phone: null,
+    description: "Vonage - telefon, SMS va video API, global qo'ng'iroqlar va xabarlar",
+    docs_url: 'https://developer.vonage.com/',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'Vonage API key', type: 'text', required: true },
+      { key: 'api_secret', label: 'API Secret', placeholder: 'Vonage API secret', type: 'password', required: true },
+      { key: 'application_id', label: 'Application ID', placeholder: 'Vonage application ID', type: 'text', required: false },
+      { key: 'private_key', label: 'Private Key', placeholder: 'Vonage private key', type: 'password', required: false },
+      { key: 'signature_secret', label: 'Signature Secret', placeholder: 'Webhook signature secret', type: 'password', required: false },
+    ]
+  },
+  {
+    id: 'plivo',
+    name: 'Plivo',
+    icon: '☎️',
+    category: 'call_center',
+    phone: null,
+    description: "Plivo - cloud telefon API, SMS va qo'ng'iroq xizmatlari",
+    docs_url: 'https://www.plivo.com/docs/',
+    fields: [
+      { key: 'auth_id', label: 'Auth ID', placeholder: 'Plivo Auth ID', type: 'text', required: true },
+      { key: 'auth_token', label: 'Auth Token', placeholder: 'Plivo Auth Token', type: 'password', required: true },
+      { key: 'phone_number', label: 'Telefon raqam', placeholder: '+1234567890', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'bandwidth',
+    name: 'Bandwidth',
+    icon: '📡',
+    category: 'call_center',
+    phone: null,
+    description: "Bandwidth - telefon, SMS va MMS API xizmatlari",
+    docs_url: 'https://dev.bandwidth.com/docs/',
+    fields: [
+      { key: 'account_id', label: 'Account ID', placeholder: 'Bandwidth account ID', type: 'text', required: true },
+      { key: 'username', label: 'API Username', placeholder: 'API token', type: 'text', required: true },
+      { key: 'password', label: 'API Password', placeholder: 'API secret', type: 'password', required: true },
+      { key: 'application_id', label: 'Application ID', placeholder: 'Messaging application ID', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'sinch',
+    name: 'Sinch',
+    icon: '🌐',
+    category: 'call_center',
+    phone: null,
+    description: "Sinch - cloud telefon, SMS va video qo'ng'iroqlar platformasi",
+    docs_url: 'https://developers.sinch.com/',
+    fields: [
+      { key: 'project_id', label: 'Project ID', placeholder: 'Sinch project ID', type: 'text', required: true },
+      { key: 'key_id', label: 'Key ID', placeholder: 'API key ID', type: 'text', required: true },
+      { key: 'key_secret', label: 'Key Secret', placeholder: 'API key secret', type: 'password', required: true },
+      { key: 'service_plan_id', label: 'Service Plan ID', placeholder: 'SMS service plan ID', type: 'text', required: false },
+      { key: 'api_token', label: 'API Token', placeholder: 'Bearer token', type: 'password', required: false },
+    ]
+  },
+  {
+    id: 'telnyx',
+    name: 'Telnyx',
+    icon: '📞',
+    category: 'call_center',
+    phone: null,
+    description: "Telnyx - global telefon, SMS va SIP trunk xizmatlari",
+    docs_url: 'https://developers.telnyx.com/',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'KEY...', type: 'password', required: true },
+      { key: 'messaging_profile_id', label: 'Messaging Profile ID', placeholder: 'SMS profile ID', type: 'text', required: false },
+      { key: 'phone_number', label: 'Telefon raqam', placeholder: '+1234567890', type: 'text', required: false },
+    ]
+  },
+  // ============== CRM VA KONTAKT BOSHQARUV ==============
+  {
+    id: 'salesforce',
+    name: 'Salesforce',
+    icon: '☁️',
+    category: 'crm',
+    phone: '+1 800 667 6389',
+    description: "Salesforce - dunyoning eng yirik CRM platformasi, mijozlar va savdo boshqaruvi",
+    docs_url: 'https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/',
+    fields: [
+      { key: 'client_id', label: 'Consumer Key', placeholder: '3MVG9...', type: 'text', required: true },
+      { key: 'client_secret', label: 'Consumer Secret', placeholder: 'Connected app consumer secret', type: 'password', required: true },
+      { key: 'username', label: 'Username', placeholder: 'user@company.com', type: 'email', required: true },
+      { key: 'password', label: 'Password', placeholder: 'Salesforce password', type: 'password', required: true },
+      { key: 'security_token', label: 'Security Token', placeholder: 'Email orqali olingan token', type: 'password', required: true },
+      { key: 'instance_url', label: 'Instance URL', placeholder: 'https://yourinstance.my.salesforce.com', type: 'text', required: false },
+      { key: 'api_version', label: 'API Version', placeholder: 'v60.0', type: 'text', required: false },
+      { key: 'sandbox', label: 'Sandbox rejimi', placeholder: '', type: 'checkbox', required: false },
+    ]
+  },
+  {
+    id: 'hubspot',
+    name: 'HubSpot',
+    icon: '🟠',
+    category: 'crm',
+    phone: '+1 888 482 7768',
+    description: "HubSpot - CRM, marketing va savdo avtomatizatsiyasi platformasi",
+    docs_url: 'https://developers.hubspot.com/docs/api/overview',
+    fields: [
+      { key: 'access_token', label: 'Private App Access Token', placeholder: 'pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', type: 'password', required: true },
+      { key: 'portal_id', label: 'Portal ID (Hub ID)', placeholder: '12345678', type: 'text', required: false },
+      { key: 'app_id', label: 'App ID', placeholder: 'HubSpot app ID', type: 'text', required: false },
+      { key: 'hapikey', label: 'HAPIkey (eski API)', placeholder: 'HAPIkey (eskirgan, ishlatilmaydi)', type: 'password', required: false },
+    ]
+  },
+  {
+    id: 'pipedrive',
+    name: 'Pipedrive',
+    icon: '📈',
+    category: 'crm',
+    phone: null,
+    description: "Pipedrive - savdo jarayonlarini boshqarish CRM tizimi",
+    docs_url: 'https://developers.pipedrive.com/docs/api/v1',
+    fields: [
+      { key: 'api_token', label: 'API Token', placeholder: 'Pipedrive API token', type: 'password', required: true },
+      { key: 'company_domain', label: 'Company Domain', placeholder: 'yourcompany', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'zoho_crm',
+    name: 'Zoho CRM',
+    icon: '🔷',
+    category: 'crm',
+    phone: null,
+    description: "Zoho CRM - mijozlarni boshqarish va savdo avtomatizatsiyasi",
+    docs_url: 'https://www.zoho.com/crm/developer/docs/api/',
+    signup_url: 'https://www.zoho.com/crm/signup.html',
+    merchant_portal: 'https://crm.zoho.com/',
+    api_docs: 'https://www.zoho.com/crm/developer/docs/api/',
+    support_email: 'support@zohocrm.com',
+    fields: [
+      { key: 'client_id', label: 'Client ID', placeholder: 'Zoho OAuth client ID', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', placeholder: 'Zoho OAuth client secret', type: 'password', required: true },
+      { key: 'refresh_token', label: 'Refresh Token', placeholder: 'Zoho refresh token', type: 'password', required: true },
+      { key: 'accounts_server', label: 'Accounts Server', placeholder: 'https://accounts.zoho.com', type: 'text', required: false },
+      { key: 'api_domain', label: 'API Domain', placeholder: 'https://www.zohoapis.com', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'monday',
+    name: 'Monday.com',
+    icon: '📊',
+    category: 'crm',
+    phone: null,
+    description: "Monday.com - ish jarayonlarini boshqarish va CRM platformasi",
+    docs_url: 'https://developer.monday.com/api-reference/docs',
+    signup_url: 'https://monday.com/signup',
+    merchant_portal: 'https://monday.com/app/',
+    api_docs: 'https://developer.monday.com/api-reference/',
+    support_url: 'https://support.monday.com/',
+    fields: [
+      { key: 'api_token', label: 'API Token', placeholder: 'Monday.com API token', type: 'password', required: true },
+      { key: 'board_id', label: 'Board ID', placeholder: 'Asosiy board ID (ixtiyoriy)', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'microsoft_dynamics',
+    name: 'Microsoft Dynamics 365',
+    icon: '💼',
+    category: 'crm',
+    phone: null,
+    description: "Microsoft Dynamics 365 - korporativ CRM va ERP platformasi",
+    docs_url: 'https://learn.microsoft.com/en-us/dynamics365/',
+    fields: [
+      { key: 'tenant_id', label: 'Tenant ID', placeholder: 'Azure AD tenant ID', type: 'text', required: true },
+      { key: 'client_id', label: 'Client ID', placeholder: 'Azure app registration client ID', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', placeholder: 'Azure app client secret', type: 'password', required: true },
+      { key: 'resource_url', label: 'Resource URL', placeholder: 'https://yourorg.crm.dynamics.com', type: 'text', required: true },
+    ]
+  },
+  // ============== CALL CENTER PLATFORMALARI ==============
+  {
+    id: 'aircall',
+    name: 'Aircall',
+    icon: '☁️',
+    category: 'call_center',
+    phone: null,
+    description: "Aircall - bulutli call center platformasi, qo'ng'iroqlar va CRM integratsiyasi",
+    docs_url: 'https://developer.aircall.io/',
+    fields: [
+      { key: 'api_id', label: 'API ID', placeholder: 'Aircall API ID', type: 'text', required: true },
+      { key: 'api_token', label: 'API Token', placeholder: 'Aircall API token', type: 'password', required: true },
+      { key: 'webhook_token', label: 'Webhook Token', placeholder: 'Webhook authentication token', type: 'password', required: false },
+    ]
+  },
+  {
+    id: 'ringcentral',
+    name: 'RingCentral',
+    icon: '📞',
+    category: 'call_center',
+    phone: null,
+    description: "RingCentral - cloud telefon va call center platformasi",
+    docs_url: 'https://developers.ringcentral.com/',
+    fields: [
+      { key: 'client_id', label: 'Client ID', placeholder: 'RingCentral app client ID', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', placeholder: 'RingCentral app client secret', type: 'password', required: true },
+      { key: 'server_url', label: 'Server URL', placeholder: 'https://platform.ringcentral.com', type: 'text', required: false },
+      { key: 'username', label: 'Username', placeholder: 'RingCentral username', type: 'text', required: false },
+      { key: 'extension', label: 'Extension', placeholder: 'Telefon kengaytma', type: 'text', required: false },
+      { key: 'password', label: 'Password', placeholder: 'RingCentral password', type: 'password', required: false },
+    ]
+  },
+  {
+    id: 'genesys',
+    name: 'Genesys Cloud',
+    icon: '🌐',
+    category: 'call_center',
+    phone: null,
+    description: "Genesys Cloud - korporativ call center va mijozlar tajribasi platformasi",
+    docs_url: 'https://developer.genesys.cloud/',
+    fields: [
+      { key: 'client_id', label: 'Client ID', placeholder: 'Genesys OAuth client ID', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', placeholder: 'Genesys OAuth client secret', type: 'password', required: true },
+      { key: 'environment', label: 'Environment', placeholder: 'mypurecloud.com', type: 'text', required: true },
+      { key: 'deployment_id', label: 'Deployment ID', placeholder: 'Web chat deployment ID', type: 'text', required: false },
+    ]
+  },
+  {
+    id: '3cx',
+    name: '3CX',
+    icon: '📱',
+    category: 'call_center',
+    phone: null,
+    description: "3CX - IP PBX va call center yechimi, VoIP telefon tizimi",
+    docs_url: 'https://www.3cx.com/docs/manual/api-extensions/',
+    fields: [
+      { key: 'server_url', label: 'Server URL', placeholder: 'https://your3cx.com', type: 'text', required: true },
+      { key: 'username', label: 'Username', placeholder: '3CX admin username', type: 'text', required: true },
+      { key: 'password', label: 'Password', placeholder: '3CX admin password', type: 'password', required: true },
+      { key: 'extension', label: 'Extension', placeholder: 'Telefon kengaytma raqami', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'five9',
+    name: 'Five9',
+    icon: '☎️',
+    category: 'call_center',
+    phone: null,
+    description: "Five9 - cloud contact center platformasi, inbound va outbound qo'ng'iroqlar",
+    docs_url: 'https://www.five9.com/products/application-integration',
+    fields: [
+      { key: 'username', label: 'Username', placeholder: 'Five9 admin username', type: 'text', required: true },
+      { key: 'password', label: 'Password', placeholder: 'Five9 admin password', type: 'password', required: true },
+      { key: 'domain', label: 'Domain', placeholder: 'yourdomain.five9.com', type: 'text', required: true },
+      { key: 'api_key', label: 'API Key', placeholder: 'Five9 API key (yangi API)', type: 'password', required: false },
+    ]
+  },
+  // ============== BULUTLI XOTIRA ==============
+  {
+    id: 'google_drive',
+    name: 'Google Drive',
+    icon: '📂',
+    category: 'storage',
+    phone: null,
+    description: "Google Drive - bulutli fayl saqlash va almashish xizmati",
+    docs_url: 'https://developers.google.com/drive/api/guides/about-sdk',
+    signup_url: 'https://console.cloud.google.com/',
+    merchant_portal: 'https://console.cloud.google.com/',
+    api_docs: 'https://developers.google.com/drive/api/reference/rest/v3',
+    support_url: 'https://developers.google.com/drive/api/support',
+    fields: [
+      { key: 'client_id', label: 'Client ID', placeholder: 'Google OAuth 2.0 client ID', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', placeholder: 'Google OAuth 2.0 client secret', type: 'password', required: true },
+      { key: 'refresh_token', label: 'Refresh Token', placeholder: 'Google OAuth refresh token', type: 'password', required: false },
+      { key: 'folder_id', label: 'Folder ID', placeholder: 'Google Drive papka ID (ixtiyoriy)', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'dropbox',
+    name: 'Dropbox',
+    icon: '📦',
+    category: 'storage',
+    phone: null,
+    description: "Dropbox - bulutli fayl saqlash va sinxronizatsiya xizmati",
+    docs_url: 'https://www.dropbox.com/developers/documentation',
+    signup_url: 'https://www.dropbox.com/developers/apps',
+    merchant_portal: 'https://www.dropbox.com/developers/apps',
+    api_docs: 'https://www.dropbox.com/developers/documentation/http/overview',
+    support_email: 'api-support@dropbox.com',
+    fields: [
+      { key: 'app_key', label: 'App Key', placeholder: 'Dropbox app key', type: 'text', required: true },
+      { key: 'app_secret', label: 'App Secret', placeholder: 'Dropbox app secret', type: 'password', required: true },
+      { key: 'access_token', label: 'Access Token', placeholder: 'Dropbox access token', type: 'password', required: true },
+      { key: 'refresh_token', label: 'Refresh Token', placeholder: 'Dropbox refresh token (ixtiyoriy)', type: 'password', required: false },
+    ]
+  },
+  // ============== EMAIL XIZMATLARI ==============
+  {
+    id: 'sendgrid',
+    name: 'SendGrid',
+    icon: '📧',
+    category: 'email',
+    phone: null,
+    description: "SendGrid - email yuborish xizmati, transaksion va marketing emaillar",
+    docs_url: 'https://docs.sendgrid.com/api-reference',
+    signup_url: 'https://signup.sendgrid.com/',
+    merchant_portal: 'https://app.sendgrid.com/',
+    api_docs: 'https://docs.sendgrid.com/api-reference/how-to-use-the-sendgrid-v3-api',
+    support_url: 'https://support.sendgrid.com/',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'SG.xxxxx', type: 'password', required: true },
+      { key: 'from_email', label: "Jo'natuvchi email", placeholder: 'noreply@yourdomain.com', type: 'email', required: true },
+      { key: 'from_name', label: "Jo'natuvchi nomi", placeholder: 'Your Company Name', type: 'text', required: false },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/sendgrid/webhook', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'mailchimp',
+    name: 'Mailchimp',
+    icon: '🐵',
+    category: 'email',
+    phone: null,
+    description: "Mailchimp - email marketing va avtomatlashtirish platformasi",
+    docs_url: 'https://mailchimp.com/developer/',
+    signup_url: 'https://login.mailchimp.com/signup/',
+    merchant_portal: 'https://admin.mailchimp.com/',
+    api_docs: 'https://mailchimp.com/developer/marketing/',
+    support_url: 'https://mailchimp.com/contact/',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-us1', type: 'password', required: true },
+      { key: 'server_prefix', label: 'Server Prefix', placeholder: 'us1 (API key dan)', type: 'text', required: true },
+      { key: 'list_id', label: 'Audience/List ID', placeholder: 'Default ro\'yxat ID', type: 'text', required: false },
+    ]
+  },
+  {
+    id: 'mailgun',
+    name: 'Mailgun',
+    icon: '🔫',
+    category: 'email',
+    phone: null,
+    description: "Mailgun - ishonchli email yuborish API xizmati",
+    docs_url: 'https://documentation.mailgun.com/en/latest/',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'Mailgun API key', type: 'password', required: true },
+      { key: 'domain', label: 'Domain', placeholder: 'mg.yourdomain.com', type: 'text', required: true },
+      { key: 'from_email', label: "Jo'natuvchi email", placeholder: 'noreply@yourdomain.com', type: 'email', required: true },
+      { key: 'region', label: 'Region', placeholder: 'us yoki eu', type: 'text', required: false },
+    ]
+  },
+  // ============== DASTURLASH VA DEVOPS ==============
+  {
+    id: 'github',
+    name: 'GitHub',
+    icon: '🐙',
+    category: 'development',
+    phone: null,
+    description: "GitHub - kod saqlash, versiya nazorati va hamkorlik platformasi",
+    docs_url: 'https://docs.github.com/en/rest',
+    signup_url: 'https://github.com/signup',
+    merchant_portal: 'https://github.com/settings/apps',
+    api_docs: 'https://docs.github.com/en/rest',
+    support_url: 'https://support.github.com/',
+    fields: [
+      { key: 'access_token', label: 'Personal Access Token', placeholder: 'ghp_...', type: 'password', required: true },
+      { key: 'repository', label: 'Repository', placeholder: 'username/repo-name', type: 'text', required: false },
+      { key: 'webhook_secret', label: 'Webhook Secret', placeholder: 'Webhook tasdiqlash kaliti', type: 'password', required: false },
+    ]
+  },
+  {
+    id: 'gitlab',
+    name: 'GitLab',
+    icon: '🦊',
+    category: 'development',
+    phone: null,
+    description: "GitLab - DevOps platformasi, CI/CD va kod saqlash",
+    docs_url: 'https://docs.gitlab.com/ee/api/',
+    signup_url: 'https://gitlab.com/users/sign_up',
+    merchant_portal: 'https://gitlab.com/dashboard',
+    api_docs: 'https://docs.gitlab.com/ee/api/rest/',
+    support_url: 'https://about.gitlab.com/support/',
+    fields: [
+      { key: 'access_token', label: 'Personal Access Token', placeholder: 'glpat-...', type: 'password', required: true },
+      { key: 'gitlab_url', label: 'GitLab URL', placeholder: 'https://gitlab.com yoki self-hosted', type: 'text', required: false },
+      { key: 'project_id', label: 'Project ID', placeholder: 'GitLab project ID (ixtiyoriy)', type: 'text', required: false },
+    ]
+  },
+  // ============== MIJOZLARNI QO'LLAB-QUVVATLASH ==============
+  {
+    id: 'zendesk',
+    name: 'Zendesk',
+    icon: '🎫',
+    category: 'support',
+    phone: null,
+    description: "Zendesk - mijozlarni qo'llab-quvvatlash va help desk platformasi",
+    docs_url: 'https://developer.zendesk.com/api-reference/',
+    signup_url: 'https://www.zendesk.com/register/',
+    merchant_portal: 'https://www.zendesk.com/login/',
+    api_docs: 'https://developer.zendesk.com/api-reference/',
+    support_url: 'https://support.zendesk.com/',
+    fields: [
+      { key: 'subdomain', label: 'Subdomain', placeholder: 'yourcompany (yourcompany.zendesk.com)', type: 'text', required: true },
+      { key: 'email', label: 'Email', placeholder: 'admin@yourcompany.com', type: 'email', required: true },
+      { key: 'api_token', label: 'API Token', placeholder: 'Zendesk API token', type: 'password', required: true },
+      { key: 'webhook_secret', label: 'Webhook Secret', placeholder: 'Webhook verification token', type: 'password', required: false },
+    ]
+  },
+  {
+    id: 'intercom',
+    name: 'Intercom',
+    icon: '💬',
+    category: 'support',
+    phone: null,
+    description: "Intercom - mijozlar bilan aloqa, live chat va support platformasi",
+    docs_url: 'https://developers.intercom.com/docs/references/rest-api/',
+    signup_url: 'https://www.intercom.com/pricing',
+    merchant_portal: 'https://app.intercom.com/',
+    api_docs: 'https://developers.intercom.com/docs/',
+    support_email: 'team@intercom.com',
+    fields: [
+      { key: 'access_token', label: 'Access Token', placeholder: 'Intercom access token', type: 'password', required: true },
+      { key: 'app_id', label: 'App ID', placeholder: 'Intercom app ID', type: 'text', required: false },
+      { key: 'identity_verification_secret', label: 'Identity Verification Secret', placeholder: 'Tasdiqlash kaliti', type: 'password', required: false },
+    ]
+  },
+  {
+    id: 'freshdesk',
+    name: 'Freshdesk',
+    icon: '🎧',
+    category: 'support',
+    phone: null,
+    description: "Freshdesk - mijozlarni qo'llab-quvvatlash va ticketing tizimi",
+    docs_url: 'https://developers.freshdesk.com/api/',
+    signup_url: 'https://freshdesk.com/signup',
+    merchant_portal: 'https://freshdesk.com/login',
+    api_docs: 'https://developers.freshdesk.com/api/',
+    support_email: 'support@freshdesk.com',
+    fields: [
+      { key: 'domain', label: 'Domain', placeholder: 'yourcompany.freshdesk.com', type: 'text', required: true },
+      { key: 'api_key', label: 'API Key', placeholder: 'Freshdesk API key', type: 'password', required: true },
+      { key: 'webhook_secret', label: 'Webhook Secret', placeholder: 'Webhook verification secret', type: 'password', required: false },
+    ]
+  },
+  // ============== BUXGALTERIYA ==============
+  {
+    id: 'quickbooks',
+    name: 'QuickBooks',
+    icon: '📊',
+    category: 'accounting',
+    phone: null,
+    description: "QuickBooks - buxgalteriya va moliyaviy boshqaruv dasturi",
+    docs_url: 'https://developer.intuit.com/app/developer/qbo/docs/api/accounting/most-commonly-used/account',
+    signup_url: 'https://quickbooks.intuit.com/signup/',
+    merchant_portal: 'https://app.qbo.intuit.com/',
+    api_docs: 'https://developer.intuit.com/app/developer/qbo/docs/api/',
+    support_url: 'https://help.quickbooks.intuit.com/',
+    fields: [
+      { key: 'client_id', label: 'Client ID', placeholder: 'QuickBooks OAuth client ID', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', placeholder: 'QuickBooks OAuth client secret', type: 'password', required: true },
+      { key: 'company_id', label: 'Company ID (Realm ID)', placeholder: 'QuickBooks company/realm ID', type: 'text', required: false },
+      { key: 'refresh_token', label: 'Refresh Token', placeholder: 'OAuth refresh token', type: 'password', required: false },
+      { key: 'sandbox_mode', label: 'Sandbox rejimi', placeholder: '', type: 'checkbox', required: false },
+    ]
+  },
+  {
+    id: 'xero',
+    name: 'Xero',
+    icon: '💼',
+    category: 'accounting',
+    phone: null,
+    description: "Xero - bulutli buxgalteriya va moliyaviy boshqaruv platformasi",
+    docs_url: 'https://developer.xero.com/documentation/',
+    signup_url: 'https://www.xero.com/signup/',
+    merchant_portal: 'https://login.xero.com/',
+    api_docs: 'https://developer.xero.com/documentation/api/accounting/overview',
+    support_email: 'api@xero.com',
+    fields: [
+      { key: 'client_id', label: 'Client ID', placeholder: 'Xero OAuth 2.0 client ID', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', placeholder: 'Xero OAuth 2.0 client secret', type: 'password', required: true },
+      { key: 'tenant_id', label: 'Tenant ID', placeholder: 'Xero organization/tenant ID', type: 'text', required: false },
+      { key: 'refresh_token', label: 'Refresh Token', placeholder: 'OAuth refresh token', type: 'password', required: false },
     ]
   },
 ]
@@ -3193,17 +4129,107 @@ export default function IntegrationsPage({ t, lang }: IntegrationsPageProps) {
                       {integration.phone}
                     </a>
                   )}
+
+                  {(integration as any).signup_url && (
+                    <a
+                      href={(integration as any).signup_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00a6a6] dark:hover:text-[#33cccc] flex items-center gap-2 transition-colors"
+                      title="Ro'yxatdan o'tish"
+                    >
+                      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                      </svg>
+                      <span className="truncate">📝 {(integration as any).signup_url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                    </a>
+                  )}
+
+                  {(integration as any).merchant_portal && (
+                    <a
+                      href={(integration as any).merchant_portal}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00a6a6] dark:hover:text-[#33cccc] flex items-center gap-2 transition-colors"
+                      title="Merchant Portal / Kabinet"
+                    >
+                      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                      </svg>
+                      <span className="truncate">🏢 {(integration as any).merchant_portal.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                    </a>
+                  )}
+
+                  {(integration as any).api_docs && (integration as any).api_docs !== integration.docs_url && (
+                    <a
+                      href={(integration as any).api_docs}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00a6a6] dark:hover:text-[#33cccc] flex items-center gap-2 transition-colors"
+                      title="API Dokumentatsiya"
+                    >
+                      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                      </svg>
+                      <span className="truncate">📚 {(integration as any).api_docs.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                    </a>
+                  )}
+
                   <a
                     href={integration.docs_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00a6a6] dark:hover:text-[#33cccc] flex items-center gap-2 transition-colors"
+                    title="Dokumentatsiya"
                   >
                     <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                     </svg>
                     <span className="truncate">{integration.docs_url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
                   </a>
+
+                  {(integration as any).support_email && (
+                    <a
+                      href={`mailto:${(integration as any).support_email}`}
+                      className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00a6a6] dark:hover:text-[#33cccc] flex items-center gap-2 transition-colors"
+                      title="Support Email"
+                    >
+                      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      <span className="truncate">📧 {(integration as any).support_email}</span>
+                    </a>
+                  )}
+
+                  {(integration as any).support_url && !(integration as any).support_email && (
+                    <a
+                      href={(integration as any).support_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00a6a6] dark:hover:text-[#33cccc] flex items-center gap-2 transition-colors"
+                      title="Support"
+                    >
+                      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                      <span className="truncate">🎧 {(integration as any).support_url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                    </a>
+                  )}
+
+                  {(integration as any).tutorial_url && (
+                    <a
+                      href={(integration as any).tutorial_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#00a6a6] dark:hover:text-[#33cccc] flex items-center gap-2 transition-colors"
+                      title="Tutorial"
+                    >
+                      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                      <span className="truncate">📖 {(integration as any).tutorial_url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                    </a>
+                  )}
                 </div>
 
                 {/* Majburiy maydonlar */}
