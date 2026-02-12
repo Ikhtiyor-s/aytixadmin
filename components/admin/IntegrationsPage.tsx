@@ -197,6 +197,23 @@ const AVAILABLE_INTEGRATIONS = [
       { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/glovo/webhook', type: 'text', required: false },
     ]
   },
+  {
+    id: 'delever',
+    name: 'Delever',
+    icon: '🚀',
+    category: 'delivery',
+    phone: '+998 78 150 33 33',
+    description: "Delever - yetkazib berish avtomatizatsiya platformasi, POS va aggregatorlar bilan integratsiya",
+    docs_url: 'https://www.delever.uz/en/integration2',
+    fields: [
+      { key: 'api_key', label: 'API Key', placeholder: 'Delever API kaliti', type: 'password', required: true },
+      { key: 'merchant_id', label: 'Merchant ID', placeholder: 'Delever merchant identifikatori', type: 'text', required: true },
+      { key: 'branch_id', label: 'Branch ID', placeholder: 'Filial identifikatori', type: 'text', required: false },
+      { key: 'secret_key', label: 'Secret Key', placeholder: 'Delever secret kaliti', type: 'password', required: true },
+      { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://yourdomain.com/api/delever/webhook', type: 'text', required: false },
+      { key: 'callback_url', label: 'Callback URL', placeholder: 'https://yourdomain.com/api/delever/callback', type: 'text', required: false },
+    ]
+  },
   // ============== INTERNET SERVIS XIZMATLARI ==============
   {
     id: 'uztelecom',
