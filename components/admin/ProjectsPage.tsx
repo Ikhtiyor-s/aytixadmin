@@ -31,7 +31,7 @@ function ProjectImageCarousel({ images }: { images: string[] }) {
   }
 
   return (
-    <div className="relative h-40 bg-gray-100 dark:bg-gray-700 group">
+    <div className="relative h-48 bg-gray-100 dark:bg-gray-700 group">
       <img
         src={getImageUrl(images[currentIndex])}
         alt="Project"
@@ -113,6 +113,7 @@ interface Project {
   images?: string[]
   is_top?: boolean
   is_new?: boolean
+  is_verified?: boolean
 }
 
 // Helper function to convert features from any format to new format
@@ -220,6 +221,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
     integrationConfigs: {} as IntegrationConfig,
     isTop: false,
     isNew: false,
+    isVerified: false,
     image: null as File | null,
     videos: [] as File[],
     images: [] as File[],
@@ -311,7 +313,10 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
         image_url: p.image_url || undefined,
         video_url: p.video_url || undefined,
         videos: p.videos || [],
-        images: p.images || []
+        images: p.images || [],
+        is_top: p.is_top || false,
+        is_new: p.is_new || false,
+        is_verified: p.is_verified || false
       }))
 
       setProjects(convertedProjects)
@@ -437,6 +442,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       integrationConfigs: getDefaultIntegrationConfigs(),
       isTop: false,
       isNew: false,
+      isVerified: false,
       image: null,
       videos: [],
       images: [],
@@ -783,6 +789,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       integrationConfigs: getDefaultIntegrationConfigs(),
       isTop: project.is_top || false,
       isNew: project.is_new || false,
+      isVerified: project.is_verified || false,
       image: null,
       videos: [],
       images: [],
@@ -895,6 +902,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
         status: formData.status,
         is_top: formData.isTop,
         is_new: formData.isNew,
+        is_verified: formData.isVerified,
         image_url: imageUrl,
         video_url: videoUrls.length > 0 ? videoUrls[0] : null,
         videos: videoUrls,
@@ -982,6 +990,39 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       console.error('Failed to toggle status:', err)
       const errorMessage = err instanceof Error ? err.message : t.statusChangeError2
 
+      if (errorMessage.includes('Could not validate credentials') || errorMessage.includes('401')) {
+        alert(t.sessionExpired)
+        Cookies.remove('access_token')
+        Cookies.remove('refresh_token')
+        window.location.reload()
+      } else if (errorMessage.includes('Not enough permissions') || errorMessage.includes('403')) {
+        alert(t.noPermission)
+      } else {
+        alert(errorMessage)
+      }
+    }
+  }
+
+  const toggleVerified = async (id: number) => {
+    try {
+      const token = getToken()
+      if (!token) {
+        alert(t.pleaseReLogin)
+        return
+      }
+
+      const project = projects.find(p => p.id === id)
+      if (!project) return
+
+      const newVerified = !project.is_verified
+      await projectsApi.update(id, { is_verified: newVerified }, token)
+
+      setProjects(prev => prev.map(p =>
+        p.id === id ? { ...p, is_verified: newVerified } : p
+      ))
+    } catch (err) {
+      console.error('Failed to toggle verified:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Failed to toggle verified'
       if (errorMessage.includes('Could not validate credentials') || errorMessage.includes('401')) {
         alert(t.sessionExpired)
         Cookies.remove('access_token')
@@ -1095,30 +1136,58 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
             className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all flex flex-col"
           >
             {/* Image Carousel */}
-            {allImages.length > 0 ? (
-              <ProjectImageCarousel images={allImages} />
-            ) : (
-              <div className="h-40 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                <div className="text-center">
-                  <svg className="w-12 h-12 text-gray-300 dark:text-gray-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t.noImage}</p>
+            <div className="relative">
+              {allImages.length > 0 ? (
+                <ProjectImageCarousel images={allImages} />
+              ) : (
+                <div className="h-40 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                  <div className="text-center">
+                    <svg className="w-12 h-12 text-gray-300 dark:text-gray-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t.noImage}</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+              {/* AyTiX Verified Badge - rasm ustida */}
+              {project.is_verified && (
+                <div className="absolute top-2 right-2 z-10" title="AyTiX Verified">
+                  <img
+                    src="/verified-badge-premium.svg"
+                    alt="AyTiX Verified"
+                    className="w-12 h-12 drop-shadow-2xl hover:scale-110 transition-transform duration-200"
+                  />
+                </div>
+              )}
+            </div>
             <div className="p-3 sm:p-4 flex flex-col flex-1">
               <div className="flex items-start justify-between mb-2">
-                <div className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                  <span className="text-xs font-mono text-gray-600 dark:text-gray-400">ID: {project.id}</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                    <span className="text-xs font-mono text-gray-600 dark:text-gray-400">ID: {project.id}</span>
+                  </div>
+                  {project.is_verified && (
+                    <div className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg shadow-sm" title="AyTiX Verified">
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                      <span className="text-xs font-bold">VERIFIED</span>
+                    </div>
+                  )}
                 </div>
-                <span className={`px-2 py-0.5 rounded-md text-xs font-medium ${
-                  project.status === 'active'
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                    : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
-                }`}>
-                  {project.status === 'active' ? t.active : t.blocked}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  {project.is_top && (
+                    <span className="px-1.5 py-0.5 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded text-xs font-medium">TOP</span>
+                  )}
+                  {project.is_new && (
+                    <span className="px-1.5 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded text-xs font-medium">NEW</span>
+                  )}
+                  <span className={`px-2 py-0.5 rounded-md text-xs font-medium ${
+                    project.status === 'active'
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                      : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
+                  }`}>
+                    {project.status === 'active' ? t.active : t.blocked}
+                  </span>
+                </div>
               </div>
 
               <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white mb-1">{getLocalizedName(project, lang)}</h3>
@@ -1224,7 +1293,23 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                     }`}>
                       {viewProject.status === 'active' ? t.active : t.inactive}
                     </span>
+                    {viewProject.is_verified && (
+                      <span className="px-2 py-1 rounded-lg text-xs font-medium bg-blue-500 text-white flex items-center gap-1">
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                        AyTiX Verified
+                      </span>
+                    )}
                   </div>
+                  {/* AyTiX Verified Logo Overlay */}
+                  {viewProject.is_verified && (
+                    <div className="absolute top-3 right-3 z-20" title="AyTiX Verified">
+                      <img
+                        src="/verified-badge-premium.svg"
+                        alt="AyTiX Verified"
+                        className="w-16 h-16 drop-shadow-2xl hover:scale-110 transition-transform duration-200"
+                      />
+                    </div>
+                  )}
                 </div>
               )
             })()}
@@ -1236,7 +1321,15 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                     <span className="text-sm font-mono font-bold text-[#00a6a6]">ID: {viewProject.id}</span>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white truncate">{getLocalizedName(viewProject, lang)}</h2>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white truncate">{getLocalizedName(viewProject, lang)}</h2>
+                      {viewProject.is_verified && (
+                        <div className="flex items-center gap-1 px-2 py-0.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full text-xs font-bold flex-shrink-0">
+                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                          VERIFIED
+                        </div>
+                      )}
+                    </div>
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{viewProject.category} / {viewProject.subcategory}</p>
                   </div>
                 </div>
@@ -2564,7 +2657,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                   <span className="text-amber-600 dark:text-amber-400">{Icons.settings}</span>
                   <h3 className="font-semibold text-gray-900 dark:text-white">{t.marketplaceSettings}</h3>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
@@ -2590,6 +2683,23 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                       <div className="flex items-center gap-1.5">
                         <span className="px-1.5 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded text-xs font-medium">NEW</span>
                         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t.newLabel}</span>
+                      </div>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.isVerified}
+                      onChange={(e) => setFormData({ ...formData, isVerified: e.target.checked })}
+                      className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500"
+                    />
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 rounded text-xs font-medium flex items-center gap-1">
+                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                          VERIFIED
+                        </span>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">AyTiX Verified</span>
                       </div>
                     </div>
                   </label>

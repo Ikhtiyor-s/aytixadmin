@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <!-- Blue gradient background -->
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Silver gradient for ribbon -->
+    <linearGradient id="ribbonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#cbd5e1;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#e2e8f0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#cbd5e1;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Glow filter -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Outer glow circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#shieldGradient)" opacity="0.2" filter="url(#glow)"/>
+
+  <!-- Main shield border (white) -->
+  <path d="M100 20 L40 40 L40 90 C40 140 70 175 100 185 C130 175 160 140 160 90 L160 40 Z"
+        fill="white" stroke="#e2e8f0" stroke-width="3"/>
+
+  <!-- Inner shield (gradient) -->
+  <path d="M100 28 L48 45 L48 88 C48 132 74 163 100 172 C126 163 152 132 152 88 L152 45 Z"
+        fill="url(#shieldGradient)" filter="url(#glow)"/>
+
+  <!-- Checkmark -->
+  <polyline points="70,95 88,113 130,71"
+            fill="none"
+            stroke="white"
+            stroke-width="8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            filter="url(#glow)"/>
+
+  <!-- "AyTiX" text -->
+  <text x="100" y="55"
+        font-family="Arial, sans-serif"
+        font-size="24"
+        font-weight="bold"
+        fill="white"
+        text-anchor="middle"
+        filter="url(#glow)">AyTiX</text>
+
+  <!-- Ribbon background -->
+  <path d="M30 145 L170 145 L165 165 L35 165 Z"
+        fill="url(#ribbonGradient)"
+        stroke="#94a3b8"
+        stroke-width="1"/>
+
+  <!-- "VERIFIED" text -->
+  <text x="100" y="158"
+        font-family="Arial, sans-serif"
+        font-size="14"
+        font-weight="bold"
+        fill="#1e293b"
+        text-anchor="middle"
+        letter-spacing="2">VERIFIED</text>
+</svg>
