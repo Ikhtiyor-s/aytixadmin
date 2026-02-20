@@ -1296,7 +1296,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                     {viewProject.is_verified && (
                       <span className="px-2 py-1 rounded-lg text-xs font-medium bg-blue-500 text-white flex items-center gap-1">
                         <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
-                        AyTiX Verified
+                        AyTiX tasdiqlaydi
                       </span>
                     )}
                   </div>
@@ -2699,7 +2699,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                           <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
                           VERIFIED
                         </span>
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">AyTiX Verified</span>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">AyTiX tasdiqlaydi</span>
                       </div>
                     </div>
                   </label>
