@@ -21,6 +21,7 @@ export interface ProjectData {
   status?: 'active' | 'inactive'
   is_top?: boolean
   is_new?: boolean
+  is_verified?: boolean
   views?: number
   favorites?: number
   created_at?: string
