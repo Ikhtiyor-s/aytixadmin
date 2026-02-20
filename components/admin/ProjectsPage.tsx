@@ -1153,7 +1153,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
               {project.is_verified && (
                 <div className="absolute top-2 right-2 z-10" title="AyTiX Verified">
                   <img
-                    src="/verified-badge-premium.svg"
+                    src="/verified-badge.png"
                     alt="AyTiX Verified"
                     className="w-12 h-12 drop-shadow-2xl hover:scale-110 transition-transform duration-200"
                   />
@@ -1304,7 +1304,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                   {viewProject.is_verified && (
                     <div className="absolute top-3 right-3 z-20" title="AyTiX Verified">
                       <img
-                        src="/verified-badge-premium.svg"
+                        src="/verified-badge.png"
                         alt="AyTiX Verified"
                         className="w-16 h-16 drop-shadow-2xl hover:scale-110 transition-transform duration-200"
                       />
