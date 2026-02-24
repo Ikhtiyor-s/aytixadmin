@@ -59,7 +59,7 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.jivosite.com https://code.jivosite.com blob:",
+              "script-src 'self' 'unsafe-inline' https://*.jivosite.com https://code.jivosite.com blob:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' data: https://fonts.gstatic.com",
               "img-src 'self' data: blob: http://localhost:8000 http://127.0.0.1:8000 https://api.aytix.uz https://*.aytix.uz https://images.unsplash.com https://*.unsplash.com https://*.jivosite.com https://upload.wikimedia.org",
@@ -68,6 +68,9 @@ const nextConfig = {
               "frame-src 'self' https://*.jivosite.com",
               "object-src 'none'",
               "frame-ancestors 'self'",
+              "base-uri 'self'",
+              "form-action 'self' https://api.aytix.uz",
+              "upgrade-insecure-requests",
             ].join('; ')
           }
         ],
