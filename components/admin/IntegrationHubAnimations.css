@@ -1,0 +1,232 @@
+/* ================ HUB CONTAINER ================ */
+.hub-container {
+  position: relative;
+  min-height: 650px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* ================ MARKAZIY ELEMENT ================ */
+.hub-center {
+  position: relative;
+  z-index: 10;
+  width: 300px;
+  min-height: 220px;
+  background: linear-gradient(135deg, #0a2d5c 0%, #00a6a6 100%);
+  border-radius: 24px;
+  box-shadow:
+    0 0 0 4px rgba(0, 166, 166, 0.2),
+    0 0 40px rgba(0, 166, 166, 0.15),
+    0 20px 60px rgba(10, 45, 92, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: hubPulse 4s ease-in-out infinite;
+}
+
+@keyframes hubPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 4px rgba(0,166,166,0.2), 0 0 40px rgba(0,166,166,0.15), 0 20px 60px rgba(10,45,92,0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(0,166,166,0.3), 0 0 60px rgba(0,166,166,0.25), 0 20px 60px rgba(10,45,92,0.3);
+  }
+}
+
+/* ================ KATEGORIYA GURUHLARI ================ */
+.hub-category-group {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.hub-category-group:hover {
+  transform: scale(1.05);
+  z-index: 15;
+}
+
+/* ================ ULANISH CHIZIQLARI ================ */
+.hub-connection-line {
+  stroke: #cbd5e1;
+  stroke-width: 2;
+  fill: none;
+  stroke-dasharray: 8 4;
+  animation: dashFlow 3s linear infinite;
+  opacity: 0.5;
+}
+
+@keyframes dashFlow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+.hub-connection-line.connected {
+  stroke: url(#hubGradient);
+  stroke-width: 2.5;
+  stroke-dasharray: none;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 3px rgba(0, 166, 166, 0.3));
+}
+
+/* ================ BRAND KARTOCHKALAR ================ */
+.hub-brand-card {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 2px solid #e5e7eb;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.hub-brand-card:hover {
+  border-color: #00a6a6;
+  box-shadow: 0 4px 16px rgba(0, 166, 166, 0.2);
+  transform: translateY(-3px);
+}
+
+.hub-brand-card.active {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+/* ================ KATEGORIYA BADGE ================ */
+.hub-category-badge {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
+}
+
+.hub-category-group:hover .hub-category-badge {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.hub-badge-payment { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; }
+.hub-badge-crm { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; }
+.hub-badge-delivery { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; }
+.hub-badge-pos { background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #5b21b6; }
+.hub-badge-communication { background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: #0369a1; }
+.hub-badge-internet { background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #3730a3; }
+
+/* ================ STATISTIKA ================ */
+.hub-stat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+/* ================ FADE-IN ANIMATSIYA ================ */
+.hub-fade-in {
+  animation: hubFadeIn 0.6s ease-out both;
+}
+
+@keyframes hubFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hub-fade-in-delay-1 { animation-delay: 0.1s; }
+.hub-fade-in-delay-2 { animation-delay: 0.2s; }
+.hub-fade-in-delay-3 { animation-delay: 0.3s; }
+.hub-fade-in-delay-4 { animation-delay: 0.4s; }
+.hub-fade-in-delay-5 { animation-delay: 0.5s; }
+.hub-fade-in-delay-6 { animation-delay: 0.6s; }
+
+/* ================ RESPONSIVE ================ */
+@media (max-width: 1280px) {
+  .hub-container {
+    min-height: 580px;
+  }
+  .hub-center {
+    width: 260px;
+    min-height: 190px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hub-container {
+    min-height: auto;
+    flex-direction: column;
+    gap: 20px;
+    padding: 16px;
+  }
+  .hub-category-group {
+    position: static !important;
+    transform: none !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  .hub-category-group:hover {
+    transform: none;
+  }
+  .hub-center {
+    width: 240px;
+    min-height: 170px;
+    order: -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .hub-brand-card {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+  }
+  .hub-center {
+    width: 200px;
+    min-height: 150px;
+    padding: 16px;
+  }
+  .hub-category-badge {
+    font-size: 11px;
+    padding: 4px 12px;
+  }
+}
+
+/* ================ DARK MODE ================ */
+.dark .hub-brand-card {
+  background: #1f2937;
+  border-color: #374151;
+}
+.dark .hub-brand-card:hover {
+  border-color: #00a6a6;
+  box-shadow: 0 4px 16px rgba(0, 166, 166, 0.3);
+}
+.dark .hub-brand-card.active {
+  background: linear-gradient(135deg, #064e3b, #065f46);
+  border-color: #10b981;
+}
+.dark .hub-connection-line {
+  stroke: #4b5563;
+}
+.dark .hub-connection-line.connected {
+  stroke: url(#hubGradient);
+}

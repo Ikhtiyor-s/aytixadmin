@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { Icons } from './Icons'
 import { Translations, Language } from '@/lib/admin/translations'
 import api from '@/services/api'
+import IntegrationHub from './IntegrationHub'
 
 interface IntegrationsPageProps {
   t: Translations
@@ -3461,7 +3462,7 @@ export default function IntegrationsPage({ t, lang }: IntegrationsPageProps) {
   const [formData, setFormData] = useState<Record<string, string | boolean>>({})
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null)
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
-  const [activeTab, setActiveTab] = useState<'projects' | 'available' | 'connected'>('projects')
+  const [activeTab, setActiveTab] = useState<'hub' | 'projects' | 'available' | 'connected'>('hub')
   const [connecting, setConnecting] = useState(false)
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null)
 
@@ -3825,7 +3826,17 @@ export default function IntegrationsPage({ t, lang }: IntegrationsPageProps) {
       </div>
 
       {/* Subkategoriya Tabs */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-1 inline-flex">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-1 inline-flex flex-wrap">
+        <button
+          onClick={() => setActiveTab('hub')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
+            activeTab === 'hub'
+              ? 'bg-gradient-to-r from-[#0a2d5c] to-[#00a6a6] text-white shadow-sm'
+              : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+          }`}
+        >
+          🌐 {lang === 'ru' ? 'Обзор' : lang === 'en' ? 'Hub Overview' : 'Hub'}
+        </button>
         <button
           onClick={() => { setActiveTab('projects'); setSelectedProject(null) }}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
@@ -3871,6 +3882,28 @@ export default function IntegrationsPage({ t, lang }: IntegrationsPageProps) {
           )}
         </button>
       </div>
+
+      {/* ============== HUB OVERVIEW TAB ============== */}
+      {activeTab === 'hub' && (
+        <IntegrationHub
+          lang={lang}
+          connectedIntegrations={connectedIntegrations.map(c => ({
+            integration_id: c.integration_id,
+            is_active: c.is_active
+          }))}
+          onSelectCategory={(cat) => {
+            setCategoryFilter(cat)
+            setActiveTab('available')
+          }}
+          onSelectIntegration={(id) => {
+            const integration = AVAILABLE_INTEGRATIONS.find(i => i.id === id)
+            if (integration) {
+              openConnectModal(integration)
+            }
+          }}
+          totalIntegrations={AVAILABLE_INTEGRATIONS.length}
+        />
+      )}
 
       {/* ============== MIJOZLAR TAB ============== */}
       {activeTab === 'projects' && !selectedProject && (
