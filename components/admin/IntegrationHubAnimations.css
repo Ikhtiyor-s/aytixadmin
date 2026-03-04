@@ -1,11 +1,13 @@
 /* ================ HUB CONTAINER ================ */
 .hub-container {
   position: relative;
-  min-height: 650px;
+  min-height: 720px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
+  aspect-ratio: 4/3;
+  max-height: 800px;
 }
 
 /* ================ MARKAZIY ELEMENT ================ */
@@ -50,7 +52,7 @@
 }
 
 .hub-category-group:hover {
-  transform: scale(1.05);
+  transform: translate(-50%, -50%) scale(1.05);
   z-index: 15;
 }
 
@@ -161,7 +163,7 @@
 /* ================ RESPONSIVE ================ */
 @media (max-width: 1280px) {
   .hub-container {
-    min-height: 580px;
+    min-height: 620px;
   }
   .hub-center {
     width: 260px;

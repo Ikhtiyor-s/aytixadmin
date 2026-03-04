@@ -70,16 +70,16 @@ export default function IntegrationHub({
     [isConnected]
   )
 
-  // Pozitsiyalarni hisoblash
+  // Pozitsiyalarni hisoblash - doiraviy (bir xil masofa)
   const positions = useMemo((): Position[] => {
     if (!containerSize.width || !containerSize.height) return ANGLE_OFFSETS.map(() => ({ x: 0, y: 0 }))
     const cx = containerSize.width / 2
     const cy = containerSize.height / 2
-    const rx = Math.min(containerSize.width * 0.38, 380)
-    const ry = Math.min(containerSize.height * 0.36, 260)
+    // Bir xil radius - barcha kategoriyalar markazdan teng masofada
+    const r = Math.min(containerSize.width * 0.35, containerSize.height * 0.38, 320)
     return ANGLE_OFFSETS.map(angle => {
       const rad = (angle * Math.PI) / 180
-      return { x: cx + rx * Math.cos(rad), y: cy + ry * Math.sin(rad) }
+      return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
     })
   }, [containerSize])
 
