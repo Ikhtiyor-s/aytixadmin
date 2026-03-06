@@ -22,6 +22,12 @@ interface IntegrationHubProps {
 // Kategoriya pozitsiyalari (soat yo'nalishida: tepa, tepa-o'ng, past-o'ng, past, past-chap, tepa-chap)
 const ANGLE_OFFSETS = [-90, -30, 30, 90, 150, 210]
 
+// Bazaviy o'lchamlar (ideal holatda)
+const BASE_RADIUS = 280
+const BASE_BRAND_SIZE = 48
+const BASE_CENTER_W = 280
+const BASE_CENTER_H = 200
+
 interface Position {
   x: number
   y: number
@@ -70,18 +76,36 @@ export default function IntegrationHub({
     [isConnected]
   )
 
+  // Scale faktor - ekranga moslashish uchun
+  const scale = useMemo(() => {
+    if (!containerSize.width || !containerSize.height) return 1
+    // Kerakli joy: radius + brand karta + badge (~130px har tomonga)
+    const needed = (BASE_RADIUS + 130) * 2
+    const scaleX = containerSize.width / needed
+    const scaleY = containerSize.height / needed
+    return Math.min(scaleX, scaleY, 1.15)
+  }, [containerSize])
+
+  // Radius va o'lchamlar
+  const radius = BASE_RADIUS * scale
+  const brandSize = Math.round(BASE_BRAND_SIZE * scale)
+  const brandLogoSize = Math.round(28 * scale)
+  const centerW = Math.round(BASE_CENTER_W * scale)
+  const centerH = Math.round(BASE_CENTER_H * scale)
+  const maxBrands = scale < 0.7 ? 3 : scale < 0.85 ? 4 : 5
+  const brandGap = Math.round(6 * scale)
+  const brandMaxWidth = Math.round(180 * scale)
+
   // Pozitsiyalarni hisoblash - doiraviy (bir xil masofa)
   const positions = useMemo((): Position[] => {
     if (!containerSize.width || !containerSize.height) return ANGLE_OFFSETS.map(() => ({ x: 0, y: 0 }))
     const cx = containerSize.width / 2
     const cy = containerSize.height / 2
-    // Bir xil radius - barcha kategoriyalar markazdan teng masofada
-    const r = Math.min(containerSize.width * 0.35, containerSize.height * 0.38, 320)
     return ANGLE_OFFSETS.map(angle => {
       const rad = (angle * Math.PI) / 180
-      return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
+      return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) }
     })
-  }, [containerSize])
+  }, [containerSize, radius])
 
   const centerX = containerSize.width / 2
   const centerY = containerSize.height / 2
@@ -165,14 +189,11 @@ export default function IntegrationHub({
           if (!pos.x && !pos.y) return null
           const cat = HUB_CATEGORIES[idx]
           if (!cat) return null
-          const midX = (pos.x + centerX) / 2
-          const midY = (pos.y + centerY) / 2
-          const cpX = midX + (centerX - pos.x) * 0.15
-          const cpY = midY + (centerY - pos.y) * 0.15
           return (
-            <path
+            <line
               key={cat.id}
-              d={`M ${pos.x} ${pos.y} Q ${cpX} ${cpY} ${centerX} ${centerY}`}
+              x1={pos.x} y1={pos.y}
+              x2={centerX} y2={centerY}
               className={`hub-connection-line ${categoryHasConnected(cat) ? 'connected' : ''}`}
             />
           )
@@ -180,32 +201,35 @@ export default function IntegrationHub({
       </svg>
 
       {/* Markaziy AyTiX Element */}
-      <div className="hub-center hub-fade-in" style={{ zIndex: 10 }}>
+      <div
+        className="hub-center hub-fade-in"
+        style={{ zIndex: 10, width: centerW, minHeight: centerH }}
+      >
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-            <span className="text-white text-xl font-bold">A</span>
+          <div className="w-11 h-11 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm" style={{ width: 40 * scale, height: 40 * scale }}>
+            <span className="text-white font-bold" style={{ fontSize: 18 * scale }}>A</span>
           </div>
           <div>
-            <h3 className="text-white font-bold text-xl tracking-tight">AyTiX</h3>
-            <p className="text-white/60 text-xs">
+            <h3 className="text-white font-bold tracking-tight" style={{ fontSize: 18 * scale }}>AyTiX</h3>
+            <p className="text-white/60" style={{ fontSize: 11 * scale }}>
               {lang === 'ru' ? 'Центр управления' : lang === 'en' ? 'Control Center' : 'Boshqaruv Markazi'}
             </p>
           </div>
         </div>
-        <div className="w-full h-px bg-white/20 my-3" />
-        <p className="text-white/80 text-xs text-center mb-3">
+        <div className="w-full h-px bg-white/20 my-2" />
+        <p className="text-white/80 text-center mb-2" style={{ fontSize: 11 * scale }}>
           {lang === 'ru'
             ? 'Все интеграции в одном месте'
             : lang === 'en'
             ? 'All integrations in one place'
             : "Barcha integratsiyalar bir joyda"}
         </p>
-        <div className="flex gap-3">
-          <span className="hub-stat-badge bg-white/15 text-white/90">
+        <div className="flex gap-2">
+          <span className="hub-stat-badge bg-white/15 text-white/90" style={{ fontSize: 11 * scale, padding: `3px ${10 * scale}px` }}>
             <span className="w-2 h-2 bg-green-400 rounded-full inline-block" />
             {connectedCount} {lang === 'ru' ? 'подкл.' : lang === 'en' ? 'conn.' : 'ulangan'}
           </span>
-          <span className="hub-stat-badge bg-white/15 text-white/90">
+          <span className="hub-stat-badge bg-white/15 text-white/90" style={{ fontSize: 11 * scale, padding: `3px ${10 * scale}px` }}>
             <span className="w-2 h-2 bg-gray-400 rounded-full inline-block" />
             {totalIntegrations}+
           </span>
@@ -216,6 +240,8 @@ export default function IntegrationHub({
       {HUB_CATEGORIES.map((cat, idx) => {
         const pos = positions[idx]
         if (!pos) return null
+        const visibleBrands = cat.brands.slice(0, maxBrands)
+        const extraCount = cat.brands.length - maxBrands
         return (
           <div
             key={cat.id}
@@ -227,26 +253,33 @@ export default function IntegrationHub({
             }}
             onClick={() => onSelectCategory(cat.id)}
           >
-            <div className={`hub-category-badge hub-badge-${cat.id}`}>
+            <div
+              className={`hub-category-badge hub-badge-${cat.id}`}
+              style={{ fontSize: Math.max(11, 13 * scale), padding: `${5 * scale}px ${14 * scale}px` }}
+            >
               {cat.icon} {cat.labels[lang]}
               {categoryHasConnected(cat) && (
                 <span className="w-2 h-2 bg-green-500 rounded-full ml-1" />
               )}
             </div>
-            <div className="flex gap-2 flex-wrap justify-center" style={{ maxWidth: 200 }}>
-              {cat.brands.slice(0, 5).map(brand => (
+            <div className="flex flex-wrap justify-center" style={{ gap: brandGap, maxWidth: brandMaxWidth }}>
+              {visibleBrands.map(brand => (
                 <div
                   key={brand.id}
                   className={`hub-brand-card ${isConnected(brand.id) ? 'active' : ''}`}
+                  style={{ width: brandSize, height: brandSize, borderRadius: Math.round(12 * scale) }}
                   onClick={(e) => { e.stopPropagation(); onSelectIntegration(brand.id) }}
                   title={brand.name}
                 >
-                  <brand.Logo size={30} />
+                  <brand.Logo size={brandLogoSize} />
                 </div>
               ))}
-              {cat.brands.length > 5 && (
-                <div className="hub-brand-card !bg-gray-50 dark:!bg-gray-700 text-gray-500 dark:text-gray-400 text-xs font-bold">
-                  +{cat.brands.length - 5}
+              {extraCount > 0 && (
+                <div
+                  className="hub-brand-card !bg-gray-50 dark:!bg-gray-700 text-gray-500 dark:text-gray-400 font-bold"
+                  style={{ width: brandSize, height: brandSize, borderRadius: Math.round(12 * scale), fontSize: Math.max(10, 12 * scale) }}
+                >
+                  +{extraCount}
                 </div>
               )}
             </div>
