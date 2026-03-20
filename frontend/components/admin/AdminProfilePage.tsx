@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth'
 import Cookies from 'js-cookie'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+const BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost' ? '/api/v1' : API_URL
 
 interface AdminProfile {
   id: number
@@ -54,7 +55,7 @@ export default function AdminProfilePage({ t }: AdminProfilePageProps) {
   const loadProfile = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`${API_URL}/users/me`, {
+      const response = await fetch(`${BASE_URL}/users/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -93,7 +94,7 @@ export default function AdminProfilePage({ t }: AdminProfilePageProps) {
       }
 
       if (Object.keys(updateData).length > 0) {
-        const response = await fetch(`${API_URL}/users/me`, {
+        const response = await fetch(`${BASE_URL}/users/me`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -120,7 +121,7 @@ export default function AdminProfilePage({ t }: AdminProfilePageProps) {
           throw new Error(t.passwordMinLength)
         }
 
-        const passwordResponse = await fetch(`${API_URL}/users/me/password`, {
+        const passwordResponse = await fetch(`${BASE_URL}/users/me/password`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,

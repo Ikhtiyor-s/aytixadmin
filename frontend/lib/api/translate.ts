@@ -15,7 +15,7 @@ export interface TranslateResponse {
 export const translateApi = {
   async translate(data: TranslateRequest, _token?: string): Promise<TranslateResponse> {
     // Token is now handled by axios interceptor automatically
-    const response = await api.post('/translate/', data)
+    const response = await api.post('/translate', data)
     return response.data
   },
 

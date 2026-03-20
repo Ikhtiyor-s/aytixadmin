@@ -2,9 +2,11 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+const BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost' ? '/api/v1' : API_URL
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: BASE_URL,
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -36,7 +38,7 @@ api.interceptors.response.use(
       const refreshToken = Cookies.get('refresh_token')
       if (refreshToken) {
         try {
-          const response = await axios.post(`${API_URL}/auth/refresh`, {
+          const response = await axios.post(`${BASE_URL}/auth/refresh`, {
             refresh_token: refreshToken,
           }, {
             headers: {
@@ -44,8 +46,8 @@ api.interceptors.response.use(
             },
           })
           const { access_token, refresh_token } = response.data
-          Cookies.set('access_token', access_token)
-          Cookies.set('refresh_token', refresh_token)
+          Cookies.set('access_token', access_token, { path: '/' })
+          Cookies.set('refresh_token', refresh_token, { path: '/' })
           // Retry original request
           error.config.headers.Authorization = `Bearer ${access_token}`
           return api.request(error.config)

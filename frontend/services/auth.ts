@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'
 import { User } from '@/types'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+const BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost' ? '/api/v1' : API_URL
 
 export interface LoginData {
   phone: string
@@ -27,14 +28,14 @@ export const authService = {
     const formData = new URLSearchParams()
     formData.append('username', data.phone)
     formData.append('password', data.password)
-    const response = await axios.post(`${API_URL}/auth/admin/login`, formData, {
+    const response = await axios.post(`${BASE_URL}/auth/admin/login`, formData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     })
     const { access_token, refresh_token } = response.data
-    Cookies.set('access_token', access_token)
-    Cookies.set('refresh_token', refresh_token)
+    Cookies.set('access_token', access_token, { path: '/' })
+    Cookies.set('refresh_token', refresh_token, { path: '/' })
     return response.data
   },
 

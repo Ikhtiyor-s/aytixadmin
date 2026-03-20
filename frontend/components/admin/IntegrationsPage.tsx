@@ -3462,7 +3462,7 @@ export default function IntegrationsPage({ t, lang }: IntegrationsPageProps) {
   const [formData, setFormData] = useState<Record<string, string | boolean>>({})
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null)
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
-  const [activeTab, setActiveTab] = useState<'hub' | 'projects' | 'available' | 'connected'>('hub')
+  const [activeTab, setActiveTab] = useState<'hub' | 'projects' | 'available' | 'connected'>('available')
   const [connecting, setConnecting] = useState(false)
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null)
 
@@ -4515,8 +4515,68 @@ export default function IntegrationsPage({ t, lang }: IntegrationsPageProps) {
         </>
       )}
 
+      {/* Bo'lim-bo'lim ro'yxat — barcha kategoriyalar */}
+      {activeTab === 'available' && categoryFilter === 'all' && (
+        <div className="space-y-6">
+          {categories.map(cat => {
+            const catIntegrations = AVAILABLE_INTEGRATIONS.filter(i => i.category === cat)
+            return (
+              <div key={cat} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="px-4 py-3 bg-gradient-to-r from-[#00a6a6]/10 to-[#0a2d5c]/10 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{categoryIcons[cat]}</span>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">{categoryLabels[cat]}</h3>
+                    <span className="text-xs text-gray-500 bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">
+                      {catIntegrations.length}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setCategoryFilter(cat)}
+                    className="text-xs text-[#00a6a6] hover:underline"
+                  >
+                    {u.all_filter} →
+                  </button>
+                </div>
+                <div className="divide-y divide-gray-100 dark:divide-gray-700">
+                  {catIntegrations.map(integration => {
+                    const connectedConfig = getConnectedConfig(integration.id)
+                    const isConnected = !!connectedConfig
+                    return (
+                      <div key={integration.id} className="px-4 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0 ${
+                          isConnected ? 'bg-green-100 dark:bg-green-900/30' : 'bg-gray-100 dark:bg-gray-700'
+                        }`}>
+                          {integration.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-sm text-gray-900 dark:text-white">{integration.name}</span>
+                            {isConnected && <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span>}
+                          </div>
+                          <p className="text-xs text-gray-500 truncate">{getDesc(integration, lang)}</p>
+                        </div>
+                        <button
+                          onClick={() => isConnected ? openConnectModal(integration, connectedConfig) : openConnectModal(integration)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium flex-shrink-0 ${
+                            isConnected
+                              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                              : 'bg-[#00a6a6] text-white hover:bg-[#008f8f]'
+                          }`}
+                        >
+                          {isConnected ? u.btn_settings : u.btn_connect}
+                        </button>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
       {/* Integrations Grid - faqat "Mavjud" tabda ko'rsatiladi */}
-      {activeTab === 'available' && (
+      {activeTab === 'available' && categoryFilter !== 'all' && (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredIntegrations.map((integration) => {
           const connectedConfig = getConnectedConfig(integration.id)
