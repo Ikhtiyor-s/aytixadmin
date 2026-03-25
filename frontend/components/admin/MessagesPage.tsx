@@ -30,8 +30,8 @@ export default function MessagesPage({ t }: MessagesPageProps) {
     try {
       setLoading(true)
       const [messagesData, statsData] = await Promise.all([
-        messagesApi.list(token!),
-        messagesApi.getStats(token!)
+        messagesApi.list(),
+        messagesApi.getStats()
       ])
       setMessages(messagesData)
       setStats(statsData)
@@ -45,7 +45,7 @@ export default function MessagesPage({ t }: MessagesPageProps) {
   const handleReply = async () => {
     if (!selectedMessage || !replyText.trim()) return
     try {
-      await messagesApi.update(selectedMessage.id, { reply: replyText }, token!)
+      await messagesApi.update(selectedMessage.id, { reply: replyText })
       setShowModal(false)
       setReplyText('')
       loadData()
@@ -56,7 +56,7 @@ export default function MessagesPage({ t }: MessagesPageProps) {
 
   const handleStatusChange = async (id: number, status: string) => {
     try {
-      await messagesApi.update(id, { status }, token!)
+      await messagesApi.update(id, { status })
       loadData()
     } catch (err) {
       console.error(err)
@@ -66,7 +66,7 @@ export default function MessagesPage({ t }: MessagesPageProps) {
   const handleDelete = async (id: number) => {
     if (!confirm(t.deleteMessageConfirm)) return
     try {
-      await messagesApi.delete(id, token!)
+      await messagesApi.delete(id)
       loadData()
     } catch (err) {
       console.error(err)

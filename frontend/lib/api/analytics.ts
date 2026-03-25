@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+import api from '@/services/api'
 
 export interface MonthlyData {
   month: string
@@ -61,13 +61,8 @@ export interface AnalyticsData {
 }
 
 export const analyticsApi = {
-  async getAnalytics(token: string): Promise<AnalyticsData> {
-    const response = await fetch(`${API_BASE_URL}/admin/analytics`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-    if (!response.ok) throw new Error('Failed to fetch analytics')
-    return response.json()
+  async getAnalytics(): Promise<AnalyticsData> {
+    const res = await api.get('/admin/analytics')
+    return res.data
   }
 }

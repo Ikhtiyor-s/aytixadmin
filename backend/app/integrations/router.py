@@ -49,6 +49,31 @@ async def get_integration_categories(
     return [c[0] for c in categories if c[0]]
 
 
+# ============== Integration Projects (Aytix Integration Service Clients) ==============
+# Bu marketplace loyihalari bilan bog'liq EMAS - alohida integratsiya xizmati mijozlari!
+
+@router.get("/projects", response_model=List[IntegrationProjectResponse])
+async def get_integration_projects(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_admin)
+):
+    """Get all integration projects (Aytix integration service clients)."""
+    projects = db.query(IntegrationProject).order_by(IntegrationProject.created_at.desc()).all()
+    return projects
+
+
+# ============== Connected Integrations (User Configurations) ==============
+
+@router.get("/connected", response_model=List[ConnectedIntegrationResponse])
+async def get_connected_integrations(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_admin)
+):
+    """Get all connected/configured integrations."""
+    integrations = db.query(ConnectedIntegration).order_by(ConnectedIntegration.created_at.desc()).all()
+    return integrations
+
+
 @router.get("/{integration_id}", response_model=IntegrationResponse)
 async def get_integration(
     integration_id: int,
@@ -111,19 +136,6 @@ async def delete_integration(
     db.delete(integration)
     db.commit()
     return None
-
-
-# ============== Integration Projects (Aytix Integration Service Clients) ==============
-# Bu marketplace loyihalari bilan bog'liq EMAS - alohida integratsiya xizmati mijozlari!
-
-@router.get("/projects", response_model=List[IntegrationProjectResponse])
-async def get_integration_projects(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_admin)
-):
-    """Get all integration projects (Aytix integration service clients)."""
-    projects = db.query(IntegrationProject).order_by(IntegrationProject.created_at.desc()).all()
-    return projects
 
 
 @router.get("/projects/{project_id}", response_model=IntegrationProjectResponse)
@@ -199,18 +211,6 @@ async def delete_integration_project(
     db.delete(project)
     db.commit()
     return None
-
-
-# ============== Connected Integrations (User Configurations) ==============
-
-@router.get("/connected", response_model=List[ConnectedIntegrationResponse])
-async def get_connected_integrations(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_admin)
-):
-    """Get all connected/configured integrations."""
-    integrations = db.query(ConnectedIntegration).order_by(ConnectedIntegration.created_at.desc()).all()
-    return integrations
 
 
 @router.post("/connected", response_model=ConnectedIntegrationResponse, status_code=status.HTTP_201_CREATED)

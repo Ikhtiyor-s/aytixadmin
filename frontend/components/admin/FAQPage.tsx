@@ -58,7 +58,7 @@ export default function FAQPage({ t }: FAQPageProps) {
     setLoading(true)
     try {
       const [faqsData, categoriesData] = await Promise.all([
-        faqApi.getFAQs(token, filterCategory || undefined),
+        faqApi.getFAQs({ category: filterCategory || undefined }),
         faqApi.getCategories()
       ])
       setFaqs(faqsData)
@@ -103,7 +103,7 @@ export default function FAQPage({ t }: FAQPageProps) {
     if (!validateForm()) return
     setSaving(true)
     try {
-      await faqApi.createFAQ(form as any, getToken())
+      await faqApi.createFAQ(form as any)
       await loadData()
       setShowModal(false)
       resetForm()
@@ -120,7 +120,7 @@ export default function FAQPage({ t }: FAQPageProps) {
     if (!validateForm()) return
     setSaving(true)
     try {
-      await faqApi.updateFAQ(selectedFAQ.id, form, getToken())
+      await faqApi.updateFAQ(selectedFAQ.id, form)
       await loadData()
       setShowModal(false)
       setSelectedFAQ(null)
@@ -136,7 +136,7 @@ export default function FAQPage({ t }: FAQPageProps) {
   const handleDelete = async (id: number) => {
     if (!confirm(t.confirmDelete)) return
     try {
-      await faqApi.deleteFAQ(id, getToken())
+      await faqApi.deleteFAQ(id)
       await loadData()
     } catch (error) {
       handleError(error)
@@ -146,7 +146,7 @@ export default function FAQPage({ t }: FAQPageProps) {
   // Toggle status
   const handleToggle = async (id: number) => {
     try {
-      await faqApi.toggleFAQ(id, getToken())
+      await faqApi.toggleFAQ(id)
       await loadData()
     } catch (error) {
       handleError(error)

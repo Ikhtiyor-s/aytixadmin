@@ -36,7 +36,7 @@ BLOCK_DURATION_MINUTES = 15  # Bloklash davomiyligi
 MAX_REQUESTS_PER_HOUR = 3  # Soatiga maksimal OTP so'rov
 
 # Login brute force himoyasi
-MAX_LOGIN_ATTEMPTS = 5  # Maksimal xato urinish
+MAX_LOGIN_ATTEMPTS = 50  # Maksimal xato urinish
 LOGIN_BLOCK_MINUTES = 15  # Bloklash davomiyligi
 _login_attempts: dict = defaultdict(lambda: {"count": 0, "blocked_until": None})
 
@@ -236,7 +236,7 @@ def login(request: Request, phone: str = Form(...), password: str = Form(...), d
 
 
 @router.post("/admin/login", response_model=Token)
-@limiter.limit("5/minute")
+@limiter.limit("60/minute")
 def admin_login(request: Request, username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
     """Admin panel uchun login endpoint - faqat ADMIN roli bo'lgan foydalanuvchilar kirishi mumkin."""
     client_ip = request.client.host if request.client else "unknown"
@@ -245,9 +245,9 @@ def admin_login(request: Request, username: str = Form(...), password: str = For
     # Brute force tekshirish
     check_login_rate_limit(rate_key)
 
-    # Username yoki phone orqali qidirish
+    # Username, phone yoki email orqali qidirish
     user = db.query(User).filter(
-        (User.username == username) | (User.phone == username)
+        (User.username == username) | (User.phone == username) | (User.email == username)
     ).first()
 
     if not user or not verify_password(password, user.hashed_password):
@@ -278,34 +278,12 @@ def admin_login(request: Request, username: str = Form(...), password: str = For
     access_token = create_access_token(data={"sub": str(user.id), "username": user.username, "role": "admin"})
     refresh_token = create_refresh_token(data={"sub": str(user.id), "username": user.username, "role": "admin"})
 
-    response = JSONResponse(content={
+    logger.info(f"Admin login: {user.username} [{client_ip}]")
+    return {
         "access_token": access_token,
         "refresh_token": refresh_token,
         "token_type": "bearer"
-    })
-
-    # Secure cookie sozlamalari
-    is_prod = not settings.DEBUG
-    response.set_cookie(
-        key="access_token",
-        value=access_token,
-        httponly=True,
-        secure=is_prod,
-        samesite="lax",
-        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-    )
-    response.set_cookie(
-        key="refresh_token",
-        value=refresh_token,
-        httponly=True,
-        secure=is_prod,
-        samesite="lax",
-        max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400,
-        path="/api/v1/auth/refresh",
-    )
-
-    logger.info(f"Admin login: {user.username} [{client_ip}]")
-    return response
+    }
 
 
 @router.post("/refresh", response_model=Token)

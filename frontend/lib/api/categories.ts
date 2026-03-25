@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+import api from '@/services/api'
 
 export interface CategoryData {
   id?: number
@@ -9,145 +9,59 @@ export interface CategoryData {
   description_ru?: string
   description_en?: string
   icon?: string
-  order?: number
   is_active?: boolean
+  order?: number
+  order_index?: number
   created_at?: string
   updated_at?: string
 }
 
 export interface SubcategoryData {
   id?: number
+  category_id: number
   name_uz: string
   name_ru?: string
   name_en?: string
-  category_id?: number
-  order?: number
   is_active?: boolean
+  order?: number
+  order_index?: number
   created_at?: string
   updated_at?: string
 }
 
-export interface CategoriesListParams {
-  skip?: number
-  limit?: number
-  is_active?: boolean
-}
-
 export const categoriesApi = {
-  async list(params: CategoriesListParams = {}): Promise<CategoryData[]> {
-    const queryParams = new URLSearchParams()
-    if (params.skip !== undefined) queryParams.append('skip', params.skip.toString())
-    if (params.limit !== undefined) queryParams.append('limit', params.limit.toString())
-    if (params.is_active !== undefined) queryParams.append('is_active', params.is_active.toString())
-
-    const response = await fetch(`${API_BASE_URL}/project-categories/?${queryParams}`)
-    if (!response.ok) throw new Error('Failed to fetch categories')
-    return response.json()
+  async list(params: { skip?: number; limit?: number; is_active?: boolean } = {}): Promise<CategoryData[]> {
+    const res = await api.get('/project-categories/', { params })
+    return res.data
   },
-
   async get(id: number): Promise<CategoryData> {
-    const response = await fetch(`${API_BASE_URL}/project-categories/${id}`)
-    if (!response.ok) throw new Error('Failed to fetch category')
-    return response.json()
+    const res = await api.get(`/project-categories/${id}`)
+    return res.data
   },
-
-  async create(data: Omit<CategoryData, 'id' | 'created_at' | 'updated_at'>, token: string): Promise<CategoryData> {
-    const response = await fetch(`${API_BASE_URL}/project-categories/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Failed to create category')
-    }
-    return response.json()
+  async create(data: Partial<CategoryData>): Promise<CategoryData> {
+    const res = await api.post('/project-categories/', data)
+    return res.data
   },
-
-  async update(id: number, data: Partial<CategoryData>, token: string): Promise<CategoryData> {
-    const response = await fetch(`${API_BASE_URL}/project-categories/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Failed to update category')
-    }
-    return response.json()
+  async update(id: number, data: Partial<CategoryData>): Promise<CategoryData> {
+    const res = await api.put(`/project-categories/${id}`, data)
+    return res.data
   },
-
-  async delete(id: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/project-categories/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Failed to delete category')
-    }
+  async delete(id: number): Promise<void> {
+    await api.delete(`/project-categories/${id}`)
   },
-
-  // Subcategories
   async listSubcategories(categoryId: number, isActive?: boolean): Promise<SubcategoryData[]> {
-    const queryParams = new URLSearchParams()
-    if (isActive !== undefined) queryParams.append('is_active', isActive.toString())
-
-    const response = await fetch(`${API_BASE_URL}/project-categories/${categoryId}/subcategories?${queryParams}`)
-    if (!response.ok) throw new Error('Failed to fetch subcategories')
-    return response.json()
+    const res = await api.get(`/project-categories/${categoryId}/subcategories`, { params: isActive !== undefined ? { is_active: isActive } : {} })
+    return res.data
   },
-
-  async createSubcategory(categoryId: number, data: Omit<SubcategoryData, 'id' | 'category_id' | 'created_at' | 'updated_at'>, token: string): Promise<SubcategoryData> {
-    const response = await fetch(`${API_BASE_URL}/project-categories/${categoryId}/subcategories`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Failed to create subcategory')
-    }
-    return response.json()
+  async createSubcategory(categoryId: number, data: Partial<SubcategoryData>): Promise<SubcategoryData> {
+    const res = await api.post(`/project-categories/${categoryId}/subcategories`, data)
+    return res.data
   },
-
-  async updateSubcategory(subcategoryId: number, data: Partial<SubcategoryData>, token: string): Promise<SubcategoryData> {
-    const response = await fetch(`${API_BASE_URL}/project-categories/subcategories/${subcategoryId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Failed to update subcategory')
-    }
-    return response.json()
+  async updateSubcategory(subcategoryId: number, data: Partial<SubcategoryData>): Promise<SubcategoryData> {
+    const res = await api.put(`/project-categories/subcategories/${subcategoryId}`, data)
+    return res.data
   },
-
-  async deleteSubcategory(subcategoryId: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/project-categories/subcategories/${subcategoryId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Failed to delete subcategory')
-    }
-  }
+  async deleteSubcategory(subcategoryId: number): Promise<void> {
+    await api.delete(`/project-categories/subcategories/${subcategoryId}`)
+  },
 }

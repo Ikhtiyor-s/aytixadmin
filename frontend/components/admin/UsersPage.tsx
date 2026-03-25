@@ -31,7 +31,12 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [initialLoad, setInitialLoad] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
-  const [editForm, setEditForm] = useState({
+  const [editForm, setEditForm] = useState<{
+    full_name: string
+    phone: string
+    username: string
+    role: 'user' | 'seller' | 'admin'
+  }>({
     full_name: '',
     phone: '',
     username: '',
@@ -50,7 +55,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
     try {
       setLoading(true)
       setInitialLoad(false)
-      const data = await usersApi.list({ limit: 100 }, token!)
+      const data = await usersApi.list({ limit: 100 })
       setUsers(data)
       setError(null)
     } catch (err) {
@@ -124,7 +129,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
     if (!token) return
     try {
       setActionLoading(true)
-      await usersApi.toggleActive(user.id, !user.is_active, token)
+      await usersApi.toggleActive(user.id, !user.is_active)
       // Update local state
       setUsers(users.map(u =>
         u.id === user.id ? { ...u, is_active: !u.is_active } : u
@@ -147,7 +152,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
     if (!selectedUser || !token) return
     try {
       setActionLoading(true)
-      await usersApi.delete(selectedUser.id, token)
+      await usersApi.delete(selectedUser.id)
       // Remove from local state
       setUsers(users.filter(u => u.id !== selectedUser.id))
       setShowDeleteModal(false)
@@ -236,7 +241,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
     if (!selectedUser || !token) return
     try {
       setActionLoading(true)
-      const updatedUser = await usersApi.update(selectedUser.id, editForm, token)
+      const updatedUser = await usersApi.update(selectedUser.id, editForm)
       // Update local state
       setUsers(users.map(u =>
         u.id === selectedUser.id ? { ...u, ...updatedUser } : u
@@ -785,7 +790,7 @@ export default function UsersPage({ t, globalSearch }: UsersPageProps) {
                 </label>
                 <select
                   value={editForm.role}
-                  onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
+                  onChange={(e) => setEditForm({ ...editForm, role: e.target.value as 'user' | 'seller' | 'admin' })}
                   className="w-full px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 dark:bg-gray-700 border-0 rounded-lg sm:rounded-xl text-sm sm:text-base text-gray-900 dark:text-white focus:ring-2 focus:ring-[#00a6a6] outline-none"
                 >
                   <option value="user">{t.userRole}</option>

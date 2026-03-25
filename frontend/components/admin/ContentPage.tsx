@@ -36,7 +36,7 @@ export default function ContentPage({ t }: ContentPageProps) {
   const [videoPreview, setVideoPreview] = useState<string | null>(null)
   const [isTranslating, setIsTranslating] = useState(false)
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:8000'
+  const API_URL = ''
 
   const getToken = () => Cookies.get('access_token') || ''
 
@@ -77,7 +77,6 @@ export default function ContentPage({ t }: ContentPageProps) {
 
     setIsTranslating(true)
     try {
-      const token = getToken()
       const newFormData = { ...formData }
 
       // Title tarjimasi
@@ -87,7 +86,7 @@ export default function ContentPage({ t }: ContentPageProps) {
           text: formData[titleKey],
           source_lang: sourceLang,
           target_langs: targetLangs
-        }, token)
+        })
 
         if (titleResult.success) {
           targetLangs.forEach(lang => {
@@ -105,7 +104,7 @@ export default function ContentPage({ t }: ContentPageProps) {
           text: formData[contentKey],
           source_lang: sourceLang,
           target_langs: targetLangs
-        }, token)
+        })
 
         if (contentResult.success) {
           targetLangs.forEach(lang => {
@@ -134,11 +133,10 @@ export default function ContentPage({ t }: ContentPageProps) {
     setLoading(true)
     setError(null)
     try {
-      const token = getToken()
       const [newsData, bannersData, notificationsData] = await Promise.all([
-        contentApi.getNews(token),
-        contentApi.getBanners(token),
-        contentApi.getNotifications(token)
+        contentApi.getNews(),
+        contentApi.getBanners(),
+        contentApi.getNotifications()
       ])
       setNews(newsData)
       setBanners(bannersData)
@@ -213,44 +211,40 @@ export default function ContentPage({ t }: ContentPageProps) {
   const handleSave = async () => {
     setSaving(true)
     try {
-      const token = getToken()
       let imageUrl = formData.image_url || ''
       let videoUrl = formData.video_url || ''
 
-      // Upload image if selected
       if (imageFile) {
-        const uploadResult = await uploadsApi.uploadImage(imageFile, token)
+        const uploadResult = await uploadsApi.uploadImage(imageFile)
         imageUrl = uploadResult.url
       }
 
-      // Upload video/gif if selected
       if (videoFile) {
-        const uploadResult = await uploadsApi.uploadVideo(videoFile, token)
+        const uploadResult = await uploadsApi.uploadVideo(videoFile)
         videoUrl = uploadResult.url
       }
       const dataToSave = { ...formData, image_url: imageUrl || undefined, video_url: videoUrl || undefined, project_id: formData.project_id || null }
 
       if (activeTab === 'news') {
         if (editingItem?.id) {
-          await contentApi.updateNews(editingItem.id, dataToSave, token)
+          await contentApi.updateNews(editingItem.id, dataToSave)
         } else {
-          await contentApi.createNews(dataToSave, token)
+          await contentApi.createNews(dataToSave)
         }
       } else if (activeTab === 'banners') {
         if (editingItem?.id) {
-          await contentApi.updateBanner(editingItem.id, dataToSave, token)
+          await contentApi.updateBanner(editingItem.id, dataToSave)
         } else {
-          await contentApi.createBanner(dataToSave, token)
+          await contentApi.createBanner(dataToSave)
         }
       } else {
-        // Handle scheduled_at for notifications
         if (dataToSave.scheduled_at === '') {
           delete dataToSave.scheduled_at
         }
         if (editingItem?.id) {
-          await contentApi.updateNotification(editingItem.id, dataToSave, token)
+          await contentApi.updateNotification(editingItem.id, dataToSave)
         } else {
-          await contentApi.createNotification(dataToSave, token)
+          await contentApi.createNotification(dataToSave)
         }
       }
 
@@ -267,13 +261,12 @@ export default function ContentPage({ t }: ContentPageProps) {
     if (!confirm(t.deleteConfirm)) return
 
     try {
-      const token = getToken()
       if (activeTab === 'news') {
-        await contentApi.deleteNews(id, token)
+        await contentApi.deleteNews(id)
       } else if (activeTab === 'banners') {
-        await contentApi.deleteBanner(id, token)
+        await contentApi.deleteBanner(id)
       } else {
-        await contentApi.deleteNotification(id, token)
+        await contentApi.deleteNotification(id)
       }
       fetchAllData()
     } catch (err) {

@@ -2,10 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import Cookies from 'js-cookie'
 import { contentApi, BannerData } from '@/lib/api/content'
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1').replace('/api/v1', '')
+const API_BASE = ''
 
 function getMediaUrl(path: string | null | undefined): string {
   if (!path) return ''
@@ -27,13 +26,7 @@ export default function BannerSlider() {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        const token = Cookies.get('access_token')
-        if (!token) {
-          setError('Token topilmadi')
-          setLoading(false)
-          return
-        }
-        const data = await contentApi.getBanners(token)
+        const data = await contentApi.getBanners()
         const activeBanners = data
           .filter((b) => b.status !== 'inactive')
           .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))

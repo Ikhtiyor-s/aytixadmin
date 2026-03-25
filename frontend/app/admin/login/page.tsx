@@ -54,14 +54,14 @@ export default function AdminLogin() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email
+                Username
               </label>
               <input
-                type="email"
+                type="text"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent transition-all"
-                placeholder="Email kiriting"
+                placeholder="Username kiriting"
                 required
               />
             </div>

@@ -1,18 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
-
-// Xatolik xabarlarini qaytarish
-const handleResponse = async (response: Response) => {
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      throw new Error('Not authenticated - Sessiya muddati tugagan')
-    }
-    const error = await response.json().catch(() => ({ detail: 'Xatolik yuz berdi' }))
-    throw new Error(error.detail || `Xatolik: ${response.status}`)
-  }
-  return response.json()
-}
-
-// ============== SECTION INTERFACES ==============
+import api from '@/services/api'
 
 export interface FooterSection {
   id?: number
@@ -43,8 +29,6 @@ export interface FooterItem {
   updated_at?: string
 }
 
-// ============== SOCIAL LINK INTERFACES ==============
-
 export interface FooterSocialLink {
   id?: number
   platform: string
@@ -58,8 +42,6 @@ export interface FooterSocialLink {
   created_at?: string
   updated_at?: string
 }
-
-// ============== CONTACT INTERFACES ==============
 
 export interface FooterContact {
   id?: number
@@ -76,282 +58,104 @@ export interface FooterContact {
   updated_at?: string
 }
 
-// ============== FULL FOOTER INTERFACE ==============
-
 export interface FooterFull {
   sections: FooterSection[]
   social_links: FooterSocialLink[]
   contacts: FooterContact[]
 }
 
-// ============== REORDER INTERFACE ==============
-
 export interface ReorderItem {
   id: number
   order: number
 }
 
-// ============== API FUNCTIONS ==============
-
 export const footerApi = {
-  // ============== PUBLIC ==============
   async getPublicFooter(): Promise<FooterFull> {
-    const response = await fetch(`${API_BASE_URL}/footer/public`)
-    return handleResponse(response)
+    const res = await api.get('/footer/public')
+    return res.data
   },
 
-  // ============== SECTIONS ==============
-  async getSections(token: string): Promise<FooterSection[]> {
-    const response = await fetch(`${API_BASE_URL}/footer/sections`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    return handleResponse(response)
+  async getSections(): Promise<FooterSection[]> {
+    const res = await api.get('/footer/sections')
+    return res.data
+  },
+  async getSection(id: number): Promise<FooterSection> {
+    const res = await api.get(`/footer/sections/${id}`)
+    return res.data
+  },
+  async createSection(data: Omit<FooterSection, 'id' | 'items' | 'created_at' | 'updated_at'>): Promise<FooterSection> {
+    const res = await api.post('/footer/sections', data)
+    return res.data
+  },
+  async updateSection(id: number, data: Partial<FooterSection>): Promise<FooterSection> {
+    const res = await api.put(`/footer/sections/${id}`, data)
+    return res.data
+  },
+  async deleteSection(id: number): Promise<void> {
+    await api.delete(`/footer/sections/${id}`)
+  },
+  async reorderSections(items: ReorderItem[]): Promise<void> {
+    await api.post('/footer/sections/reorder', { items })
   },
 
-  async getSection(id: number, token: string): Promise<FooterSection> {
-    const response = await fetch(`${API_BASE_URL}/footer/sections/${id}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    return handleResponse(response)
+  async getItems(sectionId?: number): Promise<FooterItem[]> {
+    const res = await api.get('/footer/items', { params: sectionId ? { section_id: sectionId } : {} })
+    return res.data
+  },
+  async createItem(data: Omit<FooterItem, 'id' | 'created_at' | 'updated_at'>): Promise<FooterItem> {
+    const res = await api.post('/footer/items', data)
+    return res.data
+  },
+  async updateItem(id: number, data: Partial<FooterItem>): Promise<FooterItem> {
+    const res = await api.put(`/footer/items/${id}`, data)
+    return res.data
+  },
+  async deleteItem(id: number): Promise<void> {
+    await api.delete(`/footer/items/${id}`)
+  },
+  async reorderItems(items: ReorderItem[]): Promise<void> {
+    await api.post('/footer/items/reorder', { items })
   },
 
-  async createSection(data: Omit<FooterSection, 'id' | 'items' | 'created_at' | 'updated_at'>, token: string): Promise<FooterSection> {
-    const response = await fetch(`${API_BASE_URL}/footer/sections`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
+  async getSocialLinks(): Promise<FooterSocialLink[]> {
+    const res = await api.get('/footer/social-links')
+    return res.data
+  },
+  async createSocialLink(data: Omit<FooterSocialLink, 'id' | 'created_at' | 'updated_at'>): Promise<FooterSocialLink> {
+    const res = await api.post('/footer/social-links', data)
+    return res.data
+  },
+  async updateSocialLink(id: number, data: Partial<FooterSocialLink>): Promise<FooterSocialLink> {
+    const res = await api.put(`/footer/social-links/${id}`, data)
+    return res.data
+  },
+  async deleteSocialLink(id: number): Promise<void> {
+    await api.delete(`/footer/social-links/${id}`)
+  },
+  async reorderSocialLinks(items: ReorderItem[]): Promise<void> {
+    await api.post('/footer/social-links/reorder', { items })
   },
 
-  async updateSection(id: number, data: Partial<FooterSection>, token: string): Promise<FooterSection> {
-    const response = await fetch(`${API_BASE_URL}/footer/sections/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
+  async getContacts(): Promise<FooterContact[]> {
+    const res = await api.get('/footer/contacts')
+    return res.data
   },
-
-  async deleteSection(id: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/footer/sections/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) {
-      if (response.status === 401 || response.status === 403) {
-        throw new Error('Not authenticated - Sessiya muddati tugagan')
-      }
-      throw new Error('Bo\'limni o\'chirishda xatolik')
-    }
+  async createContact(data: Omit<FooterContact, 'id' | 'created_at' | 'updated_at'>): Promise<FooterContact> {
+    const res = await api.post('/footer/contacts', data)
+    return res.data
   },
-
-  async reorderSections(items: ReorderItem[], token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/footer/sections/reorder`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ items })
-    })
-    if (!response.ok) throw new Error('Tartibni yangilashda xatolik')
+  async updateContact(id: number, data: Partial<FooterContact>): Promise<FooterContact> {
+    const res = await api.put(`/footer/contacts/${id}`, data)
+    return res.data
   },
-
-  // ============== ITEMS ==============
-  async getItems(token: string, sectionId?: number): Promise<FooterItem[]> {
-    const url = sectionId
-      ? `${API_BASE_URL}/footer/items?section_id=${sectionId}`
-      : `${API_BASE_URL}/footer/items`
-    const response = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Elementlarni olishda xatolik')
-    return response.json()
+  async deleteContact(id: number): Promise<void> {
+    await api.delete(`/footer/contacts/${id}`)
   },
-
-  async createItem(data: Omit<FooterItem, 'id' | 'created_at' | 'updated_at'>, token: string): Promise<FooterItem> {
-    const response = await fetch(`${API_BASE_URL}/footer/items`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Element yaratishda xatolik')
-    }
-    return response.json()
-  },
-
-  async updateItem(id: number, data: Partial<FooterItem>, token: string): Promise<FooterItem> {
-    const response = await fetch(`${API_BASE_URL}/footer/items/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Elementni yangilashda xatolik')
-    }
-    return response.json()
-  },
-
-  async deleteItem(id: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/footer/items/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Elementni o\'chirishda xatolik')
-  },
-
-  async reorderItems(items: ReorderItem[], token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/footer/items/reorder`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ items })
-    })
-    if (!response.ok) throw new Error('Tartibni yangilashda xatolik')
-  },
-
-  // ============== SOCIAL LINKS ==============
-  async getSocialLinks(token: string): Promise<FooterSocialLink[]> {
-    const response = await fetch(`${API_BASE_URL}/footer/social-links`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Ijtimoiy tarmoqlarni olishda xatolik')
-    return response.json()
-  },
-
-  async createSocialLink(data: Omit<FooterSocialLink, 'id' | 'created_at' | 'updated_at'>, token: string): Promise<FooterSocialLink> {
-    const response = await fetch(`${API_BASE_URL}/footer/social-links`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Ijtimoiy tarmoq yaratishda xatolik')
-    }
-    return response.json()
-  },
-
-  async updateSocialLink(id: number, data: Partial<FooterSocialLink>, token: string): Promise<FooterSocialLink> {
-    const response = await fetch(`${API_BASE_URL}/footer/social-links/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Ijtimoiy tarmoqni yangilashda xatolik')
-    }
-    return response.json()
-  },
-
-  async deleteSocialLink(id: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/footer/social-links/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Ijtimoiy tarmoqni o\'chirishda xatolik')
-  },
-
-  async reorderSocialLinks(items: ReorderItem[], token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/footer/social-links/reorder`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ items })
-    })
-    if (!response.ok) throw new Error('Tartibni yangilashda xatolik')
-  },
-
-  // ============== CONTACTS ==============
-  async getContacts(token: string): Promise<FooterContact[]> {
-    const response = await fetch(`${API_BASE_URL}/footer/contacts`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Kontaktlarni olishda xatolik')
-    return response.json()
-  },
-
-  async createContact(data: Omit<FooterContact, 'id' | 'created_at' | 'updated_at'>, token: string): Promise<FooterContact> {
-    const response = await fetch(`${API_BASE_URL}/footer/contacts`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Kontakt yaratishda xatolik')
-    }
-    return response.json()
-  },
-
-  async updateContact(id: number, data: Partial<FooterContact>, token: string): Promise<FooterContact> {
-    const response = await fetch(`${API_BASE_URL}/footer/contacts/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Kontaktni yangilashda xatolik')
-    }
-    return response.json()
-  },
-
-  async deleteContact(id: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/footer/contacts/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Kontaktni o\'chirishda xatolik')
-  },
-
-  async reorderContacts(items: ReorderItem[], token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/footer/contacts/reorder`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ items })
-    })
-    if (!response.ok) throw new Error('Tartibni yangilashda xatolik')
+  async reorderContacts(items: ReorderItem[]): Promise<void> {
+    await api.post('/footer/contacts/reorder', { items })
   }
 }
 
-// Platform icons mapping
 export const PLATFORM_ICONS: Record<string, string> = {
   telegram: 'fab fa-telegram',
   instagram: 'fab fa-instagram',
@@ -363,7 +167,6 @@ export const PLATFORM_ICONS: Record<string, string> = {
   whatsapp: 'fab fa-whatsapp',
 }
 
-// Contact type icons mapping
 export const CONTACT_TYPE_ICONS: Record<string, string> = {
   phone: 'fas fa-phone',
   email: 'fas fa-envelope',

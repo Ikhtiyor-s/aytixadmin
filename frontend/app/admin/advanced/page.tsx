@@ -8,27 +8,35 @@ import { translations, languages, Language, Translations } from '@/lib/admin/tra
 import ProjectsPage from '@/components/admin/ProjectsPage'
 import CategoriesPage from '@/components/admin/CategoriesPage'
 import ContactsPage from '@/components/admin/ContactsPage'
+import DashboardPage from '@/components/admin/DashboardPage'
+import UsersPage from '@/components/admin/UsersPage'
+import AnalyticsPage from '@/components/admin/AnalyticsPage'
+import ContentPage from '@/components/admin/ContentPage'
+import MessagesPage from '@/components/admin/MessagesPage'
+import PartnersPage from '@/components/admin/PartnersPage'
+import IntegrationsPage from '@/components/admin/IntegrationsPage'
+import AIPage from '@/components/admin/AIPage'
+import FAQPage from '@/components/admin/FAQPage'
+import FooterPage from '@/components/admin/FooterPage'
+import AdminProfilePage from '@/components/admin/AdminProfilePage'
 
 export default function AdminPanel() {
-  const { user, logout, isAuthenticated } = useAuth()
+  const { user, logout, isAuthenticated, loading } = useAuth()
   const router = useRouter()
   const [currentPage, setCurrentPage] = useState('dashboard')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
-  const [showNotifications, setShowNotifications] = useState(false)
   const [showLangDropdown, setShowLangDropdown] = useState(false)
   const [globalSearch, setGlobalSearch] = useState('')
   const [lang, setLang] = useState<Language>('uz')
   const [showMobileSidebar, setShowMobileSidebar] = useState(false)
 
-  // Redirect if not authenticated
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!loading && !isAuthenticated) {
       router.push('/admin/login')
     }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, loading, router])
 
-  // Dark mode effect
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark')
@@ -47,17 +55,17 @@ export default function AdminPanel() {
 
   const menuItems = [
     { id: 'dashboard', name: t.dashboard, icon: Icons.dashboard },
+    { id: 'analytics', name: t.analytics, icon: Icons.trendingUp },
     { id: 'users', name: t.users, icon: Icons.users },
     { id: 'projects', name: t.projects, icon: Icons.projects },
     { id: 'categories', name: t.categories, icon: Icons.grid },
-    { id: 'leads', name: t.leads, icon: Icons.trendingUp },
     { id: 'content', name: t.content, icon: Icons.content },
-    { id: 'comments', name: t.comments, icon: Icons.comments },
     { id: 'messages', name: t.messages, icon: Icons.messages },
-    { id: 'contacts', name: 'Kontaktlar', icon: Icons.phone },
     { id: 'partners', name: t.partners, icon: Icons.partners },
     { id: 'integrations', name: t.integrations, icon: Icons.globe },
     { id: 'ai', name: t.ai, icon: Icons.sparkles },
+    { id: 'faq', name: t.faq, icon: Icons.comments },
+    { id: 'footer', name: t.footer, icon: Icons.grid },
     { id: 'settings', name: t.settings, icon: Icons.settings },
   ]
 
@@ -67,7 +75,6 @@ export default function AdminPanel() {
 
   return (
     <div className={`flex h-screen ${darkMode ? 'dark' : ''}`}>
-      {/* Mobile Sidebar Overlay */}
       {showMobileSidebar && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -114,17 +121,20 @@ export default function AdminPanel() {
           ))}
         </nav>
         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-          <div className={`flex items-center gap-3 ${sidebarCollapsed ? 'justify-center' : ''}`}>
-            <div className="w-10 h-10 bg-gradient-to-br from-[#00a6a6] to-[#0a2d5c] rounded-xl flex items-center justify-center text-white">
+          <button
+            onClick={() => setCurrentPage('settings')}
+            className={`w-full flex items-center gap-3 ${sidebarCollapsed ? 'justify-center' : ''}`}
+          >
+            <div className="w-10 h-10 bg-gradient-to-br from-[#00a6a6] to-[#0a2d5c] rounded-xl flex items-center justify-center text-white flex-shrink-0">
               {Icons.user}
             </div>
             {!sidebarCollapsed && (
-              <div>
+              <div className="text-left">
                 <div className="font-medium text-sm dark:text-white">{user?.username || 'Admin'}</div>
                 <div className="text-xs text-gray-500">Super Admin</div>
               </div>
             )}
-          </div>
+          </button>
         </div>
       </aside>
 
@@ -133,14 +143,12 @@ export default function AdminPanel() {
         {/* Topbar */}
         <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-3 sm:px-6">
           <div className="flex items-center gap-2 sm:gap-4 flex-1">
-            {/* Mobile menu button */}
             <button
               onClick={() => setShowMobileSidebar(!showMobileSidebar)}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-gray-500 lg:hidden"
             >
               {Icons.menu}
             </button>
-            {/* Desktop collapse button */}
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-gray-500 hidden lg:block"
@@ -174,13 +182,6 @@ export default function AdminPanel() {
               className="p-2 sm:p-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl text-gray-500"
             >
               {darkMode ? Icons.sun : Icons.moon}
-            </button>
-
-            <button className="p-2 sm:p-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl relative text-gray-500 hidden sm:block">
-              {Icons.bell}
-              <span className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">
-                0
-              </span>
             </button>
 
             {/* Language Switcher */}
@@ -234,80 +235,20 @@ export default function AdminPanel() {
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
           <div className="max-w-7xl mx-auto">
-            {/* Projects Page */}
-            {currentPage === 'projects' && (
-              <ProjectsPage t={t} globalSearch={globalSearch} lang={lang} />
-            )}
-
-            {/* Categories Page */}
-            {currentPage === 'categories' && (
-              <CategoriesPage t={t} globalSearch={globalSearch} lang={lang} />
-            )}
-
-            {/* Contacts Page */}
-            {currentPage === 'contacts' && (
-              <ContactsPage t={t} globalSearch={globalSearch} lang={lang} />
-            )}
-
-            {/* Other Pages */}
-            {currentPage !== 'projects' && currentPage !== 'categories' && currentPage !== 'contacts' && (
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                  {currentPage === 'dashboard' && t.dashboard}
-                  {currentPage === 'users' && t.users}
-                  {currentPage === 'categories' && t.categories}
-                  {currentPage === 'leads' && t.leads}
-                  {currentPage === 'content' && t.content}
-                  {currentPage === 'comments' && t.comments}
-                  {currentPage === 'messages' && t.messages}
-                  {currentPage === 'partners' && t.partners}
-                  {currentPage === 'integrations' && t.integrations}
-                  {currentPage === 'ai' && t.ai}
-                  {currentPage === 'settings' && t.settings}
-                </h1>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Bu yerda {currentPage} sahifasining kontenti bo'ladi. Admin panel hozircha faqat interfeys sifatida yaratilgan. Backend API bilan integratsiya qilish kerak.
-                </p>
-
-                {/* Dashboard Preview */}
-                {currentPage === 'dashboard' && (
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="bg-gradient-to-br from-[#00a6a6] to-[#00a6a6]/80 rounded-xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium opacity-90">{t.totalProjects}</span>
-                      {Icons.projects}
-                    </div>
-                    <p className="text-3xl font-bold">0</p>
-                    <p className="text-xs opacity-75 mt-2">+0% {t.thisMonth}</p>
-                  </div>
-                  <div className="bg-gradient-to-br from-[#0a2d5c] to-[#0a2d5c]/80 rounded-xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium opacity-90">{t.totalUsers}</span>
-                      {Icons.users}
-                    </div>
-                    <p className="text-3xl font-bold">0</p>
-                    <p className="text-xs opacity-75 mt-2">+0% {t.thisMonth}</p>
-                  </div>
-                  <div className="bg-gradient-to-br from-[#6366f1] to-[#6366f1]/80 rounded-xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium opacity-90">{t.totalLeadsCount}</span>
-                      {Icons.trendingUp}
-                    </div>
-                    <p className="text-3xl font-bold">0</p>
-                    <p className="text-xs opacity-75 mt-2">+0% {t.thisMonth}</p>
-                  </div>
-                  <div className="bg-gradient-to-br from-[#f59e0b] to-[#f59e0b]/80 rounded-xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium opacity-90">{t.totalViews}</span>
-                      {Icons.eye}
-                    </div>
-                    <p className="text-3xl font-bold">0</p>
-                    <p className="text-xs opacity-75 mt-2">+0% {t.thisMonth}</p>
-                  </div>
-                </div>
-              )}
-              </div>
-            )}
+            {currentPage === 'dashboard' && <DashboardPage t={t} />}
+            {currentPage === 'analytics' && <AnalyticsPage t={t} />}
+            {currentPage === 'users' && <UsersPage t={t} globalSearch={globalSearch} />}
+            {currentPage === 'projects' && <ProjectsPage t={t} globalSearch={globalSearch} lang={lang} />}
+            {currentPage === 'categories' && <CategoriesPage t={t} globalSearch={globalSearch} lang={lang} />}
+            {currentPage === 'content' && <ContentPage t={t} />}
+            {currentPage === 'messages' && <MessagesPage t={t} />}
+            {currentPage === 'contacts' && <ContactsPage t={t} globalSearch={globalSearch} lang={lang} />}
+            {currentPage === 'partners' && <PartnersPage t={t} />}
+            {currentPage === 'integrations' && <IntegrationsPage t={t} lang={lang} />}
+            {currentPage === 'ai' && <AIPage t={t} />}
+            {currentPage === 'faq' && <FAQPage t={t} />}
+            {currentPage === 'footer' && <FooterPage t={t} />}
+            {currentPage === 'settings' && <AdminProfilePage t={t} />}
           </div>
         </main>
       </div>

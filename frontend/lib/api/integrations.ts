@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+import api from '@/services/api'
 
 export interface IntegrationData {
   id?: number
@@ -15,61 +15,27 @@ export interface IntegrationData {
 }
 
 export const integrationsApi = {
-  async list(token: string): Promise<IntegrationData[]> {
-    const response = await fetch(`${API_BASE_URL}/integrations/`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to fetch integrations')
-    return response.json()
+  async list(): Promise<IntegrationData[]> {
+    const res = await api.get('/integrations/')
+    return res.data
   },
-
-  async getCategories(token: string): Promise<string[]> {
-    const response = await fetch(`${API_BASE_URL}/integrations/categories`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to fetch categories')
-    return response.json()
+  async getCategories(): Promise<string[]> {
+    const res = await api.get('/integrations/categories')
+    return res.data
   },
-
-  async get(id: number, token: string): Promise<IntegrationData> {
-    const response = await fetch(`${API_BASE_URL}/integrations/${id}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to fetch integration')
-    return response.json()
+  async get(id: number): Promise<IntegrationData> {
+    const res = await api.get(`/integrations/${id}`)
+    return res.data
   },
-
-  async create(data: Omit<IntegrationData, 'id' | 'created_at' | 'updated_at'>, token: string): Promise<IntegrationData> {
-    const response = await fetch(`${API_BASE_URL}/integrations/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) throw new Error('Failed to create integration')
-    return response.json()
+  async create(data: Omit<IntegrationData, 'id' | 'created_at' | 'updated_at'>): Promise<IntegrationData> {
+    const res = await api.post('/integrations/', data)
+    return res.data
   },
-
-  async update(id: number, data: Partial<IntegrationData>, token: string): Promise<IntegrationData> {
-    const response = await fetch(`${API_BASE_URL}/integrations/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) throw new Error('Failed to update integration')
-    return response.json()
+  async update(id: number, data: Partial<IntegrationData>): Promise<IntegrationData> {
+    const res = await api.put(`/integrations/${id}`, data)
+    return res.data
   },
-
-  async delete(id: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/integrations/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to delete integration')
+  async delete(id: number): Promise<void> {
+    await api.delete(`/integrations/${id}`)
   }
 }

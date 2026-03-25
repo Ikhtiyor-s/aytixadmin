@@ -179,7 +179,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
   const [iconFile, setIconFile] = useState<File | null>(null)
   const [iconPreview, setIconPreview] = useState<string | null>(null)
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:8000'
+  const API_URL = ''
 
   const [subcategoryFormData, setSubcategoryFormData] = useState({
     name_uz: '',
@@ -213,7 +213,6 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
 
     setIsTranslating(true)
     try {
-      const token = getToken()
       const newFormData = { ...categoryFormData }
 
       // Name tarjimasi
@@ -223,7 +222,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
           text: String(categoryFormData[nameKey]),
           source_lang: sourceLang,
           target_langs: targetLangs
-        }, token)
+        })
 
         if (nameResult.success) {
           targetLangs.forEach(lang => {
@@ -241,7 +240,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
           text: String(categoryFormData[descKey]),
           source_lang: sourceLang,
           target_langs: targetLangs
-        }, token)
+        })
 
         if (descResult.success) {
           targetLangs.forEach(lang => {
@@ -283,7 +282,6 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
 
     setIsTranslating(true)
     try {
-      const token = getToken()
       const newFormData = { ...subcategoryFormData }
 
       const nameKey = `name_${sourceLang}` as keyof typeof subcategoryFormData
@@ -292,7 +290,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
           text: String(subcategoryFormData[nameKey]),
           source_lang: sourceLang,
           target_langs: targetLangs
-        }, token)
+        })
 
         if (nameResult.success) {
           targetLangs.forEach(lang => {
@@ -439,26 +437,19 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
 
   const handleSaveCategory = async () => {
     try {
-      const token = getToken()
-      if (!token) {
-        alert(t.pleaseLoginFirst)
-        return
-      }
-
       let iconUrl = categoryFormData.icon
 
-      // Upload icon if selected
       if (iconFile) {
-        const result = await uploadsApi.uploadImage(iconFile, token)
+        const result = await uploadsApi.uploadImage(iconFile)
         iconUrl = result.url
       }
 
       const dataToSave = { ...categoryFormData, icon: iconUrl }
 
       if (editingCategory) {
-        await categoriesApi.update(editingCategory.id!, dataToSave, token)
+        await categoriesApi.update(editingCategory.id!, dataToSave)
       } else {
-        await categoriesApi.create(dataToSave, token)
+        await categoriesApi.create(dataToSave)
       }
 
       await fetchCategories()
@@ -475,13 +466,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
     }
 
     try {
-      const token = getToken()
-      if (!token) {
-        alert(t.pleaseLoginFirst)
-        return
-      }
-
-      await categoriesApi.delete(id, token)
+      await categoriesApi.delete(id)
       await fetchCategories()
     } catch (err) {
       console.error('Failed to delete category:', err)
@@ -491,16 +476,15 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
 
   const handleSaveSubcategory = async () => {
     try {
-      const token = getToken()
-      if (!token || !selectedCategoryId) {
+      if (!selectedCategoryId) {
         alert(t.pleaseLoginFirst)
         return
       }
 
       if (editingSubcategory) {
-        await categoriesApi.updateSubcategory(editingSubcategory.id!, subcategoryFormData, token)
+        await categoriesApi.updateSubcategory(editingSubcategory.id!, subcategoryFormData)
       } else {
-        await categoriesApi.createSubcategory(selectedCategoryId, subcategoryFormData, token)
+        await categoriesApi.createSubcategory(selectedCategoryId, subcategoryFormData)
       }
 
       await fetchSubcategories(selectedCategoryId)
@@ -517,13 +501,7 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
     }
 
     try {
-      const token = getToken()
-      if (!token) {
-        alert(t.pleaseLoginFirst)
-        return
-      }
-
-      await categoriesApi.deleteSubcategory(id, token)
+      await categoriesApi.deleteSubcategory(id)
       await fetchSubcategories(categoryId)
     } catch (err) {
       console.error('Failed to delete subcategory:', err)

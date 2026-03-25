@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   output: "standalone",
+  skipTrailingSlashRedirect: true,
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -12,14 +13,10 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"
+    const apiUrl = process.env.API_PROXY_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"
     const baseUrl = apiUrl.replace("/api/v1", "")
 
     return [
-      {
-        source: "/api/v1/:path*",
-        destination: `${apiUrl}/:path*`,
-      },
       {
         source: "/api/uploads/:path*",
         destination: `${baseUrl}/uploads/:path*`,
@@ -75,7 +72,6 @@ const nextConfig = {
           "frame-ancestors 'self'",
           "base-uri 'self'",
           "form-action 'self' https://api.aytix.uz",
-          "upgrade-insecure-requests",
         ].join('; ')
       })
     }

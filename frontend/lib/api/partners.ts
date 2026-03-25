@@ -1,68 +1,41 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+import api from '@/services/api'
 
 export interface PartnerData {
   id?: number
   name: string
   logo_url?: string
   website?: string
+  website_url?: string
   description_uz?: string
   description_ru?: string
   description_en?: string
   partner_type?: string
+  is_active?: boolean
   order?: number
-  status?: 'active' | 'inactive' | 'pending'
+  order_index?: number
+  status?: string
   created_at?: string
   updated_at?: string
 }
 
 export const partnersApi = {
-  async list(token: string): Promise<PartnerData[]> {
-    const response = await fetch(`${API_BASE_URL}/partners/`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to fetch partners')
-    return response.json()
+  async list(): Promise<PartnerData[]> {
+    const res = await api.get('/partners/')
+    return res.data
   },
-
-  async get(id: number, token: string): Promise<PartnerData> {
-    const response = await fetch(`${API_BASE_URL}/partners/${id}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to fetch partner')
-    return response.json()
+  async get(id: number): Promise<PartnerData> {
+    const res = await api.get(`/partners/${id}`)
+    return res.data
   },
-
-  async create(data: Omit<PartnerData, 'id' | 'created_at' | 'updated_at'>, token: string): Promise<PartnerData> {
-    const response = await fetch(`${API_BASE_URL}/partners/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) throw new Error('Failed to create partner')
-    return response.json()
+  async create(data: Partial<PartnerData>): Promise<PartnerData> {
+    const res = await api.post('/partners/', data)
+    return res.data
   },
-
-  async update(id: number, data: Partial<PartnerData>, token: string): Promise<PartnerData> {
-    const response = await fetch(`${API_BASE_URL}/partners/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) throw new Error('Failed to update partner')
-    return response.json()
+  async update(id: number, data: Partial<PartnerData>): Promise<PartnerData> {
+    const res = await api.put(`/partners/${id}`, data)
+    return res.data
   },
-
-  async delete(id: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/partners/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to delete partner')
-  }
+  async delete(id: number): Promise<void> {
+    await api.delete(`/partners/${id}`)
+  },
 }

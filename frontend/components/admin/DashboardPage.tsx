@@ -51,8 +51,8 @@ export default function DashboardPage({ t }: DashboardPageProps) {
       setLoading(true)
       setError(null)
       const [statsData, analyticsData] = await Promise.all([
-        dashboardApi.getStats(token, period === 'custom' ? 'monthly' : period),
-        dashboardApi.getAnalytics(token, period === 'custom' ? 'monthly' : period, category)
+        dashboardApi.getStats(period === 'custom' ? 'monthly' : period),
+        dashboardApi.getAnalytics(period === 'custom' ? 'monthly' : period, category)
       ])
       setStats(statsData)
       setAnalytics(analyticsData)

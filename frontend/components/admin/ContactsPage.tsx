@@ -46,13 +46,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
     try {
       setLoading(true)
       setError(null)
-      const token = getToken()
-      if (!token) {
-        setError('Token topilmadi. Iltimos, qayta login qiling.')
-        window.location.href = '/admin/login'
-        return
-      }
-      const data = await footerApi.getContacts(token)
+      const data = await footerApi.getContacts()
       setContacts(data)
       setError(null)
     } catch (error: any) {
@@ -101,12 +95,6 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
   const handleSave = async () => {
     try {
       setSaving(true)
-      const token = getToken()
-      if (!token) {
-        alert(t.pleaseReLogin)
-        return
-      }
-
       if (!formData.value.trim()) {
         alert(t.enterValue)
         setSaving(false)
@@ -125,10 +113,10 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
       }
 
       if (editingContact?.id) {
-        await footerApi.updateContact(editingContact.id, contactData, token)
+        await footerApi.updateContact(editingContact.id, contactData)
         alert('✅ Kontakt muvaffaqiyatli yangilandi!')
       } else {
-        await footerApi.createContact(contactData, token)
+        await footerApi.createContact(contactData)
         alert('✅ Kontakt muvaffaqiyatli qo\'shildi!')
       }
 
@@ -146,13 +134,7 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
     if (!confirm(t.deleteConfirm)) return
 
     try {
-      const token = getToken()
-      if (!token) {
-        alert(t.pleaseReLogin)
-        return
-      }
-
-      await footerApi.deleteContact(id, token)
+      await footerApi.deleteContact(id)
       alert('✅ Kontakt o\'chirildi!')
       loadContacts()
     } catch (error) {
@@ -185,19 +167,11 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
 
   const saveNewOrder = async (newContacts: FooterContact[]) => {
     try {
-      const token = getToken()
-      if (!token) {
-        alert(t.pleaseReLogin)
-        return
-      }
-
-      // Update order values
       const reorderData = newContacts.map((contact, index) => ({
         id: contact.id!,
         order: index
       }))
-
-      await footerApi.reorderContacts(reorderData, token)
+      await footerApi.reorderContacts(reorderData)
       loadContacts()
     } catch (error) {
       console.error('Error reordering contacts:', error)

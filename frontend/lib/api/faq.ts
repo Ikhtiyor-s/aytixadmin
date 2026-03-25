@@ -1,18 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
-
-// Xatolik xabarlarini qaytarish
-const handleResponse = async (response: Response) => {
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) {
-      throw new Error('Not authenticated - Sessiya muddati tugagan')
-    }
-    const error = await response.json().catch(() => ({ detail: 'Xatolik yuz berdi' }))
-    throw new Error(error.detail || `Xatolik: ${response.status}`)
-  }
-  return response.json()
-}
-
-// ============== FAQ INTERFACE ==============
+import api from '@/services/api'
 
 export interface FAQ {
   id?: number
@@ -34,103 +20,39 @@ export interface ReorderItem {
   order: number
 }
 
-// ============== API FUNCTIONS ==============
-
 export const faqApi = {
-  // ============== PUBLIC ==============
   async getPublicFAQs(category?: string): Promise<FAQ[]> {
-    const url = category
-      ? `${API_BASE_URL}/faq/public?category=${encodeURIComponent(category)}`
-      : `${API_BASE_URL}/faq/public`
-    const response = await fetch(url)
-    return handleResponse(response)
+    const res = await api.get('/faq/public', { params: category ? { category } : {} })
+    return res.data
   },
-
   async getCategories(): Promise<string[]> {
-    const response = await fetch(`${API_BASE_URL}/faq/categories`)
-    return handleResponse(response)
+    const res = await api.get('/faq/categories')
+    return res.data
   },
-
-  // ============== ADMIN ==============
-  async getFAQs(token: string, category?: string, status?: string): Promise<FAQ[]> {
-    let url = `${API_BASE_URL}/faq`
-    const params = new URLSearchParams()
-    if (category) params.append('category', category)
-    if (status) params.append('status', status)
-    if (params.toString()) url += `?${params.toString()}`
-
-    const response = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    return handleResponse(response)
+  async getFAQs(params: { category?: string; status?: string } = {}): Promise<FAQ[]> {
+    const res = await api.get('/faq', { params })
+    return res.data
   },
-
-  async getFAQ(id: number, token: string): Promise<FAQ> {
-    const response = await fetch(`${API_BASE_URL}/faq/${id}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    return handleResponse(response)
+  async getFAQ(id: number): Promise<FAQ> {
+    const res = await api.get(`/faq/${id}`)
+    return res.data
   },
-
-  async createFAQ(data: Omit<FAQ, 'id' | 'created_at' | 'updated_at'>, token: string): Promise<FAQ> {
-    const response = await fetch(`${API_BASE_URL}/faq`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
+  async createFAQ(data: Omit<FAQ, 'id' | 'created_at' | 'updated_at'>): Promise<FAQ> {
+    const res = await api.post('/faq', data)
+    return res.data
   },
-
-  async updateFAQ(id: number, data: Partial<FAQ>, token: string): Promise<FAQ> {
-    const response = await fetch(`${API_BASE_URL}/faq/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
+  async updateFAQ(id: number, data: Partial<FAQ>): Promise<FAQ> {
+    const res = await api.put(`/faq/${id}`, data)
+    return res.data
   },
-
-  async deleteFAQ(id: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/faq/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) {
-      if (response.status === 401 || response.status === 403) {
-        throw new Error('Not authenticated - Sessiya muddati tugagan')
-      }
-      throw new Error('FAQ ni o\'chirishda xatolik')
-    }
+  async deleteFAQ(id: number): Promise<void> {
+    await api.delete(`/faq/${id}`)
   },
-
-  async toggleFAQ(id: number, token: string): Promise<FAQ> {
-    const response = await fetch(`${API_BASE_URL}/faq/${id}/toggle`, {
-      method: 'PATCH',
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    return handleResponse(response)
+  async toggleFAQ(id: number): Promise<FAQ> {
+    const res = await api.patch(`/faq/${id}/toggle`)
+    return res.data
   },
-
-  async reorderFAQs(items: ReorderItem[], token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/faq/reorder`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ items })
-    })
-    if (!response.ok) {
-      if (response.status === 401 || response.status === 403) {
-        throw new Error('Not authenticated - Sessiya muddati tugagan')
-      }
-      throw new Error('Tartibni yangilashda xatolik')
-    }
+  async reorderFAQs(items: ReorderItem[]): Promise<void> {
+    await api.post('/faq/reorder', { items })
   }
 }

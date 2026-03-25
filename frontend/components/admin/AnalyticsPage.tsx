@@ -23,7 +23,7 @@ export default function AnalyticsPage({ t }: AnalyticsPageProps) {
   const loadAnalytics = async () => {
     try {
       setLoading(true)
-      const data = await analyticsApi.getAnalytics(token!)
+      const data = await analyticsApi.getAnalytics()
       setAnalytics(data)
     } catch (err) {
       console.error(err)

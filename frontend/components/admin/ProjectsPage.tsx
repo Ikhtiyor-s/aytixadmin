@@ -13,7 +13,7 @@ import MultiSelectDropdown from '@/components/ui/MultiSelectDropdown'
 // Image Carousel Component for Project Cards
 function ProjectImageCarousel({ images }: { images: string[] }) {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:8000'
+  const API_URL = ''
 
   const nextImage = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -366,15 +366,13 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
 
     setIsTranslating(true)
     try {
-      const token = getToken()
-
       // Name tarjimasi - faqat bo'sh maydonlar uchun
       if (sourceText.name.trim() && emptyNameLangs.length > 0) {
         const nameResult = await translateApi.translate({
           text: sourceText.name,
           source_lang: sourceLang,
           target_langs: emptyNameLangs
-        }, token)
+        })
 
         if (nameResult.success) {
           const newName = { ...formData.name }
@@ -393,7 +391,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
           text: sourceText.description,
           source_lang: sourceLang,
           target_langs: emptyDescLangs
-        }, token)
+        })
 
         if (descResult.success) {
           const newDesc = { ...formData.description }
@@ -758,7 +756,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
     setEditingProject(project)
 
     // Get API URL for existing media
-    const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:8000'
+    const API_URL = ''
     const getFullUrl = (url: string) => {
       if (!url) return ''
       if (url.startsWith('http')) return url
@@ -866,7 +864,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       // Upload main image or keep existing
       let imageUrl = formData.existingImage || null
       if (formData.image) {
-        const result = await uploadsApi.uploadImage(formData.image, token)
+        const result = await uploadsApi.uploadImage(formData.image)
         imageUrl = result.url
       }
 
@@ -874,7 +872,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       let videoUrls: string[] = [...formData.existingVideos]
       if (formData.videos.length > 0) {
         for (const video of formData.videos) {
-          const result = await uploadsApi.uploadVideo(video, token)
+          const result = await uploadsApi.uploadVideo(video)
           videoUrls.push(result.url)
         }
       }
@@ -882,7 +880,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       // Upload additional images or keep existing
       let imagesUrls: string[] = [...formData.existingImages]
       if (formData.images.length > 0) {
-        const result = await uploadsApi.uploadMultipleImages(formData.images, token)
+        const result = await uploadsApi.uploadMultipleImages(formData.images)
         imagesUrls = [...imagesUrls, ...result.urls]
       }
 
@@ -910,9 +908,9 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       }
 
       if (editingProject) {
-        await projectsApi.update(editingProject.id, projectData, token)
+        await projectsApi.update(editingProject.id, projectData)
       } else {
-        await projectsApi.create(projectData, token)
+        await projectsApi.create(projectData)
       }
 
       await fetchProjects()
@@ -945,7 +943,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
           return
         }
 
-        await projectsApi.delete(id, token)
+        await projectsApi.delete(id)
 
         // Update local state without refetching (prevents scroll jump)
         setProjects(prev => prev.filter(p => p.id !== id))
@@ -980,7 +978,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       if (!project) return
 
       const newStatus = project.status === 'active' ? 'inactive' : 'active'
-      await projectsApi.update(id, { status: newStatus }, token)
+      await projectsApi.update(id, { status: newStatus })
 
       // Update local state without refetching (prevents scroll jump)
       setProjects(prev => prev.map(p =>
@@ -1015,7 +1013,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
       if (!project) return
 
       const newVerified = !project.is_verified
-      await projectsApi.update(id, { is_verified: newVerified }, token)
+      await projectsApi.update(id, { is_verified: newVerified })
 
       setProjects(prev => prev.map(p =>
         p.id === id ? { ...p, is_verified: newVerified } : p
@@ -1269,7 +1267,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
           <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl w-full max-w-2xl my-4 sm:my-8 max-h-[95vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             {/* Project Image */}
             {(() => {
-              const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:8000'
+              const API_URL = ''
               const getImageUrl = (url: string) => url?.startsWith('http') ? url : `${API_URL}${url}`
               const allImages = [viewProject.image_url, ...(viewProject.images || [])].filter(Boolean) as string[]
 

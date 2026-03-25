@@ -1,9 +1,8 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+import api from '@/services/api'
 
 export type ContentStatus = 'active' | 'inactive'
 export type TargetAudience = 'all' | 'users' | 'sellers' | 'admins'
 
-// News interfaces
 export interface NewsData {
   id?: number
   title_uz: string
@@ -20,7 +19,6 @@ export interface NewsData {
   updated_at?: string
 }
 
-// Banner interfaces
 export interface BannerData {
   id?: number
   title_uz: string
@@ -30,7 +28,7 @@ export interface BannerData {
   description_ru?: string
   description_en?: string
   image_url?: string
-  video_url?: string  // Video yoki GIF URL
+  video_url?: string
   link_url?: string
   project_id?: number
   order?: number
@@ -39,7 +37,6 @@ export interface BannerData {
   updated_at?: string
 }
 
-// Notification interfaces
 export interface NotificationData {
   id?: number
   title_uz: string
@@ -57,150 +54,51 @@ export interface NotificationData {
 }
 
 export const contentApi = {
-  // News API
-  async getNews(token: string): Promise<NewsData[]> {
-    const response = await fetch(`${API_BASE_URL}/content/news`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to fetch news')
-    return response.json()
+  async getNews(): Promise<NewsData[]> {
+    const res = await api.get('/content/news')
+    return res.data
+  },
+  async createNews(data: Omit<NewsData, 'id' | 'views' | 'created_at' | 'updated_at'>): Promise<NewsData> {
+    const res = await api.post('/content/news', data)
+    return res.data
+  },
+  async updateNews(id: number, data: Partial<NewsData>): Promise<NewsData> {
+    const res = await api.put(`/content/news/${id}`, data)
+    return res.data
+  },
+  async deleteNews(id: number): Promise<void> {
+    await api.delete(`/content/news/${id}`)
   },
 
-  async createNews(data: Omit<NewsData, 'id' | 'views' | 'created_at' | 'updated_at'>, token: string): Promise<NewsData> {
-    const response = await fetch(`${API_BASE_URL}/content/news`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Failed to create news')
-    }
-    return response.json()
+  async getBanners(): Promise<BannerData[]> {
+    const res = await api.get('/content/banners')
+    return res.data
+  },
+  async createBanner(data: Omit<BannerData, 'id' | 'created_at' | 'updated_at'>): Promise<BannerData> {
+    const res = await api.post('/content/banners', data)
+    return res.data
+  },
+  async updateBanner(id: number, data: Partial<BannerData>): Promise<BannerData> {
+    const res = await api.put(`/content/banners/${id}`, data)
+    return res.data
+  },
+  async deleteBanner(id: number): Promise<void> {
+    await api.delete(`/content/banners/${id}`)
   },
 
-  async updateNews(id: number, data: Partial<NewsData>, token: string): Promise<NewsData> {
-    const response = await fetch(`${API_BASE_URL}/content/news/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Failed to update news')
-    }
-    return response.json()
+  async getNotifications(): Promise<NotificationData[]> {
+    const res = await api.get('/content/notifications')
+    return res.data
   },
-
-  async deleteNews(id: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/content/news/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to delete news')
+  async createNotification(data: Omit<NotificationData, 'id' | 'created_at' | 'updated_at'>): Promise<NotificationData> {
+    const res = await api.post('/content/notifications', data)
+    return res.data
   },
-
-  // Banner API
-  async getBanners(token: string): Promise<BannerData[]> {
-    const response = await fetch(`${API_BASE_URL}/content/banners`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to fetch banners')
-    return response.json()
+  async updateNotification(id: number, data: Partial<NotificationData>): Promise<NotificationData> {
+    const res = await api.put(`/content/notifications/${id}`, data)
+    return res.data
   },
-
-  async createBanner(data: Omit<BannerData, 'id' | 'created_at' | 'updated_at'>, token: string): Promise<BannerData> {
-    const response = await fetch(`${API_BASE_URL}/content/banners`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Failed to create banner')
-    }
-    return response.json()
-  },
-
-  async updateBanner(id: number, data: Partial<BannerData>, token: string): Promise<BannerData> {
-    const response = await fetch(`${API_BASE_URL}/content/banners/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Failed to update banner')
-    }
-    return response.json()
-  },
-
-  async deleteBanner(id: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/content/banners/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to delete banner')
-  },
-
-  // Notification API
-  async getNotifications(token: string): Promise<NotificationData[]> {
-    const response = await fetch(`${API_BASE_URL}/content/notifications`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to fetch notifications')
-    return response.json()
-  },
-
-  async createNotification(data: Omit<NotificationData, 'id' | 'created_at' | 'updated_at'>, token: string): Promise<NotificationData> {
-    const response = await fetch(`${API_BASE_URL}/content/notifications`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Failed to create notification')
-    }
-    return response.json()
-  },
-
-  async updateNotification(id: number, data: Partial<NotificationData>, token: string): Promise<NotificationData> {
-    const response = await fetch(`${API_BASE_URL}/content/notifications/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.detail || 'Failed to update notification')
-    }
-    return response.json()
-  },
-
-  async deleteNotification(id: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/content/notifications/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to delete notification')
+  async deleteNotification(id: number): Promise<void> {
+    await api.delete(`/content/notifications/${id}`)
   }
 }

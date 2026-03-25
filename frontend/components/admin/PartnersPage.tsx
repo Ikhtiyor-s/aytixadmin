@@ -39,7 +39,7 @@ export default function PartnersPage({ t }: PartnersPageProps) {
   const loadPartners = async () => {
     try {
       setLoading(true)
-      const data = await partnersApi.list(token!)
+      const data = await partnersApi.list()
       setPartners(data)
     } catch (err) {
       console.error(err)
@@ -51,9 +51,9 @@ export default function PartnersPage({ t }: PartnersPageProps) {
   const handleSubmit = async () => {
     try {
       if (editingPartner?.id) {
-        await partnersApi.update(editingPartner.id, formData, token!)
+        await partnersApi.update(editingPartner.id, formData)
       } else {
-        await partnersApi.create(formData, token!)
+        await partnersApi.create(formData)
       }
       setShowModal(false)
       setFormData(emptyPartner)
@@ -67,7 +67,7 @@ export default function PartnersPage({ t }: PartnersPageProps) {
   const handleDelete = async (id: number) => {
     if (!confirm(t.deletePartnerConfirm)) return
     try {
-      await partnersApi.delete(id, token!)
+      await partnersApi.delete(id)
       loadPartners()
     } catch (err) {
       console.error(err)
@@ -79,7 +79,7 @@ export default function PartnersPage({ t }: PartnersPageProps) {
     if (!file) return
     try {
       setUploading(true)
-      const result = await uploadsApi.uploadImage(file, token!)
+      const result = await uploadsApi.uploadImage(file)
       setFormData({ ...formData, logo_url: result.url })
     } catch (err) {
       console.error(err)

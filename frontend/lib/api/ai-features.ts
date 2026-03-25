@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+import api from '@/services/api'
 
 export interface AIFeatureData {
   id?: number
@@ -17,61 +17,27 @@ export interface AIFeatureData {
 }
 
 export const aiFeaturesApi = {
-  async list(token: string): Promise<AIFeatureData[]> {
-    const response = await fetch(`${API_BASE_URL}/ai-features/`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to fetch AI features')
-    return response.json()
+  async list(): Promise<AIFeatureData[]> {
+    const res = await api.get('/ai-features/')
+    return res.data
   },
-
-  async getCategories(token: string): Promise<string[]> {
-    const response = await fetch(`${API_BASE_URL}/ai-features/categories`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to fetch categories')
-    return response.json()
+  async getCategories(): Promise<string[]> {
+    const res = await api.get('/ai-features/categories')
+    return res.data
   },
-
-  async get(id: number, token: string): Promise<AIFeatureData> {
-    const response = await fetch(`${API_BASE_URL}/ai-features/${id}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to fetch AI feature')
-    return response.json()
+  async get(id: number): Promise<AIFeatureData> {
+    const res = await api.get(`/ai-features/${id}`)
+    return res.data
   },
-
-  async create(data: Omit<AIFeatureData, 'id' | 'created_at' | 'updated_at'>, token: string): Promise<AIFeatureData> {
-    const response = await fetch(`${API_BASE_URL}/ai-features/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) throw new Error('Failed to create AI feature')
-    return response.json()
+  async create(data: Omit<AIFeatureData, 'id' | 'created_at' | 'updated_at'>): Promise<AIFeatureData> {
+    const res = await api.post('/ai-features/', data)
+    return res.data
   },
-
-  async update(id: number, data: Partial<AIFeatureData>, token: string): Promise<AIFeatureData> {
-    const response = await fetch(`${API_BASE_URL}/ai-features/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    if (!response.ok) throw new Error('Failed to update AI feature')
-    return response.json()
+  async update(id: number, data: Partial<AIFeatureData>): Promise<AIFeatureData> {
+    const res = await api.put(`/ai-features/${id}`, data)
+    return res.data
   },
-
-  async delete(id: number, token: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/ai-features/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    if (!response.ok) throw new Error('Failed to delete AI feature')
+  async delete(id: number): Promise<void> {
+    await api.delete(`/ai-features/${id}`)
   }
 }

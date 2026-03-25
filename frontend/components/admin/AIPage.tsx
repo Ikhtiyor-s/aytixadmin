@@ -47,7 +47,7 @@ export default function AIPage({ t }: AIPageProps) {
   const loadFeatures = async () => {
     try {
       setLoading(true)
-      const data = await aiFeaturesApi.list(token!)
+      const data = await aiFeaturesApi.list()
       setFeatures(data)
     } catch (err) {
       console.error(err)
@@ -59,9 +59,9 @@ export default function AIPage({ t }: AIPageProps) {
   const handleSubmit = async () => {
     try {
       if (editingFeature?.id) {
-        await aiFeaturesApi.update(editingFeature.id, formData, token!)
+        await aiFeaturesApi.update(editingFeature.id, formData)
       } else {
-        await aiFeaturesApi.create(formData, token!)
+        await aiFeaturesApi.create(formData)
       }
       setShowModal(false)
       setFormData(emptyFeature)
@@ -75,7 +75,7 @@ export default function AIPage({ t }: AIPageProps) {
   const handleDelete = async (id: number) => {
     if (!confirm(t.deleteAiConfirm)) return
     try {
-      await aiFeaturesApi.delete(id, token!)
+      await aiFeaturesApi.delete(id)
       loadFeatures()
     } catch (err) {
       console.error(err)

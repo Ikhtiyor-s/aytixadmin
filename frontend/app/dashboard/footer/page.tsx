@@ -80,18 +80,12 @@ export default function FooterPage() {
   }, [])
 
   const loadData = async () => {
-    const token = localStorage.getItem('access_token')
-    if (!token) {
-      router.push('/login')
-      return
-    }
-
     setLoading(true)
     try {
       const [sectionsData, socialData, contactsData] = await Promise.all([
-        footerApi.getSections(token),
-        footerApi.getSocialLinks(token),
-        footerApi.getContacts(token)
+        footerApi.getSections(),
+        footerApi.getSocialLinks(),
+        footerApi.getContacts()
       ])
       setSections(sectionsData)
       setSocialLinks(socialData)
@@ -109,7 +103,7 @@ export default function FooterPage() {
   const handleCreateSection = async () => {
     setSaving(true)
     try {
-      await footerApi.createSection(sectionForm as any, getToken())
+      await footerApi.createSection(sectionForm as any)
       await loadData()
       setShowSectionModal(false)
       resetSectionForm()
@@ -124,7 +118,7 @@ export default function FooterPage() {
     if (!selectedSection?.id) return
     setSaving(true)
     try {
-      await footerApi.updateSection(selectedSection.id, sectionForm, getToken())
+      await footerApi.updateSection(selectedSection.id, sectionForm)
       await loadData()
       setShowSectionModal(false)
       setSelectedSection(null)
@@ -139,7 +133,7 @@ export default function FooterPage() {
   const handleDeleteSection = async (id: number) => {
     if (!confirm('Bu bo\'limni o\'chirishni xohlaysizmi? Barcha elementlar ham o\'chiriladi.')) return
     try {
-      await footerApi.deleteSection(id, getToken())
+      await footerApi.deleteSection(id)
       await loadData()
       if (selectedSection?.id === id) setSelectedSection(null)
     } catch (error: any) {
@@ -156,7 +150,7 @@ export default function FooterPage() {
     if (!selectedSection?.id) return
     setSaving(true)
     try {
-      await footerApi.createItem({ ...itemForm, section_id: selectedSection.id } as any, getToken())
+      await footerApi.createItem({ ...itemForm, section_id: selectedSection.id } as any)
       await loadData()
       setShowItemModal(false)
       resetItemForm()
@@ -171,7 +165,7 @@ export default function FooterPage() {
     if (!selectedItem?.id) return
     setSaving(true)
     try {
-      await footerApi.updateItem(selectedItem.id, itemForm, getToken())
+      await footerApi.updateItem(selectedItem.id, itemForm)
       await loadData()
       setShowItemModal(false)
       setSelectedItem(null)
@@ -186,7 +180,7 @@ export default function FooterPage() {
   const handleDeleteItem = async (id: number) => {
     if (!confirm('Bu elementni o\'chirishni xohlaysizmi?')) return
     try {
-      await footerApi.deleteItem(id, getToken())
+      await footerApi.deleteItem(id)
       await loadData()
     } catch (error: any) {
       alert(error.message)
@@ -204,7 +198,7 @@ export default function FooterPage() {
   const handleCreateSocialLink = async () => {
     setSaving(true)
     try {
-      await footerApi.createSocialLink(socialForm as any, getToken())
+      await footerApi.createSocialLink(socialForm as any)
       await loadData()
       setShowSocialModal(false)
       resetSocialForm()
@@ -219,7 +213,7 @@ export default function FooterPage() {
     if (!selectedSocialLink?.id) return
     setSaving(true)
     try {
-      await footerApi.updateSocialLink(selectedSocialLink.id, socialForm, getToken())
+      await footerApi.updateSocialLink(selectedSocialLink.id, socialForm)
       await loadData()
       setShowSocialModal(false)
       setSelectedSocialLink(null)
@@ -234,7 +228,7 @@ export default function FooterPage() {
   const handleDeleteSocialLink = async (id: number) => {
     if (!confirm('Bu ijtimoiy tarmoqni o\'chirishni xohlaysizmi?')) return
     try {
-      await footerApi.deleteSocialLink(id, getToken())
+      await footerApi.deleteSocialLink(id)
       await loadData()
     } catch (error: any) {
       alert(error.message)
@@ -249,7 +243,7 @@ export default function FooterPage() {
   const handleCreateContact = async () => {
     setSaving(true)
     try {
-      await footerApi.createContact(contactForm as any, getToken())
+      await footerApi.createContact(contactForm as any)
       await loadData()
       setShowContactModal(false)
       resetContactForm()
@@ -264,7 +258,7 @@ export default function FooterPage() {
     if (!selectedContact?.id) return
     setSaving(true)
     try {
-      await footerApi.updateContact(selectedContact.id, contactForm, getToken())
+      await footerApi.updateContact(selectedContact.id, contactForm)
       await loadData()
       setShowContactModal(false)
       setSelectedContact(null)
@@ -279,7 +273,7 @@ export default function FooterPage() {
   const handleDeleteContact = async (id: number) => {
     if (!confirm('Bu kontaktni o\'chirishni xohlaysizmi?')) return
     try {
-      await footerApi.deleteContact(id, getToken())
+      await footerApi.deleteContact(id)
       await loadData()
     } catch (error: any) {
       alert(error.message)
