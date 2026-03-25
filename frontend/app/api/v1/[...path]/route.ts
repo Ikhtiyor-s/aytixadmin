@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const BACKEND_URL = process.env.API_PROXY_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
 
+// Allow large uploads (videos up to 50MB), 60s timeout
+export const maxDuration = 60
+
 async function handler(request: NextRequest) {
   const backendPath = request.nextUrl.pathname.replace('/api/v1', '')
   const targetUrl = `${BACKEND_URL}${backendPath}${request.nextUrl.search}`
