@@ -455,7 +455,7 @@ export default function FooterPage() {
                         </div>
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={(e) => { e.stopPropagation(); handleToggleSection(section.id!, section.is_active) }}
+                            onClick={(e) => { e.stopPropagation(); handleToggleSection(section.id!, !!section.is_active) }}
                             className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
                               section.is_active ? 'bg-green-500' : 'bg-gray-300'
                             }`}
@@ -529,7 +529,7 @@ export default function FooterPage() {
                           </div>
                           <div className="flex items-center gap-1">
                             <button
-                              onClick={() => handleToggleItem(item.id!, item.is_active)}
+                              onClick={() => handleToggleItem(item.id!, !!item.is_active)}
                               className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
                                 item.is_active ? 'bg-green-500' : 'bg-gray-300'
                               }`}
@@ -603,7 +603,7 @@ export default function FooterPage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <button
-                          onClick={() => handleToggleSocialLink(link.id!, link.is_active)}
+                          onClick={() => handleToggleSocialLink(link.id!, !!link.is_active)}
                           className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
                             link.is_active ? 'bg-green-500' : 'bg-gray-300'
                           }`}
@@ -672,7 +672,7 @@ export default function FooterPage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <button
-                          onClick={() => handleToggleContact(contact.id!, contact.is_active)}
+                          onClick={() => handleToggleContact(contact.id!, !!contact.is_active)}
                           className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
                             contact.is_active ? 'bg-green-500' : 'bg-gray-300'
                           }`}
