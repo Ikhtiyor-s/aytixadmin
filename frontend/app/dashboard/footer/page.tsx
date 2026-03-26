@@ -141,6 +141,13 @@ export default function FooterPage() {
     }
   }
 
+  const handleToggleSection = async (id: number, is_active: boolean) => {
+    try {
+      await footerApi.updateSection(id, { is_active: !is_active })
+      await loadData()
+    } catch (error: any) { alert(error.message) }
+  }
+
   const resetSectionForm = () => {
     setSectionForm({ title_uz: '', title_ru: '', title_en: '', slug: '', order: 0, is_active: true })
   }
@@ -185,6 +192,13 @@ export default function FooterPage() {
     } catch (error: any) {
       alert(error.message)
     }
+  }
+
+  const handleToggleItem = async (id: number, is_active: boolean) => {
+    try {
+      await footerApi.updateItem(id, { is_active: !is_active })
+      await loadData()
+    } catch (error: any) { alert(error.message) }
   }
 
   const resetItemForm = () => {
@@ -235,6 +249,13 @@ export default function FooterPage() {
     }
   }
 
+  const handleToggleSocialLink = async (id: number, is_active: boolean) => {
+    try {
+      await footerApi.updateSocialLink(id, { is_active: !is_active })
+      await loadData()
+    } catch (error: any) { alert(error.message) }
+  }
+
   const resetSocialForm = () => {
     setSocialForm({ platform: 'telegram', link_url: '', order: 0, is_active: true })
   }
@@ -278,6 +299,13 @@ export default function FooterPage() {
     } catch (error: any) {
       alert(error.message)
     }
+  }
+
+  const handleToggleContact = async (id: number, is_active: boolean) => {
+    try {
+      await footerApi.updateContact(id, { is_active: !is_active })
+      await loadData()
+    } catch (error: any) { alert(error.message) }
   }
 
   const resetContactForm = () => {
@@ -426,11 +454,17 @@ export default function FooterPage() {
                           <p className="text-sm text-gray-500">/{section.slug}</p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className={`px-2 py-1 text-xs rounded ${
-                            section.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
-                          }`}>
-                            {section.is_active ? 'Faol' : 'Nofaol'}
-                          </span>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleToggleSection(section.id!, section.is_active) }}
+                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                              section.is_active ? 'bg-green-500' : 'bg-gray-300'
+                            }`}
+                            title={section.is_active ? 'Nofaol qilish' : 'Faollashtirish'}
+                          >
+                            <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${
+                              section.is_active ? 'translate-x-4' : 'translate-x-1'
+                            }`} />
+                          </button>
                           <button
                             onClick={(e) => { e.stopPropagation(); openEditSection(section) }}
                             className="p-1 text-gray-500 hover:text-primary-500"
@@ -495,6 +529,17 @@ export default function FooterPage() {
                           </div>
                           <div className="flex items-center gap-1">
                             <button
+                              onClick={() => handleToggleItem(item.id!, item.is_active)}
+                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                                item.is_active ? 'bg-green-500' : 'bg-gray-300'
+                              }`}
+                              title={item.is_active ? 'Nofaol qilish' : 'Faollashtirish'}
+                            >
+                              <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${
+                                item.is_active ? 'translate-x-4' : 'translate-x-1'
+                              }`} />
+                            </button>
+                            <button
                               onClick={() => openEditItem(item)}
                               className="p-1 text-gray-400 hover:text-primary-500"
                             >
@@ -557,11 +602,17 @@ export default function FooterPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
-                        <span className={`px-2 py-1 text-xs rounded ${
-                          link.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
-                        }`}>
-                          {link.is_active ? 'Faol' : 'Nofaol'}
-                        </span>
+                        <button
+                          onClick={() => handleToggleSocialLink(link.id!, link.is_active)}
+                          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                            link.is_active ? 'bg-green-500' : 'bg-gray-300'
+                          }`}
+                          title={link.is_active ? 'Nofaol qilish' : 'Faollashtirish'}
+                        >
+                          <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${
+                            link.is_active ? 'translate-x-4' : 'translate-x-1'
+                          }`} />
+                        </button>
                         <button
                           onClick={() => openEditSocialLink(link)}
                           className="p-1 text-gray-400 hover:text-primary-500"
@@ -620,11 +671,17 @@ export default function FooterPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
-                        <span className={`px-2 py-1 text-xs rounded ${
-                          contact.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
-                        }`}>
-                          {contact.is_active ? 'Faol' : 'Nofaol'}
-                        </span>
+                        <button
+                          onClick={() => handleToggleContact(contact.id!, contact.is_active)}
+                          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                            contact.is_active ? 'bg-green-500' : 'bg-gray-300'
+                          }`}
+                          title={contact.is_active ? 'Nofaol qilish' : 'Faollashtirish'}
+                        >
+                          <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${
+                            contact.is_active ? 'translate-x-4' : 'translate-x-1'
+                          }`} />
+                        </button>
                         <button
                           onClick={() => openEditContact(contact)}
                           className="p-1 text-gray-400 hover:text-primary-500"
