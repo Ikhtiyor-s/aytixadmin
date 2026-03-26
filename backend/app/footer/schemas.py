@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from typing import Optional, List
 from datetime import datetime
 
@@ -61,6 +61,15 @@ class FooterItemResponse(FooterItemBase):
     id: int
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    # aytix frontend compatibility aliases
+    url: Optional[str] = None
+    is_external: bool = False
+
+    @model_validator(mode='after')
+    def set_aliases(self):
+        self.url = self.link_url
+        self.is_external = self.new_tab or False
+        return self
 
     class Config:
         from_attributes = True
