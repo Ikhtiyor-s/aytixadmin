@@ -33,8 +33,13 @@ export const authService = {
       },
     })
     const { access_token, refresh_token } = response.data
-    Cookies.set('access_token', access_token, { path: '/' })
-    Cookies.set('refresh_token', refresh_token, { path: '/' })
+    const cookieOptions = {
+      path: '/',
+      secure: window.location.protocol === 'https:',
+      sameSite: 'strict' as const,
+    }
+    Cookies.set('access_token', access_token, cookieOptions)
+    Cookies.set('refresh_token', refresh_token, cookieOptions)
     return response.data
   },
 

@@ -43,3 +43,9 @@ Thumbs.db
 # Environment
 .env
 .env.local
+.env.production
+
+# Backup files
+*.backup
+*.bak
+*.orig

@@ -40,12 +40,11 @@ class UserResponse(UserBase):
 
 
 class UserAdminResponse(UserBase):
-    """Admin uchun foydalanuvchi ma'lumotlari - parol bilan"""
+    """Admin uchun foydalanuvchi ma'lumotlari"""
     id: int
     role: UserRole
     is_active: bool
     profile_image: Optional[str] = None
-    hashed_password: str
     created_at: datetime
 
     class Config:

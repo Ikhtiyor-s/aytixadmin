@@ -9,6 +9,7 @@ import { categoriesApi, CategoryData, SubcategoryData } from '@/lib/api/categori
 import { uploadsApi } from '@/lib/api/uploads'
 import { translateApi } from '@/lib/api/translate'
 import MultiSelectDropdown from '@/components/ui/MultiSelectDropdown'
+import DOMPurify from 'dompurify'
 
 // Image Carousel Component for Project Cards
 function ProjectImageCarousel({ images }: { images: string[] }) {
@@ -1191,7 +1192,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
               <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white mb-1">{getLocalizedName(project, lang)}</h3>
               <div
                 className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-2"
-                dangerouslySetInnerHTML={{ __html: getLocalizedDescription(project, lang) }}
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(getLocalizedDescription(project, lang) || '') }}
               />
 
               <div className="flex items-center gap-1 mb-2 flex-wrap">
@@ -1360,7 +1361,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t.description}</h3>
                 <div
                   className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: getLocalizedDescription(viewProject, lang) }}
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(getLocalizedDescription(viewProject, lang) || '') }}
                 />
               </div>
 

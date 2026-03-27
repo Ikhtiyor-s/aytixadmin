@@ -138,10 +138,17 @@ async def security_headers_middleware(request: Request, call_next):
     if request.method in ("POST", "PUT", "DELETE", "PATCH") and not settings.DEBUG:
         origin = request.headers.get("origin", "")
         referer = request.headers.get("referer", "")
-        allowed = any(
-            origin.startswith(o) or referer.startswith(o)
-            for o in settings.CORS_ORIGINS
-        )
+
+        def is_origin_allowed(check_url: str) -> bool:
+            """URL ni ruxsat etilgan originlar bilan aniq solishtirish."""
+            from urllib.parse import urlparse
+            if not check_url:
+                return False
+            parsed = urlparse(check_url)
+            check_origin = f"{parsed.scheme}://{parsed.netloc}"
+            return check_origin in settings.CORS_ORIGINS
+
+        allowed = is_origin_allowed(origin) or is_origin_allowed(referer)
         # API-to-API (no origin) yoki ruxsat etilgan origin
         if origin and not allowed:
             return JSONResponse(
