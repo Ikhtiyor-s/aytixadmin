@@ -1,8 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Cookies from 'js-cookie'
-import { Icons } from './Icons'
 import { Translations } from '@/lib/admin/translations'
 import { contentApi, NewsData, BannerData, NotificationData, ContentStatus, TargetAudience } from '@/lib/api/content'
 import { uploadsApi } from '@/lib/api/uploads'
@@ -37,8 +35,6 @@ export default function ContentPage({ t }: ContentPageProps) {
   const [isTranslating, setIsTranslating] = useState(false)
 
   const API_URL = ''
-
-  const getToken = () => Cookies.get('access_token') || ''
 
   // AI tarjima funksiyasi
   const handleAITranslate = async () => {
@@ -491,7 +487,6 @@ export default function ContentPage({ t }: ContentPageProps) {
                           e.preventDefault()
                           e.stopPropagation()
                           const url = getMediaUrl(banner.video_url!)
-                          console.log('Video URL:', url)
                           setVideoModalUrl(url)
                         }}
                         className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors"

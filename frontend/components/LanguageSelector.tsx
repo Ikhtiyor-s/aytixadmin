@@ -10,8 +10,7 @@ export default function LanguageSelector() {
   const handleLanguageChange = (lang: Language) => {
     setCurrentLang(lang)
     setShowDropdown(false)
-    // Here you would implement language switching logic
-    console.log('Language changed to:', lang.code)
+    // Language switching handled by setCurrentLang
   }
 
   return (

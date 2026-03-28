@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { Translations } from '@/lib/admin/translations'
 import { useAuth } from '@/hooks/useAuth'
-import Cookies from 'js-cookie'
 
 const API_URL = '/api/v1'
 const BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost' ? '/api/v1' : API_URL

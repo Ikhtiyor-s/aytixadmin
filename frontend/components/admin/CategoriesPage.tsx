@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Cookies from 'js-cookie'
 import { Translations } from '@/lib/admin/translations'
 import { categoriesApi, CategoryData, SubcategoryData } from '@/lib/api/categories'
 import { uploadsApi } from '@/lib/api/uploads'
@@ -336,10 +335,6 @@ export default function CategoriesPage({ t, globalSearch, lang }: CategoriesPage
     } catch (err) {
       console.error('Failed to fetch subcategories:', err)
     }
-  }
-
-  const getToken = () => {
-    return Cookies.get('access_token') || ''
   }
 
   const toggleCategory = async (categoryId: number) => {

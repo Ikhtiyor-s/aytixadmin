@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Cookies from 'js-cookie'
 import { Icons } from './Icons'
 import { Translations } from '@/lib/admin/translations'
 import { footerApi, FooterContact, CONTACT_TYPE_ICONS } from '@/lib/api/footer'
@@ -39,8 +38,6 @@ export default function ContactsPage({ t, globalSearch, lang }: ContactsPageProp
     icon: '',
     is_active: true
   })
-
-  const getToken = () => Cookies.get('access_token') || ''
 
   const loadContacts = async () => {
     try {
