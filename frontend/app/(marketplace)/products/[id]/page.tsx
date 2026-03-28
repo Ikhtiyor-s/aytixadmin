@@ -72,7 +72,7 @@ export default function ProductDetailPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
+        <div className="relative">
           {product.image_url ? (
             <img
               src={product.image_url}
@@ -84,10 +84,23 @@ export default function ProductDetailPage() {
               <span className="text-gray-400">No image</span>
             </div>
           )}
+          {product.is_verified && (
+            <div className="absolute top-3 right-3 z-10" title="AyTiX Verified">
+              <img src="/verified-badge.png" alt="AyTiX Verified" className="w-12 h-12 drop-shadow-2xl verified-badge-spin" />
+            </div>
+          )}
         </div>
 
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
+          <div className="flex items-center gap-3 mb-4">
+            <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+            {product.is_verified && (
+              <div className="flex items-center gap-1.5" title="AyTiX Verified">
+                <img src="/verified-badge.png" alt="AyTiX Verified" className="w-7 h-7" />
+                <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">VERIFIED</span>
+              </div>
+            )}
+          </div>
           
           {product.category && (
             <p className="text-sm text-gray-500 mb-4">Category: {product.category.name}</p>

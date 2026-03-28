@@ -50,6 +50,15 @@ export default function ProductCard({ product, badge }: ProductCardProps) {
             {badge}
           </span>
         )}
+        {product.is_verified && (
+          <div className="absolute top-2 right-14 z-10" title="AyTiX Verified">
+            <img
+              src="/verified-badge.png"
+              alt="AyTiX Verified"
+              className="w-10 h-10 drop-shadow-2xl verified-badge-spin"
+            />
+          </div>
+        )}
         <button
           onClick={toggleFavorite}
           className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform"

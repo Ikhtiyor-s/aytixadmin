@@ -1154,7 +1154,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                   <img
                     src="/verified-badge.png"
                     alt="AyTiX Verified"
-                    className="w-12 h-12 drop-shadow-2xl hover:scale-110 transition-transform duration-200"
+                    className="w-12 h-12 drop-shadow-2xl hover:scale-110 transition-transform duration-200 verified-badge-spin"
                   />
                 </div>
               )}
@@ -1305,7 +1305,7 @@ export default function ProjectsPage({ t, globalSearch, lang }: ProjectsPageProp
                       <img
                         src="/verified-badge.png"
                         alt="AyTiX Verified"
-                        className="w-16 h-16 drop-shadow-2xl hover:scale-110 transition-transform duration-200"
+                        className="w-16 h-16 drop-shadow-2xl hover:scale-110 transition-transform duration-200 verified-badge-spin"
                       />
                     </div>
                   )}

@@ -20,6 +20,7 @@ export interface Product {
   category_id?: number
   seller_id: number
   status: 'pending' | 'approved' | 'rejected'
+  is_verified?: boolean
   created_at: string
   updated_at?: string
   seller?: User

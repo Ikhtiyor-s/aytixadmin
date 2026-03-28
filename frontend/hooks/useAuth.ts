@@ -35,8 +35,8 @@ export function useAuth() {
     initAuth()
   }, [])
 
-  const login = async (phone: string, password: string) => {
-    await authService.login({ phone, password })
+  const login = async (username: string, password: string) => {
+    await authService.login({ username, password })
     const accessToken = Cookies.get('access_token') || null
     setToken(accessToken)
     // User will be loaded on next page via initAuth

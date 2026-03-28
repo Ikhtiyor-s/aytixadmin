@@ -6,7 +6,7 @@ import { User } from '@/types'
 const BASE_URL = '/api/v1'
 
 export interface LoginData {
-  phone: string
+  username: string
   password: string
 }
 
@@ -25,7 +25,7 @@ export type { User }
 export const authService = {
   async login(data: LoginData) {
     const formData = new URLSearchParams()
-    formData.append('username', data.phone)
+    formData.append('username', data.username)
     formData.append('password', data.password)
     const response = await axios.post(`${BASE_URL}/auth/admin/login`, formData, {
       headers: {

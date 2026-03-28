@@ -60,6 +60,16 @@ body {
   animation: gradientShift 3s ease infinite;
 }
 
+@keyframes spinOnce {
+  0% { transform: rotateY(0deg); }
+  10% { transform: rotateY(360deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+.verified-badge-spin {
+  animation: spinOnce 10s ease-in-out infinite;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }

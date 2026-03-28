@@ -8,7 +8,7 @@ export default function LoginPage() {
   const router = useRouter()
   const { login } = useAuth()
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: ''
   })
   const [error, setError] = useState('')
@@ -20,7 +20,7 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      await login(formData.email, formData.password)
+      await login(formData.username, formData.password)
       router.push('/admin/advanced')
     } catch (err: any) {
       setError(err.message || 'Login failed')
@@ -54,14 +54,14 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email
+                Username
               </label>
               <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                type="text"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00a6a6] focus:border-transparent transition-all"
-                placeholder="Email kiriting"
+                placeholder="Username kiriting"
                 required
               />
             </div>
