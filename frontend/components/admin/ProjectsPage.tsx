@@ -11,12 +11,7 @@ import { translateApi } from '@/lib/api/translate'
 import MultiSelectDropdown from '@/components/ui/MultiSelectDropdown'
 import DOMPurify from 'dompurify'
 import ProjectImageCarousel from './ProjectImageCarousel'
-
-interface FeatureItem {
-  uz: string
-  ru: string
-  en: string
-}
+import { normalizeFeatures, getLocalizedName, getLocalizedDescription, getLocalizedFeature, FeatureItem } from '@/utils/localization'
 
 interface Project {
   id: number
@@ -47,40 +42,7 @@ interface Project {
   is_verified?: boolean
 }
 
-// Helper function to convert features from any format to new format
-const normalizeFeatures = (features: (string | FeatureItem)[]): FeatureItem[] => {
-  if (!features || !Array.isArray(features)) return []
-  return features.map(f => {
-    if (typeof f === 'string') {
-      // Old format - string only, assume it's Uzbek
-      return { uz: f, ru: '', en: '' }
-    }
-    // New format - already has uz, ru, en
-    return { uz: f.uz || '', ru: f.ru || '', en: f.en || '' }
-  })
-}
 
-// Helper function to get localized project name based on selected language
-const getLocalizedName = (project: Project, lang: string): string => {
-  if (lang === 'ru') return project.name_ru || project.name_uz || project.name
-  if (lang === 'en') return project.name_en || project.name_uz || project.name
-  return project.name_uz || project.name
-}
-
-// Helper function to get localized project description based on selected language
-const getLocalizedDescription = (project: Project, lang: string): string => {
-  if (lang === 'ru') return project.description_ru || project.description_uz || project.description
-  if (lang === 'en') return project.description_en || project.description_uz || project.description
-  return project.description_uz || project.description
-}
-
-// Helper function to get localized feature based on selected language
-const getLocalizedFeature = (feature: string | FeatureItem, lang: string): string => {
-  if (typeof feature === 'string') return feature
-  if (lang === 'ru') return feature.ru || feature.uz || ''
-  if (lang === 'en') return feature.en || feature.uz || ''
-  return feature.uz || ''
-}
 
 interface ProjectsPageProps {
   t: Translations
