@@ -29,7 +29,7 @@ services:
       DEBUG: ${DEBUG:-false}
       ALLOW_LOCALHOST: ${ALLOW_LOCALHOST:-false}
       HOST: "0.0.0.0"
-      PORT: "8000"
+      PORT: "10018"
     volumes:
       - ./backend:/app
       - uploads_data:/app/uploads
