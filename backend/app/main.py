@@ -75,6 +75,50 @@ def auto_migrate():
     except Exception as e:
         logger.warning(f"Auto-migration xatolik (davom etiladi): {e}")
 
+def fix_enum_values():
+    """DB dagi UPPERCASE enum qiymatlarini lowercase ga o'tkazish."""
+    from sqlalchemy import text
+    renames = [
+        ("userrole", "ADMIN", "admin"),
+        ("userrole", "USER", "user"),
+        ("userrole", "SELLER", "seller"),
+        ("messagestatus", "NEW", "new"),
+        ("messagestatus", "READ", "read"),
+        ("messagestatus", "REPLIED", "replied"),
+        ("messagestatus", "ARCHIVED", "archived"),
+        ("contentstatus", "ACTIVE", "active"),
+        ("contentstatus", "INACTIVE", "inactive"),
+        ("projectstatus", "ACTIVE", "active"),
+        ("projectstatus", "INACTIVE", "inactive"),
+        ("targetaudience", "ALL", "all"),
+        ("targetaudience", "USERS", "users"),
+        ("targetaudience", "SELLERS", "sellers"),
+        ("targetaudience", "ADMINS", "admins"),
+        ("partnerstatus", "ACTIVE", "active"),
+        ("partnerstatus", "INACTIVE", "inactive"),
+        ("partnerstatus", "PENDING", "pending"),
+        ("integrationstatus", "ACTIVE", "active"),
+        ("integrationstatus", "INACTIVE", "inactive"),
+        ("integrationstatus", "COMING_SOON", "coming_soon"),
+        ("orderstatus", "PENDING", "pending"),
+        ("orderstatus", "CONFIRMED", "confirmed"),
+        ("orderstatus", "SHIPPED", "shipped"),
+        ("orderstatus", "DELIVERED", "delivered"),
+        ("orderstatus", "CANCELLED", "cancelled"),
+        ("productstatus", "PENDING", "pending"),
+        ("productstatus", "APPROVED", "approved"),
+        ("productstatus", "REJECTED", "rejected"),
+    ]
+    for enum_type, old_val, new_val in renames:
+        try:
+            with engine.begin() as conn:
+                conn.execute(text(f"ALTER TYPE {enum_type} RENAME VALUE '{old_val}' TO '{new_val}'"))
+            logger.info(f"Enum fix: {enum_type}.{old_val} -> {new_val}")
+        except Exception:
+            pass  # Already lowercase or doesn't exist
+
+fix_enum_values()
+
 auto_migrate()
 
 # Rate Limiter - DDoS va brute force himoyasi
