@@ -6,12 +6,20 @@ import enum
 
 
 class UserRole(str, enum.Enum):
+    user = "user"
+    seller = "seller"
+    admin = "admin"
     USER = "user"
     SELLER = "seller"
     ADMIN = "admin"
 
 
 class OrderStatus(str, enum.Enum):
+    pending = "pending"
+    confirmed = "confirmed"
+    shipped = "shipped"
+    delivered = "delivered"
+    cancelled = "cancelled"
     PENDING = "pending"
     CONFIRMED = "confirmed"
     SHIPPED = "shipped"
@@ -20,6 +28,9 @@ class OrderStatus(str, enum.Enum):
 
 
 class ProductStatus(str, enum.Enum):
+    pending = "pending"
+    approved = "approved"
+    rejected = "rejected"
     PENDING = "pending"
     APPROVED = "approved"
     REJECTED = "rejected"
@@ -351,6 +362,10 @@ class Notification(Base):
 
 
 class MessageStatus(str, enum.Enum):
+    new = "new"
+    read = "read"
+    replied = "replied"
+    archived = "archived"
     NEW = "new"
     READ = "read"
     REPLIED = "replied"
@@ -385,6 +400,9 @@ class Message(Base):
 
 
 class PartnerStatus(str, enum.Enum):
+    active = "active"
+    inactive = "inactive"
+    pending = "pending"
     ACTIVE = "active"
     INACTIVE = "inactive"
     PENDING = "pending"
@@ -421,6 +439,9 @@ class Partner(Base):
 
 
 class IntegrationStatus(str, enum.Enum):
+    active = "active"
+    inactive = "inactive"
+    coming_soon = "coming_soon"
     ACTIVE = "active"
     INACTIVE = "inactive"
     COMING_SOON = "coming_soon"
@@ -558,6 +579,8 @@ class FAQ(Base):
 
 
 class AuthMethod(str, enum.Enum):
+    telegram = "telegram"
+    email = "email"
     TELEGRAM = "telegram"
     EMAIL = "email"
 
