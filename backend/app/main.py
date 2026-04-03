@@ -113,7 +113,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 if not settings.DEBUG:
     app.add_middleware(
         TrustedHostMiddleware,
-        allowed_hosts=["api.aytix.uz", "*.aytix.uz", "localhost"]
+        allowed_hosts=["api.aytix.uz", "*.aytix.uz", "localhost", "backend"]
     )
 
 
