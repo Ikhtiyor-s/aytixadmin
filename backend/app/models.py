@@ -26,16 +26,25 @@ class ProductStatus(str, enum.Enum):
 
 
 class ProjectStatus(str, enum.Enum):
+    active = "active"
+    inactive = "inactive"
+    # backward compat aliases
     ACTIVE = "active"
     INACTIVE = "inactive"
 
 
 class ContentStatus(str, enum.Enum):
+    active = "active"
+    inactive = "inactive"
     ACTIVE = "active"
     INACTIVE = "inactive"
 
 
 class TargetAudience(str, enum.Enum):
+    all = "all"
+    users = "users"
+    sellers = "sellers"
+    admins = "admins"
     ALL = "all"
     USERS = "users"
     SELLERS = "sellers"
