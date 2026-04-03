@@ -72,10 +72,20 @@ def find_matching_subcategory(project_subcat: str, subcategories_list: list, cat
 @router.get("/counts")
 def get_project_counts(db: Session = Depends(get_db)):
     """Get project counts by category and subcategory."""
+    # Category ID → name_uz mapping
+    all_cats = db.query(CategoryProject).all()
+    cat_id_to_name = {str(c.id): c.name_uz for c in all_cats}
+
     category_counts = db.query(
         Project.category, func.count(Project.id).label("count")
     ).filter(Project.status == ProjectStatus.ACTIVE).group_by(Project.category).all()
-    categories = {cat: count for cat, count in category_counts}
+
+    # If category is stored as ID, map to name
+    categories = {}
+    for cat, count in category_counts:
+        name = cat_id_to_name.get(cat, cat) if cat else cat
+        if name:
+            categories[name] = categories.get(name, 0) + count
 
     all_subcategories = db.query(
         SubcategoryProject.name_uz, CategoryProject.name_uz.label("category_name")
@@ -92,8 +102,9 @@ def get_project_counts(db: Session = Depends(get_db)):
     subcategories = {}
     for cat, subcat, count in subcategory_counts:
         if subcat:
-            correct_name = find_matching_subcategory(subcat, all_subcategories, cat)
-            key = f"{cat}:{correct_name}"
+            cat_name = cat_id_to_name.get(cat, cat) if cat else cat
+            correct_name = find_matching_subcategory(subcat, all_subcategories, cat_name)
+            key = f"{cat_name}:{correct_name}"
             if key in subcategories:
                 subcategories[key] += count
             else:
@@ -119,7 +130,14 @@ def list_projects(
         # Bu SQLAlchemy model va DB o'rtasidagi farqni hal qiladi
         query = db.query(Project)
         if category:
-            query = query.filter(Project.category.ilike(f"%{category}%"))
+            # Category nom bilan kelsa → ID ga o'tkazib filter qilish
+            cat_obj = db.query(CategoryProject).filter(
+                CategoryProject.name_uz.ilike(f"%{category}%")
+            ).first()
+            if cat_obj:
+                query = query.filter(Project.category == str(cat_obj.id))
+            else:
+                query = query.filter(Project.category.ilike(f"%{category}%"))
         if subcategory:
             query = query.filter(Project.subcategory.ilike(f"%{subcategory}%"))
         if status:
