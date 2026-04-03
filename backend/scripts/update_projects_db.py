@@ -16,6 +16,7 @@ projects_data = [
         "name_uz": "Nonbor - Oshxona Avtomatlashtirish",
         "name_ru": "Nonbor - Автоматизация общепита",
         "name_en": "Nonbor - Catering Automation",
+        "category": 8,
         "description_uz": "Restoran, kafe va oshxonalar uchun to'liq avtomatlashtirish tizimi. Buyurtmalarni qabul qilish, oshxona boshqaruvi, hisobotlar va moliyaviy nazorat.",
         "description_ru": "Полная система автоматизации для ресторанов, кафе и столовых. Приём заказов, управление кухней, отчёты и финансовый контроль.",
         "description_en": "Complete automation system for restaurants, cafes and canteens. Order management, kitchen control, reports and financial monitoring.",
@@ -36,6 +37,7 @@ projects_data = [
         "name_uz": "1C ERP - Korxona Yechimi",
         "name_ru": "1С ERP - Корпоративное решение",
         "name_en": "1C ERP - Enterprise Solution",
+        "category": 8,
         "description_uz": "1C ERP tizimi bilan to'liq integratsiya. Moliyaviy hisobotlar, buxgalteriya, ish haqi hisoblash va korxona resurslarini boshqarish.",
         "description_ru": "Полная интеграция с системой 1С ERP. Финансовая отчётность, бухгалтерия, расчёт заработной платы и управление ресурсами предприятия.",
         "description_en": "Full integration with 1C ERP system. Financial reporting, accounting, payroll calculation and enterprise resource management.",
@@ -56,6 +58,7 @@ projects_data = [
         "name_uz": "AmoCRM Professional Integratsiya",
         "name_ru": "AmoCRM Профессиональная интеграция",
         "name_en": "AmoCRM Professional Integration",
+        "category": 9,
         "description_uz": "AmoCRM bilan to'liq integratsiya. Avtomatik lead yaratish, savdo voronkasi boshqaruvi, mijozlar bilan munosabatlar.",
         "description_ru": "Полная интеграция с AmoCRM. Автоматическое создание лидов, управление воронкой продаж, работа с клиентами.",
         "description_en": "Full AmoCRM integration. Automatic lead creation, sales funnel management, customer relationships.",
@@ -76,6 +79,7 @@ projects_data = [
         "name_uz": "Ombor Boshqaruv Tizimi Pro",
         "name_ru": "Система управления складом Pro",
         "name_en": "Warehouse Management System Pro",
+        "category": 8,
         "description_uz": "Zamonaviy ombor boshqaruv tizimi. Real-time inventar nazorati, barcode skanerlash, avtomatik buyurtmalar va keng qamrovli hisobotlar.",
         "description_ru": "Современная система управления складом. Контроль инвентаря в реальном времени, сканирование штрих-кодов, автоматические заказы и расширенная отчётность.",
         "description_en": "Modern warehouse management system. Real-time inventory control, barcode scanning, automatic orders and comprehensive reporting.",
@@ -96,6 +100,7 @@ projects_data = [
         "name_uz": "AI Chatbot - Sun'iy Intellekt Yordamchisi",
         "name_ru": "AI Chatbot - Помощник на основе ИИ",
         "name_en": "AI Chatbot - Artificial Intelligence Assistant",
+        "category": 12,
         "description_uz": "Sun'iy intellekt asosidagi zamonaviy chatbot. Tabiiy tilni qayta ishlash, ko'p tilli qo'llab-quvvatlash va o'rganish qobiliyati.",
         "description_ru": "Современный чат-бот на основе искусственного интеллекта. Обработка естественного языка, многоязычная поддержка и способность к обучению.",
         "description_en": "Modern chatbot based on artificial intelligence. Natural language processing, multilingual support and learning capability.",
@@ -116,6 +121,7 @@ projects_data = [
         "name_uz": "Mobil Bank Ilovasi",
         "name_ru": "Мобильное банковское приложение",
         "name_en": "Mobile Banking Application",
+        "category": 13,
         "description_uz": "To'liq funksional mobil bank ilovasi. Pul o'tkazmalari, to'lovlar, karta boshqaruvi va kredit arizalari.",
         "description_ru": "Полнофункциональное мобильное банковское приложение. Денежные переводы, платежи, управление картами и кредитные заявки.",
         "description_en": "Full-featured mobile banking application. Money transfers, payments, card management and loan applications.",
@@ -136,6 +142,7 @@ projects_data = [
         "name_uz": "CRM Dashboard - Mijozlar Boshqaruvi",
         "name_ru": "CRM Dashboard - Управление клиентами",
         "name_en": "CRM Dashboard - Customer Management",
+        "category": 8,
         "description_uz": "Zamonaviy CRM tizimi. Mijozlarni boshqarish, analitika, hisobotlar va jamoa hamkorligi uchun yechim.",
         "description_ru": "Современная CRM система. Решение для управления клиентами, аналитики, отчётности и командного взаимодействия.",
         "description_en": "Modern CRM system. Solution for customer management, analytics, reporting and team collaboration.",
@@ -163,9 +170,9 @@ for project in projects_data:
                 id, name_uz, name_ru, name_en,
                 description_uz, description_ru, description_en,
                 technologies, features, integrations,
-                is_top, is_new, status, created_at, updated_at
+                is_top, is_new, status, category, created_at, updated_at
             ) VALUES (
-                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'ACTIVE', NOW(), NOW()
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'ACTIVE', %s, NOW(), NOW()
             )
             ON CONFLICT (id) DO UPDATE SET
                 name_uz = EXCLUDED.name_uz,
@@ -179,6 +186,7 @@ for project in projects_data:
                 integrations = EXCLUDED.integrations,
                 is_top = EXCLUDED.is_top,
                 is_new = EXCLUDED.is_new,
+                category = EXCLUDED.category,
                 updated_at = NOW()
         """, (
             project_id,
@@ -193,6 +201,7 @@ for project in projects_data:
             json.dumps(project["integrations"]),
             project["is_top"],
             project["is_new"],
+            project["category"],
         ))
 
         print(f"[OK] Project {project_id} upserted: {project['name_uz']}")
