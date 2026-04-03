@@ -1,8 +1,10 @@
 import psycopg2
 import json
+import os
 
 # Database connection
-conn = psycopg2.connect('postgresql://postgres:postgres@localhost:5432/cursor_market')
+db_url = os.environ.get('DATABASE_URL', 'postgresql://postgres:postgres@db:5432/cursor_market')
+conn = psycopg2.connect(db_url)
 cur = conn.cursor()
 
 print("Connected to database")
@@ -151,27 +153,35 @@ projects_data = [
     }
 ]
 
-# Update each project
+# Upsert each project
 for project in projects_data:
     project_id = project["id"]
 
     try:
         cur.execute("""
-            UPDATE projects SET
-                name_uz = %s,
-                name_ru = %s,
-                name_en = %s,
-                description_uz = %s,
-                description_ru = %s,
-                description_en = %s,
-                technologies = %s,
-                features = %s,
-                integrations = %s,
-                is_top = %s,
-                is_new = %s,
+            INSERT INTO projects (
+                id, name_uz, name_ru, name_en,
+                description_uz, description_ru, description_en,
+                technologies, features, integrations,
+                is_top, is_new, status, created_at, updated_at
+            ) VALUES (
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'active', NOW(), NOW()
+            )
+            ON CONFLICT (id) DO UPDATE SET
+                name_uz = EXCLUDED.name_uz,
+                name_ru = EXCLUDED.name_ru,
+                name_en = EXCLUDED.name_en,
+                description_uz = EXCLUDED.description_uz,
+                description_ru = EXCLUDED.description_ru,
+                description_en = EXCLUDED.description_en,
+                technologies = EXCLUDED.technologies,
+                features = EXCLUDED.features,
+                integrations = EXCLUDED.integrations,
+                is_top = EXCLUDED.is_top,
+                is_new = EXCLUDED.is_new,
                 updated_at = NOW()
-            WHERE id = %s
         """, (
+            project_id,
             project["name_uz"],
             project["name_ru"],
             project["name_en"],
@@ -183,12 +193,12 @@ for project in projects_data:
             json.dumps(project["integrations"]),
             project["is_top"],
             project["is_new"],
-            project_id
         ))
 
-        print(f"[OK] Project {project_id} updated: {project['name_uz']}")
+        print(f"[OK] Project {project_id} upserted: {project['name_uz']}")
     except Exception as e:
         print(f"[ERROR] Project {project_id} error: {str(e)}")
+        conn.rollback()
 
 # Commit changes
 conn.commit()

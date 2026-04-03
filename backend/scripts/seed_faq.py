@@ -117,15 +117,9 @@ def seed_faq():
         # Mavjud FAQ larni tekshirish
         existing_count = db.query(FAQ).count()
         if existing_count > 0:
-            print(f"FAQ jadvalida {existing_count} ta yozuv mavjud. O'chirib qayta qo'shilsinmi? (y/n)")
-            answer = input().strip().lower()
-            if answer == 'y':
-                db.query(FAQ).delete()
-                db.commit()
-                print("Eski FAQ lar o'chirildi.")
-            else:
-                print("FAQ lar saqlab qolindi.")
-                return
+            db.query(FAQ).delete()
+            db.commit()
+            print(f"Eski {existing_count} ta FAQ o'chirildi.")
 
         # Yangi FAQ larni qo'shish
         for data in faq_data:
