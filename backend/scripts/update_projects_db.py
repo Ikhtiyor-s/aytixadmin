@@ -165,7 +165,7 @@ for project in projects_data:
                 technologies, features, integrations,
                 is_top, is_new, status, created_at, updated_at
             ) VALUES (
-                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'active', NOW(), NOW()
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'ACTIVE', NOW(), NOW()
             )
             ON CONFLICT (id) DO UPDATE SET
                 name_uz = EXCLUDED.name_uz,
