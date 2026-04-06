@@ -130,12 +130,15 @@ def list_projects(
         # Bu SQLAlchemy model va DB o'rtasidagi farqni hal qiladi
         query = db.query(Project)
         if category:
-            # Category nom bilan kelsa → ID ga o'tkazib filter qilish
+            # Category nom yoki ID bo'lishi mumkin - ikkisini ham tekshiramiz
             cat_obj = db.query(CategoryProject).filter(
                 CategoryProject.name_uz.ilike(f"%{category}%")
             ).first()
             if cat_obj:
-                query = query.filter(Project.category == str(cat_obj.id))
+                query = query.filter(
+                    (Project.category == str(cat_obj.id)) |
+                    (Project.category.ilike(f"%{category}%"))
+                )
             else:
                 query = query.filter(Project.category.ilike(f"%{category}%"))
         if subcategory:
