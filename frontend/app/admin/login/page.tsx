@@ -121,7 +121,7 @@ export default function AdminLogin() {
 
         {/* Footer */}
         <div className="text-center mt-6 text-white text-sm">
-          <p>© 2024 AyTiX. Barcha huquqlar himoyalangan.</p>
+          <p>© 2026 AyTiX. Barcha huquqlar himoyalangan.</p>
         </div>
       </div>
     </div>
