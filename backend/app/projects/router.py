@@ -14,6 +14,20 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/projects", tags=["projects"])
 
 
+def _normalize_features(features) -> list:
+    if not features or not isinstance(features, list):
+        return []
+    result = []
+    for f in features:
+        if isinstance(f, dict):
+            val = f.get('uz') or f.get('ru') or f.get('en') or ''
+            if val:
+                result.append(val)
+        elif isinstance(f, str) and f:
+            result.append(f)
+    return result
+
+
 def project_to_dict(p) -> dict:
     """Project obyektini xavfsiz dict ga aylantirish."""
     try:
@@ -28,7 +42,7 @@ def project_to_dict(p) -> dict:
             "category": p.category or "",
             "subcategory": getattr(p, "subcategory", None),
             "technologies": p.technologies if isinstance(p.technologies, list) else [],
-            "features": p.features if isinstance(p.features, list) else [],
+            "features": _normalize_features(p.features),
             "integrations": p.integrations if isinstance(p.integrations, list) else [],
             "color": getattr(p, "color", None) or "from-primary-500 to-primary-600",
             "image_url": getattr(p, "image_url", None),

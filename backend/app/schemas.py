@@ -313,6 +313,17 @@ class ProjectResponse(ProjectBase):
     created_at: datetime
     updated_at: Optional[datetime] = None
 
+    def model_post_init(self, __context) -> None:
+        # features ni har doim List[str] formatga keltirish
+        if self.features:
+            normalized = []
+            for f in self.features:
+                if isinstance(f, dict):
+                    normalized.append(f.get('uz') or f.get('ru') or f.get('en') or '')
+                elif isinstance(f, str):
+                    normalized.append(f)
+            self.features = [f for f in normalized if f]
+
     class Config:
         from_attributes = True
 
