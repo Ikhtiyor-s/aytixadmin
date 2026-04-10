@@ -126,6 +126,7 @@ def get_project_counts(db: Session = Depends(get_db)):
     return {"categories": categories, "subcategories": subcategories}
 
 
+@router.get("")
 @router.get("/")
 def list_projects(
     skip: int = Query(0, ge=0),

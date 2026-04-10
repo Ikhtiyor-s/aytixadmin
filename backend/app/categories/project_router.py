@@ -13,10 +13,11 @@ from app.schemas import (
     SubcategoryProjectResponse
 )
 
-router = APIRouter(prefix="/project-categories", tags=["project-categories"])
+router = APIRouter(prefix="/project-categories", tags=["project-categories"], redirect_slashes=False)
 
 
 # Category CRUD operations
+@router.get("", response_model=List[CategoryProjectResponse])
 @router.get("/", response_model=List[CategoryProjectResponse])
 def list_categories(
     skip: int = Query(0, ge=0),
